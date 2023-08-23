@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: notify-service
+  namespace: swap-prd
+  labels:
+    app: notify-service
+spec:
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  selector:
+    matchLabels:
+      app: notify-service
+  template:
+    metadata:
+      labels:
+        app: notify-service
+        node: backend
+      # annotations:
+      #   vault.security.banzaicloud.io/vault-addr: "http://vault.vault.svc.cluster.local:8200"
+      #   vault.security.banzaicloud.io/vault-role: "default"
+    spec:
+      # imagePullSecrets:
+      #   - name: golduck-registry
+      containers:
+        - name: notify-service
+          imagePullPolicy: Always
+          # image: asia.gcr.io/base-operation-service/coinhe-dev/backend-swap-api:20220326-173206-20220327
+          image: asia-southeast1-docker.pkg.dev/novaland-337909/novaland-registry/backend-swap-api:da5e40f
+          command: ["/bin/sh","-c"]
+          args: ["NODE_ENV=production yarn ts src/services/notify-service.ts"]
+          env:
+            - name: GET_HOSTS_FROM
+              value: dns
+            - name: CHAT_ID
+              value: 5387205654,5525189482
+            - name: LINK_GUIDLE
+              value: https://www.youtube.com/shorts/Kfl9Evlj7LM
+            - name: TOKEN_BOT_FAKE
+              value: "6167699222:AAHfqsmsK_DyuHeNE-Ei1ntA6qrS7KkC4w0"

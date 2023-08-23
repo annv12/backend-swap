@@ -1,0 +1,1347 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["filterJson"]
+}
+
+enum UserRole {
+  TRADER
+  STAFF
+  ADMIN
+
+  @@map(name: "user_role")
+}
+
+enum Permission {
+  // SUMARY
+  CAN_VIEW_STATISTIC
+  // WALLET
+  CAN_VIEW_WALLET
+  CAN_VIEW_WALLET_CHANGE
+  // TRANSACTION
+  CAN_VIEW_TRANSACTION
+  CAN_CREATE_TRANSACTION
+  CAN_APPROVE_TRANSACTION
+  CAN_CHECK_TRANSACTION_HASH
+  // TICKET
+  CAN_VIEW_TICKET
+  CAN_REPLY_TICKET
+  CAN_MANAGE_CATEGORY
+  // USER
+  CAN_VIEW_CUSTOMER
+  CAN_UPDATE_CUSTOMER
+  CAN_VIEW_STAFF
+  CAN_UPDATE_STAFF
+  CAN_UPDATE_EXPERT
+
+  @@map(name: "permission")
+}
+
+model User {
+  id                         String                       @id @default(uuid())
+  createdAt                  DateTime                     @default(now()) @map(name: "created_at")
+  updatedAt                  DateTime                     @updatedAt @map(name: "updated_at")
+  email                      String                       @unique
+  username                   String?                      @unique
+  password                   String
+  name                       String?
+  phoneNumber                String?
+  role                       UserRole                     @default(TRADER)
+  is_active                  Boolean                      @default(false)
+  permissions                Permission[]
+  MainWalletTransaction      MainWalletTransaction[]
+  TransactionApprover        MainWalletTransaction[]      @relation("approved_by_user")
+  ExchangeWallet             ExchangeWallet[]
+  Order                      Order[]
+  MainWallet                 MainWallet[]
+  ConvertionTransaction      ConvertionTransaction[]
+  Sponsor                    Ref[]                        @relation("sponsor")
+  Ref                        Ref?
+  AgencyLicenceTransaction   AgencyLicenceTransaction[]
+  UserProfile                UserProfile?
+  OrderResult                OrderResult[]
+  TwoFactor                  TwoFactor[]
+  InternalTransaction        InternalTransaction[]
+  PromotionCodeTransaction   PromotionCodeTransaction[]
+  TournamentTransaction      TournamentTransaction[]
+  PromotionTransaction       PromotionTransaction[]
+  RefTransactionOfSponsor    RefTransaction[]             @relation("sponsor_on_reftx")
+  RefTransactionOfUser       RefTransaction[]             @relation("user_on_reftx")
+  LeaderBoard                LeaderBoard[]
+  RefundTransaction          RefundTransaction[]
+  Ticket                     Ticket[]
+  Reply                      Reply[]
+  ManualTransaction          ManualTransaction[]
+  CopyTradeTrader            CopyTrade[]                  @relation("CopyTrade_Trader")
+  CopyTradeCopier            CopyTrade[]                  @relation("CopyTrade_Copier")
+  // ServiceSubscription        ServiceSubscription[]
+  // SubscriptionTransaction    SubscriptionTransaction[]
+  TradingExpertRegister      TradingExpertRegister[]
+  Notification               Notification[]
+  Device                     Device[]
+  CopyTradeCommissionHistory CopyTradeCommissionHistory[]
+
+  OrderDemo                   OrderDemo[]
+  OrderResultDemo             OrderResultDemo[]
+  BuyPromotionCodeTransaction BuyPromotionCodeTransaction[]
+  UserInsurance               UserInsurance[]
+  UserBotAirdrop              UserBotAirdrop?
+  GiftHistory                 GiftHistory[]
+  ip                          String?                       @default("")
+
+  country_id                  String?
+  country                     Country?                      @relation(fields: [country_id], references: [id])
+
+  // RingOrder       RingOrder[]
+  // RingOrderResult RingOrderResult[]
+  @@map(name: "user")
+}
+
+model UserInsurance {
+  id                   String                @id @default(uuid())
+  createdAt            DateTime              @default(now()) @map(name: "created_at")
+  updatedAt            DateTime              @updatedAt @map(name: "updated_at")
+  is_enable            Boolean               @default(false)
+  round                Float                 @default(0)
+  round_start          Float                 @default(0)
+  time_start           DateTime              @default(now())
+  User                 User?                 @relation(fields: [user_id], references: [id])
+  user_id              String?
+  InsuranceTransaction InsuranceTransaction?
+  HistoryInsurance     HistoryInsurance[]
+  account_type         AccountType
+  insurance_trader_id  String?
+  InsuranceTrader      UserInsurance?        @relation("copy_insurance", fields: [insurance_trader_id], references: [id])
+  InsuranceCopyer      UserInsurance[]       @relation("copy_insurance")
+
+  @@map(name: "user_insurance")
+}
+
+model InsuranceTransaction {
+  id                String         @id @default(uuid())
+  createdAt         DateTime       @default(now()) @map(name: "created_at")
+  updatedAt         DateTime       @updatedAt @map(name: "updated_at")
+  UserInsurance     UserInsurance? @relation(fields: [user_insurance_id], references: [id])
+  user_insurance_id String?        @unique
+  amount            Float
+  account_type      AccountType    @default(MAIN)
+
+  @@map(name: "insurance_transaction")
+}
+
+model HistoryInsurance {
+  id                String         @id @default(uuid())
+  createdAt         DateTime       @default(now()) @map(name: "created_at")
+  updatedAt         DateTime       @updatedAt @map(name: "updated_at")
+  round_id          Int
+  user_id           String?
+  total_bet         Float
+  bet_win           Float          @default(0)
+  total_win         Float          @default(0)
+  Order             Order[]
+  OrderDemo         OrderDemo[]
+  status            OrderStatus
+  UserInsurance     UserInsurance? @relation(fields: [user_insurance_id], references: [id])
+  user_insurance_id String?
+  account_type      AccountType    @default(MAIN)
+
+  @@map(name: "history_insurance")
+}
+
+enum TwoFactorStatus {
+  PENDING
+  VERIFIED
+  DISABLED
+
+  @@map(name: "two_factor_status")
+}
+
+model TwoFactor {
+  id           String          @id @default(uuid())
+  createdAt    DateTime        @default(now()) @map(name: "created_at")
+  updatedAt    DateTime        @updatedAt @map(name: "updated_at")
+  User         User            @relation(fields: [user_id], references: [id])
+  user_id      String          @unique
+  secret       String          @unique
+  hotp_counter Int             @default(0)
+  status       TwoFactorStatus @default(PENDING)
+  backup_codes Json?
+
+  @@map(name: "two_factor")
+}
+
+// model TwoFactorToken {
+//   id                     Int                     @default(uuid()) @id
+//   createdAt              DateTime                @default(now())
+//   updatedAt              DateTime                @updatedAt
+//   User                   User                    @relation(fields: [user_id], references: [id])
+//   user_id                Int
+//   token                  String                  @unique
+// }
+
+enum UserProfileStatus {
+  NORMAL
+  FROZEN
+  SUSPENDED
+  BANNED
+
+  @@map(name: "user_profile_status")
+}
+
+model UserProfile {
+  id                        String            @id @default(uuid())
+  createdAt                 DateTime          @default(now()) @map(name: "created_at")
+  updatedAt                 DateTime          @updatedAt @map(name: "updated_at")
+  user_id                   String            @unique
+  User                      User              @relation(fields: [user_id], references: [id])
+  status                    UserProfileStatus @default(NORMAL)
+  is_agency                 Boolean           @default(false)
+  is_keep_ref_level         Boolean           @default(false)
+  is_notify_newsletter      Boolean           @default(true)
+  ref_code                  String            @unique
+  is_free_withdraw          Boolean           @default(false) // deprecated
+  isEnableInternalTransfer  Boolean           @default(true) @map("is_enable_internal_transfer")
+  admin_config_withdraw_fee Float?
+  admin_config_ref_level    Int?
+  admin_config_bypass_2fa   Boolean           @default(false) @map(name: "admin_config_bypass_otp")
+  bio                       String?
+  avatar                    String?
+  profit_sharing            Float             @default(0.05)
+  tbrTokenAddress           String?           @map(name: "tbr_token_address")
+
+  @@map(name: "user_profile")
+}
+
+// For Main Wallet
+model MainWallet {
+  id                     String                  @id @default(uuid())
+  createdAt              DateTime                @default(now()) @map(name: "created_at")
+  updatedAt              DateTime                @updatedAt @map(name: "updated_at")
+  base_balance           Float                   @default(0)
+  balance_cache_datetime DateTime                @default(now())
+  is_frozen              Boolean                 @default(false)
+  currency_id            String
+  Currency               Currency                @relation(fields: [currency_id], references: [id])
+  User                   User                    @relation(fields: [user_id], references: [id])
+  user_id                String
+  ConvertionTransaction  ConvertionTransaction[]
+  MainWalletChange       MainWalletChange[]
+  MainWalletAddress      MainWalletAddress?
+
+  @@map(name: "main_wallet")
+}
+
+enum Crypto_Service {
+  BITCOIN
+  ETHEREUM
+  BSC
+  TRON
+  BANK
+  POLYGON
+
+  @@map(name: "crypto_service")
+}
+
+model Currency {
+  id                             String                  @id @default(uuid())
+  createdAt                      DateTime                @default(now()) @map(name: "created_at")
+  updatedAt                      DateTime                @updatedAt @map(name: "updated_at")
+  name                           String
+  crypto_service                 Crypto_Service?
+  symbol                         String
+  crypto_data                    Json?
+  is_enable                      Boolean                 @default(true)
+  icon                           String?
+  disclaimer_deposit             String?
+  disclaimer_withdraw            String?
+  instruction_deposit            String?
+  instruction_withdraw           String?
+  regex                          String?
+  withdraw_manual_threshold      Float?
+  min_withdraw                   Float?
+  max_withdraw                   Float?
+  max_daily_withdraw             Float?
+  max_daily_withdraw_verified    Float?
+  withdraw_fee_flat              Float?
+  withdraw_fee_pct               Float?
+  is_enable_withdraw             Boolean                 @default(true)
+  is_enable_deposit              Boolean                 @default(true)
+  is_enable_convert              Boolean                 @default(true)
+  is_enable_convert_from         Boolean                 @default(true)
+  is_enable_convert_to           Boolean                 @default(true)
+  required_confirmation          Int                     @default(1)
+  is_enable_withdraw_cron        Boolean                 @default(true)
+  admin_config_price             Float?
+  admin_config_price_volume_step Float?
+  admin_config_price_price_step  Float?
+  admin_config_total_volume      Float?                  @default(0)
+  admin_config_volume_cache_time DateTime?               @default(now())
+  MainWalletTransaction          MainWalletTransaction[]
+  ConvertionPair                 ConvertionPair[]
+  MainWallet                     MainWallet[]
+  MasterWallet                   MasterWallet[]
+  TransactionMaster              TransactionMaster[]
+
+  @@map(name: "currency")
+}
+
+model MainWalletAddress {
+  id                String              @id @default(uuid())
+  createdAt         DateTime            @default(now()) @map(name: "created_at")
+  updatedAt         DateTime            @updatedAt @map(name: "updated_at")
+  main_wallet_id    String              @unique
+  MainWallet        MainWallet          @relation(fields: [main_wallet_id], references: [id])
+  address           String
+  balance           Float               @default(0)
+  encrypt_data      String?
+  need_sync_balance Boolean             @default(false)
+  TransactionMaster TransactionMaster[]
+
+  @@map(name: "main_wallet_address")
+}
+
+enum WalletChangeEventType {
+  TRANSACTION
+  CONVERT
+  MANUAL
+
+  @@map(name: "wallet_change_event_type")
+}
+
+model MainWalletChange {
+  id             String                @id @default(uuid())
+  createdAt      DateTime              @default(now()) @map(name: "created_at")
+  updatedAt      DateTime              @updatedAt @map(name: "updated_at")
+  main_wallet_id String
+  MainWallet     MainWallet            @relation(fields: [main_wallet_id], references: [id])
+  event_type     WalletChangeEventType
+  event_id       String
+  amount         Float
+
+  @@map(name: "main_wallet_change")
+}
+
+enum ApprovedStatus {
+  APPROVED
+  REJECTED
+
+  @@map(name: "approved_status")
+}
+
+enum TransactionType {
+  DEPOSIT
+  WITHDRAW
+  SEND
+  RECEIVE
+  MANUAL
+
+  @@map(name: "transaction_type")
+}
+
+enum TransactionStatus {
+  PENDING
+  SUCCEED
+  FAILED
+
+  @@map(name: "transaction_status")
+}
+
+model MainWalletTransaction {
+  id                   String            @id @default(uuid())
+  createdAt            DateTime          @default(now()) @map(name: "created_at")
+  updatedAt            DateTime          @updatedAt @map(name: "updated_at")
+  user_id              String
+  User                 User              @relation(fields: [user_id], references: [id])
+  currency_id          String
+  Currency             Currency          @relation(fields: [currency_id], references: [id])
+  amount               Float
+  estimate_usd         Float?
+  tx_type              TransactionType
+  tx_hash              String?
+  fee                  Float?
+  status               TransactionStatus @default(PENDING)
+  confirmation         Int               @default(0)
+  address              String?
+  is_manual_deposit    Boolean           @default(false)
+  is_notified_admin    Boolean           @default(false)
+  approved_at          DateTime?
+  approved_by_staff_id String?
+  approved_by          User?             @relation(name: "approved_by_user", fields: [approved_by_staff_id], references: [id])
+  approved_status      ApprovedStatus?
+  extra_data           Json?
+
+  @@map(name: "main_wallet_transaction")
+}
+
+// For Convertion
+model ConvertionPair {
+  id                    String                  @id @default(uuid())
+  createdAt             DateTime                @default(now()) @map(name: "created_at")
+  updatedAt             DateTime                @updatedAt @map(name: "updated_at")
+  is_enable             Boolean                 @default(true)
+  name                  String
+  currency_id           String
+  Currency              Currency                @relation(fields: [currency_id], references: [id])
+  buy_min_amount        Float?
+  buy_max_amount        Float?
+  buy_fee_flat          Float?
+  buy_fee_pct           Float?
+  sell_min_amount       Float?
+  sell_max_amount       Float?
+  sell_fee_flat         Float?
+  sell_fee_pct          Float?
+  max_convert_in        Float?
+  max_convert_out       Float?
+  total_convert_in      Float?                  @default(0)
+  total_convert_out     Float?                  @default(0)
+  ConvertionTransaction ConvertionTransaction[]
+
+  @@map(name: "convertion_pair")
+}
+
+enum ConvertionDirection {
+  MAIN_TO_EXCHANGE
+  EXCHANGE_TO_MAIN
+
+  @@map(name: "convertion_direction")
+}
+
+model ConvertionTransaction {
+  id                 String              @id @default(uuid())
+  createdAt          DateTime            @default(now()) @map(name: "created_at")
+  updatedAt          DateTime            @updatedAt @map(name: "updated_at")
+  main_wallet_id     String
+  MainWallet         MainWallet          @relation(fields: [main_wallet_id], references: [id])
+  exchange_wallet_id String
+  ExchangeWallet     ExchangeWallet      @relation(fields: [exchange_wallet_id], references: [id])
+  price              Float
+  amount             Float
+  fee                Float?              @default(0)
+  converted_amount   Float?
+  convertion_pair_id String
+  ConvertionPair     ConvertionPair      @relation(fields: [convertion_pair_id], references: [id])
+  user_id            String
+  User               User                @relation(fields: [user_id], references: [id])
+  direction          ConvertionDirection
+
+  @@map(name: "convertion_transaction")
+}
+
+// For Master wallet
+model MasterWallet {
+  id             String   @id @default(uuid())
+  createdAt      DateTime @default(now()) @map(name: "created_at")
+  updatedAt      DateTime @updatedAt @map(name: "updated_at")
+  currency_id    String
+  Currency       Currency @relation(fields: [currency_id], references: [id])
+  balance        Float?
+  balance_alerts Float?
+  encrypt_data   Json?
+  scan_data      Json?
+
+  @@map(name: "master_wallet")
+}
+
+enum MasterTransactionType {
+  IN
+  OUT
+
+  @@map(name: "master_transaction_type")
+}
+
+model TransactionMaster {
+  id                String                @id @default(uuid())
+  createdAt         DateTime              @default(now()) @map(name: "created_at")
+  updatedAt         DateTime              @updatedAt @map(name: "updated_at")
+  currency_id       String
+  Currency          Currency              @relation(fields: [currency_id], references: [id])
+  tx_type           MasterTransactionType
+  address           String?
+  master_address    String?
+  tx_hash           String?
+  amount            Float
+  main_wallet_id    String?
+  MainWalletAddress MainWalletAddress?    @relation(fields: [main_wallet_id], references: [id])
+
+  @@map(name: "transactions_master")
+}
+
+// For Exchange
+model ExchangeWallet {
+  id                       String                     @id @default(uuid())
+  createdAt                DateTime                   @default(now()) @map(name: "created_at")
+  updatedAt                DateTime                   @updatedAt @map(name: "updated_at")
+  user_id                  String
+  User                     User                       @relation(fields: [user_id], references: [id])
+  type                     AccountType
+  base_balance             Float                      @default(0)
+  balance_cache_datetime   DateTime                   @default(now())
+  is_frozen                Boolean                    @default(false)
+  ExchangeWalletChange     ExchangeWalletChange[]
+  ConvertionTransaction    ConvertionTransaction[]
+  ExchangeWalletChangeDemo ExchangeWalletChangeDemo[]
+
+  @@map(name: "exchange_wallet")
+}
+
+enum ExchangeWalletEventType {
+  ORDER
+  ORDER_RESULT
+  CONVERT
+  AGENCY_LICENCE
+  REF
+  INTERNAL_TRANSACTION
+  PROMOTION_CODE
+  BUY_PROMOTION_CODE
+  PROMOTION_CODE_REFUND
+  PROMOTION
+  REFUND
+  MANUAL
+  COPY_TRADE_COMISSION
+  COPY_TRADE_COMISSION_BACK
+  SERVICE_SUBSCRIPTION
+  RING_ORDER
+  RING_ORDER_RESULT
+  INSURANCE_WIN
+  INSURANCE_REFUND
+  INVESTING_REFUND
+
+  @@map(name: "exchange_wallet_event_type")
+}
+
+model ExchangeWalletChange {
+  id                 String                  @id @default(uuid())
+  createdAt          DateTime                @default(now()) @map(name: "created_at")
+  updatedAt          DateTime                @updatedAt @map(name: "updated_at")
+  exchange_wallet_id String
+  ExchangeWallet     ExchangeWallet          @relation(fields: [exchange_wallet_id], references: [id])
+  event_type         ExchangeWalletEventType
+  event_id           String
+  amount             Float
+
+  @@map(name: "exchange_wallet_change")
+}
+
+model ExchangeWalletChangeDemo {
+  id                 String                  @id @default(uuid())
+  createdAt          DateTime                @default(now()) @map(name: "created_at")
+  updatedAt          DateTime                @updatedAt @map(name: "updated_at")
+  exchange_wallet_id String
+  ExchangeWallet     ExchangeWallet          @relation(fields: [exchange_wallet_id], references: [id])
+  event_type         ExchangeWalletEventType
+  event_id           String
+  amount             Float
+
+  @@map(name: "exchange_wallet_change_demo")
+}
+
+model ExchangeConfig {
+  id       String @id @default(uuid())
+  fee_rate Float  @default(0.05)
+
+  @@map(name: "exchange_config")
+}
+
+enum AccountType {
+  MAIN
+  PROMOTION
+  DEMO
+
+  @@map(name: "account_type")
+}
+
+enum BetType {
+  UP
+  DOWN
+
+  @@map(name: "bet_type")
+}
+
+enum OrderStatus {
+  REFUND
+  DRAW
+  WIN
+  LOSE
+
+  @@map(name: "order_status")
+}
+
+model ExchangePair {
+  id          String        @id @default(uuid())
+  createdAt   DateTime      @default(now()) @map(name: "created_at")
+  updatedAt   DateTime      @updatedAt @map(name: "updated_at")
+  name        String //TODO: should check add relation to currency
+  min_bet     Float?
+  max_bet     Float?
+  fee_rate    Float?
+  Order       Order[]
+  OrderDemo   OrderDemo[]
+  RoundResult RoundResult[]
+  CandleStick CandleStick[]
+
+  @@map(name: "exchange_pair")
+}
+
+model Order {
+  id                   String            @id @default(uuid())
+  createdAt            DateTime          @default(now()) @map(name: "created_at")
+  updatedAt            DateTime          @updatedAt @map(name: "updated_at")
+  user_id              String
+  User                 User              @relation(fields: [user_id], references: [id])
+  account_type         AccountType
+  bet_amount           Float
+  bet_type             BetType
+  bet_time             DateTime
+  exchange_pair_id     String
+  ExchangePair         ExchangePair      @relation(fields: [exchange_pair_id], references: [id])
+  order_result_id      String?           @unique
+  OrderResult          OrderResult?      @relation(fields: [order_result_id], references: [id])
+  copy_trade_id        String?
+  CopyTrade            CopyTrade?        @relation(fields: [copy_trade_id], references: [id])
+  copied_order_id      String?
+  round_id             Int
+  // Round            Round        @relation(fields: [round_id], references: [id])
+  HistoryInsurance     HistoryInsurance? @relation(fields: [history_insurance_id], references: [id])
+  history_insurance_id String?
+
+  @@map(name: "order")
+}
+
+model OrderDemo {
+  id                   String            @id @default(uuid())
+  createdAt            DateTime          @default(now()) @map(name: "created_at")
+  updatedAt            DateTime          @updatedAt @map(name: "updated_at")
+  user_id              String
+  User                 User              @relation(fields: [user_id], references: [id])
+  account_type         AccountType
+  bet_amount           Float
+  bet_type             BetType
+  bet_time             DateTime
+  exchange_pair_id     String
+  ExchangePair         ExchangePair      @relation(fields: [exchange_pair_id], references: [id])
+  order_result_id      String?           @unique
+  OrderResultDemo      OrderResultDemo?  @relation(fields: [order_result_id], references: [id])
+  round_id             Int
+  // Round            Round            @relation(fields: [round_id], references: [id])
+  HistoryInsurance     HistoryInsurance? @relation(fields: [history_insurance_id], references: [id])
+  history_insurance_id String?
+
+  @@map(name: "order_demo")
+}
+
+model OrderResultDemo {
+  id         String       @id @default(uuid())
+  createdAt  DateTime     @default(now()) @map(name: "created_at")
+  updatedAt  DateTime     @updatedAt @map(name: "updated_at")
+  round_id   Int
+  // Round      Round        @relation(fields: [round_id], references: [id])
+  is_win     Boolean?
+  win_amount Float        @default(0)
+  status     OrderStatus?
+  order_id   String
+  OrderDemo  OrderDemo?
+  user_id    String
+  User       User         @relation(fields: [user_id], references: [id])
+
+  @@map(name: "order_result_demo")
+}
+
+model ExchangePeriod {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now()) @map(name: "created_at")
+  updatedAt DateTime @updatedAt @map(name: "updated_at")
+  name      String
+  period    Int
+  // Round     Round[]
+
+  @@map(name: "exchange_period")
+}
+
+model OrderResult {
+  id         String       @id @default(uuid())
+  createdAt  DateTime     @default(now()) @map(name: "created_at")
+  updatedAt  DateTime     @updatedAt @map(name: "updated_at")
+  round_id   Int
+  // Round      Round        @relation(fields: [round_id], references: [id])
+  is_win     Boolean?
+  win_amount Float        @default(0)
+  status     OrderStatus?
+  order_id   String
+  Order      Order?
+  user_id    String
+  User       User         @relation(fields: [user_id], references: [id])
+
+  @@map(name: "order_result")
+}
+
+enum RoundType {
+  UP
+  DOWN
+  BALANCE
+
+  @@map(name: "round_type")
+}
+
+model Round {
+  id          String        @id @default(uuid())
+  createdAt   DateTime      @default(now()) @map(name: "created_at")
+  updatedAt   DateTime      @updatedAt @map(name: "updated_at")
+  open_price  Float?
+  close_price Float?
+  type        RoundType?
+  time_id     Int           @unique
+  // exchange_period_id String
+  // ExchangePeriod     ExchangePeriod @relation(fields: [exchange_period_id], references: [id])
+  // OrderResult        OrderResult[]
+  // Order              Order[]
+  RoundResult RoundResult[]
+
+  // OrderDemo       OrderDemo[]
+  // OrderResultDemo OrderResultDemo[]
+  @@map(name: "round")
+}
+
+model RoundResult {
+  id               String       @id @default(uuid())
+  createdAt        DateTime     @default(now()) @map(name: "created_at")
+  updatedAt        DateTime     @updatedAt @map(name: "updated_at")
+  round_id         String
+  Round            Round        @relation(fields: [round_id], references: [id])
+  open_price       Float?
+  close_price      Float?
+  type             RoundType?
+  time_id          Int
+  exchange_pair_id String
+  ExchangePair     ExchangePair @relation(fields: [exchange_pair_id], references: [id])
+
+  @@map("round_result")
+}
+
+enum InternalTransactionType {
+  SEND
+  RECEIVE
+
+  @@map(name: "internal_transaction_type")
+}
+
+enum InternalTransactionStatus {
+  PENDING
+  SUCCEED
+  FAILED
+
+  @@map(name: "internal_transaction_status")
+}
+
+model InternalTransaction {
+  id        String                    @id @default(uuid())
+  createdAt DateTime                  @default(now()) @map(name: "created_at")
+  updatedAt DateTime                  @updatedAt @map(name: "updated_at")
+  user_id   String
+  User      User                      @relation(fields: [user_id], references: [id])
+  tx_type   InternalTransactionType
+  status    InternalTransactionStatus @default(PENDING)
+  amount    Float
+  address   String
+  tx_hash   String?
+
+  @@map(name: "internal_transaction")
+}
+
+model RefundTransaction {
+  id         String   @id @default(uuid())
+  createdAt  DateTime @default(now()) @map(name: "created_at")
+  updatedAt  DateTime @updatedAt @map(name: "updated_at")
+  user_id    String
+  User       User     @relation(fields: [user_id], references: [id])
+  amount     Float
+  extra_data Json?
+
+  @@map(name: "refund_transaction")
+}
+
+// For Ref
+model RefConfig {
+  id            String   @id @default(uuid())
+  createdAt     DateTime @default(now()) @map(name: "created_at")
+  updatedAt     DateTime @updatedAt @map(name: "updated_at")
+  licence_price Float
+
+  @@map(name: "ref_config")
+}
+
+model RefLevel {
+  id                  String           @id @default(uuid())
+  createdAt           DateTime         @default(now()) @map(name: "created_at")
+  updatedAt           DateTime         @updatedAt @map(name: "updated_at")
+  name                String
+  level               Int
+  personalVolume      Float            @default(0) @map(name: "personal_volume")
+  required_member     Int
+  required_agency     Int
+  required_commission Float
+  trading_com_rate    Float
+  agency_com_rate     Float
+  is_enable           Boolean          @default(true)
+  RefTransaction      RefTransaction[]
+
+  @@map(name: "ref_level")
+}
+
+model Ref {
+  id             String           @id @default(uuid())
+  createdAt      DateTime         @default(now()) @map(name: "created_at")
+  updatedAt      DateTime         @updatedAt @map(name: "updated_at")
+  user_id        String           @unique
+  User           User             @relation(fields: [user_id], references: [id])
+  sponsor_id     String
+  Sponsor        User             @relation(name: "sponsor", fields: [sponsor_id], references: [id])
+  note           Json?
+  RefTransaction RefTransaction[]
+
+  @@map(name: "ref")
+}
+
+model AgencyLicenceTransaction {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now()) @map(name: "created_at")
+  updatedAt DateTime @updatedAt @map(name: "updated_at")
+  user_id   String
+  User      User     @relation(fields: [user_id], references: [id])
+  amount    Float
+
+  @@map(name: "agency_licence_transaction")
+}
+
+enum RefTransactionEventType {
+  AGENCY
+  TRADING
+
+  @@map(name: "ref_transaction_event_type")
+}
+
+model RefTransaction {
+  id           String                  @id @default(uuid())
+  createdAt    DateTime                @default(now()) @map(name: "created_at")
+  updatedAt    DateTime                @updatedAt @map(name: "updated_at")
+  ref_id       String
+  Ref          Ref                     @relation(fields: [ref_id], references: [id])
+  ref_level_id String
+  RefLevel     RefLevel                @relation(fields: [ref_level_id], references: [id])
+  event_type   RefTransactionEventType
+  event_id     String
+  user_id      String?
+  User         User?                   @relation(name: "user_on_reftx", fields: [user_id], references: [id])
+  sponsor_id   String?
+  Sponsor      User?                   @relation(name: "sponsor_on_reftx", fields: [sponsor_id], references: [id])
+  rate         Float?
+  amount       Float?
+  earned       Float?
+
+  @@map(name: "ref_transaction")
+}
+
+model PromotionCode {
+  id                                String                       @id @default(uuid())
+  createdAt                         DateTime                     @default(now()) @map(name: "created_at")
+  updatedAt                         DateTime                     @updatedAt @map(name: "updated_at")
+  code                              String                       @unique
+  amount                            Float
+  expiration_date                   DateTime
+  allowed_transaction               Int                          @default(1)
+  PromotionCodeTransaction          PromotionCodeTransaction[]
+  buy_promotion_code_transaction_id String?
+  BuyPromotionCodeTransaction       BuyPromotionCodeTransaction? @relation(fields: [buy_promotion_code_transaction_id], references: [id])
+  GiftHistory                       GiftHistory?
+
+  @@map(name: "promotion_code")
+}
+
+enum PromotionCodeTransactionType {
+  BUY
+  REFUND_BUY_EXPIRE
+  APPLY
+
+  @@map(name: "promotion_code_transaction_type")
+}
+
+model PromotionCodeTransaction {
+  id                String                       @id @default(uuid())
+  createdAt         DateTime                     @default(now()) @map(name: "created_at")
+  updatedAt         DateTime                     @updatedAt @map(name: "updated_at")
+  type              PromotionCodeTransactionType
+  user_id           String
+  User              User                         @relation(fields: [user_id], references: [id])
+  promotion_code_id String
+  PromotionCode     PromotionCode                @relation(fields: [promotion_code_id], references: [id])
+
+  @@map(name: "promotion_code_transaction")
+}
+
+model BuyPromotionCodeTransaction {
+  id              String          @id @default(uuid())
+  createdAt       DateTime        @default(now()) @map(name: "created_at")
+  updatedAt       DateTime        @updatedAt @map(name: "updated_at")
+  user_id         String
+  User            User            @relation(fields: [user_id], references: [id])
+  quantity        Int
+  amount_per_code Float
+  PromotionCode   PromotionCode[]
+
+  @@map(name: "buy_promotion_code_transaction")
+}
+
+model Tournament {
+  id                    String                  @id @default(uuid())
+  createdAt             DateTime                @default(now()) @map(name: "created_at")
+  updatedAt             DateTime                @updatedAt @map(name: "updated_at")
+  name                  String                  @unique
+  isActive              Boolean                 @default(false) @map("is_active")
+  channel               String
+  start_date            DateTime
+  end_date              DateTime
+  extra_data            Json?
+  TournamentTransaction TournamentTransaction[]
+
+  @@map(name: "tournament")
+}
+
+model TournamentTransaction {
+  id            String     @id @default(uuid())
+  createdAt     DateTime   @default(now()) @map(name: "created_at")
+  updatedAt     DateTime   @updatedAt @map(name: "updated_at")
+  value         Float      @default(0)
+  extra_data    Json?
+  user_id       String
+  User          User       @relation(fields: [user_id], references: [id])
+  tournament_id String
+  Tournament    Tournament @relation(fields: [tournament_id], references: [id])
+
+  @@map(name: "tournament_transaction")
+}
+
+enum PromotionType {
+  TOURNAMENT
+
+  @@map(name: "promotion_type")
+}
+
+model PromotionTransaction {
+  id         String        @id @default(uuid())
+  createdAt  DateTime      @default(now()) @map(name: "created_at")
+  updatedAt  DateTime      @updatedAt @map(name: "updated_at")
+  amount     Float
+  event_id   String
+  event_type PromotionType
+  user_id    String
+  User       User          @relation(fields: [user_id], references: [id])
+
+  @@map(name: "promotion_transaction")
+}
+
+model LeaderBoard {
+  id                 String   @id @default(uuid())
+  createdAt          DateTime @default(now()) @map(name: "created_at")
+  updatedAt          DateTime @updatedAt @map(name: "updated_at")
+  cache_time         DateTime
+  user_id            String   @unique
+  sensored_username  String
+  User               User     @relation(fields: [user_id], references: [id])
+  order_count        Int      @default(0)
+  win_count          Int      @default(0)
+  lose_count         Int      @default(0)
+  trade_amount       Float    @default(0)
+  win_amount         Float    @default(0)
+  lose_amount        Float    @default(0)
+  net_profit         Float    @default(0)
+  win_rate           Float    @default(0)
+  commission         Float    @default(0)
+  main_wallets       Json?
+  exchange_wallets   Json?
+  tx_by_wallet       Json?
+  transfer           Json?
+  ref_count          Int      @default(0)
+  f1_count           Int      @default(0)
+  f1_volume          Float    @default(0)
+  ref_network_volume Float    @default(0)
+
+  @@map(name: "leaderboard")
+}
+
+model TicketCategory {
+  id          String   @id @default(uuid())
+  createdAt   DateTime @default(now()) @map(name: "created_at")
+  updatedAt   DateTime @updatedAt @map(name: "updated_at")
+  title       String
+  slug        String   @unique
+  description String?
+  Ticket      Ticket[]
+
+  @@map(name: "ticket_category")
+}
+
+enum TicketStatus {
+  PENDING
+  OPEN
+  SOLVED
+  CLOSED
+
+  @@map(name: "ticket_status")
+}
+
+enum TicketPRIORITY {
+  LOW
+  NORMAL
+  HIGH
+
+  @@map(name: "ticket_priority")
+}
+
+model Ticket {
+  id          String         @id @default(uuid())
+  createdAt   DateTime       @default(now()) @map(name: "created_at")
+  updatedAt   DateTime       @updatedAt @map(name: "updated_at")
+  user_id     String
+  User        User           @relation(fields: [user_id], references: [id])
+  assigned    String?
+  category_id String
+  Category    TicketCategory @relation(fields: [category_id], references: [id])
+  title       String
+  content     String
+  note        String?
+  files       Json?
+  status      TicketStatus   @default(PENDING)
+  priority    TicketPRIORITY @default(NORMAL)
+  Reply       Reply[]
+
+  @@map(name: "ticket")
+}
+
+model Reply {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now()) @map(name: "created_at")
+  updatedAt DateTime @updatedAt @map(name: "updated_at")
+  user_id   String
+  User      User     @relation(fields: [user_id], references: [id])
+  ticket_id String
+  Ticket    Ticket   @relation(fields: [ticket_id], references: [id])
+  content   String
+  files     Json?
+
+  @@map(name: "reply")
+}
+
+enum DestinationType {
+  MAIN_WALLET
+  EXCHANGE_WALLET
+
+  @@map(name: "destination_type")
+}
+
+model ManualTransaction {
+  id              String          @id @default(uuid())
+  createdAt       DateTime        @default(now()) @map(name: "created_at")
+  updatedAt       DateTime        @updatedAt @map(name: "updated_at")
+  amount          Float
+  destination_id  String
+  detination_type DestinationType
+  reason          String
+  user_id         String
+  User            User            @relation(fields: [user_id], references: [id])
+
+  @@map(name: "manual_transaction")
+}
+
+model DailyStatistic {
+  id                String   @id @default(uuid())
+  createdAt         DateTime @default(now()) @map(name: "created_at")
+  updatedAt         DateTime @updatedAt @map(name: "updated_at")
+  deposit           Float?
+  withdraw          Float?
+  pendingWithdraw   Float?
+  balance           Float?
+  exchangeBalance   Float?
+  convertToExchange Float?
+  convertToMain     Float?
+  bet               Float?
+  win               Float?
+  transactionFee    Float?
+  commission        Float?
+
+  @@map(name: "daily_statistic")
+}
+
+model Statistic {
+  id                String   @id @default(uuid())
+  createdAt         DateTime @default(now()) @map(name: "created_at")
+  updatedAt         DateTime @updatedAt @map(name: "updated_at")
+  cachedAt          DateTime @default(now())
+  wallet            Json? // btc: deposit + withdraw + pending_withdraw + balance
+  exchangeBalance   Float?
+  balance           Float?
+  convertToExchange Float?
+  convertToMain     Float?
+  bet               Float?
+  win               Float?
+  commission        Float?
+
+  @@map(name: "statistic")
+}
+
+enum CopyTradeStatus {
+  START
+  PAUSE
+  STOP
+
+  @@map(name: "copy_trade_status")
+}
+
+model CopyTrade {
+  id                     String            @id @default(uuid())
+  createdAt              DateTime          @default(now()) @map(name: "created_at")
+  updatedAt              DateTime          @updatedAt @map(name: "updated_at")
+  amount                 Float // total investment
+  remain                 Float? // investment remain amount
+  percent_per_trade      Float? // percent amount per trade
+  max_amount_per_trade   Float? // max amount per trade
+  fixed_amount_per_trade Float?
+  stop_loss              Float?
+  take_profit            Float?
+  profit_sharing         Float?
+  status                 CopyTradeStatus   @default(START)
+  copier_id              String
+  Copier                 User              @relation(name: "CopyTrade_Copier", fields: [copier_id], references: [id])
+  trader_id              String
+  Trader                 User              @relation(name: "CopyTrade_Trader", fields: [trader_id], references: [id])
+  Order                  Order[]
+  CopyTradeAction        CopyTradeAction[]
+
+  @@map(name: "copy_trade")
+}
+
+enum CopyTradeActionStatus {
+  START
+  PAUSE
+  STOP
+  ADJUST
+  STOP_LOSS
+  TAKE_PROFIT
+  REMAIN_NOT_ENOUGHT
+  OUT_OFF_PLAN
+
+  @@map(name: "copy_trade_action_status")
+}
+
+model CopyTradeAction {
+  id            String                 @id @default(uuid())
+  createdAt     DateTime               @default(now()) @map(name: "created_at")
+  updatedAt     DateTime               @updatedAt @map(name: "updated_at")
+  amount        Float?
+  status        CopyTradeActionStatus?
+  extra_data    Json?
+  copy_trade_id String
+  CopyTrade     CopyTrade              @relation(fields: [copy_trade_id], references: [id])
+
+  @@map(name: "copy_trade_action")
+}
+
+enum CopyTradeCommissionSendDirection {
+  BACK_TO_COPIER
+  TO_EXPERT
+
+  @@map(name: "copy_trade_commission_send_direction")
+}
+
+model CopyTradeCommission {
+  id             String                            @id @default(uuid())
+  createdAt      DateTime                          @default(now()) @map(name: "created_at")
+  updatedAt      DateTime                          @updatedAt @map(name: "updated_at")
+  amount         Float
+  profit_sharing Float
+  send_to        CopyTradeCommissionSendDirection?
+  copier_id      String
+  leader_id      String
+  copy_trade_id  String
+
+  @@map(name: "copy_trade_commission")
+}
+
+model CopyTradeCommissionHistory {
+  id          String   @id @default(uuid())
+  createdAt   DateTime @default(now()) @map(name: "created_at")
+  updatedAt   DateTime @updatedAt @map(name: "updated_at")
+  time        String
+  copier_id   String
+  User        User     @relation(fields: [copier_id], references: [id])
+  expert_id   String
+  total_order Int
+  win_order   Int      @default(0)
+  volume      Float
+  profit      Float    @default(0)
+  commission  Float    @default(0)
+
+  @@map(name: "copy_trade_commission_history")
+}
+
+enum TradingExpertRegisterStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  PAUSE
+
+  @@map(name: "trading_expert_register_status")
+}
+
+model TradingExpertRegister {
+  id              String                      @id @default(uuid())
+  createdAt       DateTime                    @default(now()) @map(name: "created_at")
+  updatedAt       DateTime                    @updatedAt @map(name: "updated_at")
+  user_id         String                      @unique
+  User            User                        @relation(fields: [user_id], references: [id])
+  approved_status TradingExpertRegisterStatus @default(PENDING)
+
+  @@map(name: "trading_expert_register")
+}
+
+enum NotificationType {
+  LOGIN
+  DEPOSIT
+  WITHDRAW
+  CAMPAIGN
+  COPYING
+  UPGRADE
+  AGENCY
+  TRANSFER
+  BET
+  WIN
+  REVERT_INVESTING_FUND
+  AGENCY_COMMISSION
+  TRADING_COMMISSION
+  SEND_GIFT_CODE
+
+  @@map(name: "notification_type")
+}
+
+model Notification {
+  id          String           @id @default(uuid())
+  createdAt   DateTime         @default(now()) @map(name: "created_at")
+  updatedAt   DateTime         @updatedAt @map(name: "updated_at")
+  user_id     String
+  User        User             @relation(fields: [user_id], references: [id])
+  title       String
+  description String
+  content     String
+  readed      Boolean?
+  type        NotificationType
+
+  @@map(name: "notification")
+}
+
+enum Platform {
+  IOS
+  ANDROID
+  WEB
+
+  @@map(name: "platform")
+}
+
+model Device {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now()) @map(name: "created_at")
+  updatedAt DateTime @updatedAt @map(name: "updated_at")
+  user_id   String
+  User      User     @relation(fields: [user_id], references: [id])
+  token     String
+  platform  Platform
+  version   String?
+  model     String?
+  enable    Boolean
+
+  @@map(name: "device")
+}
+
+model CandleStick {
+  id               String       @id @default(uuid())
+  createdAt        DateTime     @default(now()) @map(name: "created_at")
+  updatedAt        DateTime     @updatedAt @map(name: "updated_at")
+  date             Float
+  open             Float
+  close            Float
+  high             Float
+  low              Float
+  f                Boolean
+  round_time_id    Int
+  volume           Float?       @default(0)
+  exchange_pair_id String       @default("49d5e47f-c1ee-416b-92aa-535cf5a4638d")
+  ExchangePair     ExchangePair @relation(fields: [exchange_pair_id], references: [id])
+
+  @@map(name: "candle_stick")
+}
+
+model UserBotAirdrop {
+  id         String           @id @default(uuid()) @db.Uuid
+  createdAt  DateTime         @default(now()) @map(name: "created_at")
+  updatedAt  DateTime         @updatedAt @map(name: "updated_at")
+  chatId     String           @unique
+  firstName  String           @map("first_name")
+  userId     String?          @unique @map("user_id")
+  User       User?            @relation(fields: [userId], references: [id])
+  twitter    String
+  username   String?
+  usernameV  String
+  balance    Decimal          @default(0)
+  sponsorId  String?          @map("sponsor_id") @db.Uuid
+  Sponsor    UserBotAirdrop?  @relation("sponsor_ref", fields: [sponsorId], references: [id])
+  Ref        UserBotAirdrop[] @relation("sponsor_ref")
+  sendStatus Int              @default(0) @map("send_status")
+
+  @@map(name: "user_bot_airdrop")
+}
+
+model UserBotSignal {
+  id        String          @id @default(uuid()) @db.Uuid
+  createdAt DateTime        @default(now()) @map(name: "created_at")
+  updatedAt DateTime        @updatedAt @map(name: "updated_at")
+  chatId    String
+  firstName String          @map("first_name")
+  username  String?
+  usernameV String          @default("")
+  amount    Decimal
+  txHash    String?         @map("tx_hash")
+  isConfirm Boolean         @default(false) @map("is_confirm")
+  isWin     Boolean         @default(false) @map("is_win")
+  isCheck   Boolean         @default(false) @map("is_check")
+  isPlay    Boolean         @default(false) @map("is_play")
+  status    ApprovedStatus?
+  image     String?
+  time      String
+
+  @@map(name: "user_bot_signal")
+}
+
+model GiftHistory {
+  id              String         @id @default(uuid()) @db.Uuid
+  createdAt       DateTime       @default(now()) @map(name: "created_at")
+  updatedAt       DateTime       @updatedAt @map(name: "updated_at")
+  userId          String?        @map("user_id")
+  User            User?          @relation(fields: [userId], references: [id])
+  promotionCodeId String         @unique @map("promotion_code_id")
+  PromotionCode   PromotionCode? @relation(fields: [promotionCodeId], references: [id])
+
+  @@map(name: "gift_history")
+}
+
+model Country {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now()) @map(name: "created_at")
+  updatedAt DateTime @updatedAt @map(name: "updated_at")
+  name      String
+  code      String
+  flag      String
+  users     User[]
+
+  @@map(name: "country")
+}

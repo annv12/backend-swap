@@ -1,0 +1,31 @@
+# apiVersion: v1
+# kind: Service
+# metadata:
+#   name: backend
+#   namespace: swap-prd
+#   labels:
+#     app: service-backend
+# spec:
+#   type: ClusterIP
+#   ports:
+#     - name: backend
+#       port: 4000
+#       targetPort: backend
+#   selector:
+#     app: service-backend
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend-webhooks
+  namespace: swap-prd
+  labels:
+    app: service-backend
+spec:
+  type: ClusterIP
+  ports:
+    - name: webhooks
+      port: 4001
+      targetPort: webhooks
+  selector:
+    app: service-backend

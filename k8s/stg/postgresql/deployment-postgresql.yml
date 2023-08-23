@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgresql
+  namespace: backend
+  labels:
+    app: postgresql
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: postgresql
+  template:
+    metadata:
+      labels:
+        app: postgresql
+        node: backend
+    spec:
+      containers:
+        - name: postgresql
+          image: postgres:15-alpine
+          ports:
+            - containerPort: 5432
+          env:
+            - name: POSTGRES_DB
+              value: yokef-stg
+            - name: POSTGRES_USER
+              value: yokef
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: postgresql
+                  key: password
+          volumeMounts:
+            - mountPath: '/var/lib/postgresql'
+              name: 'postgresql-data-storage'
+      volumes:
+        - name: postgresql-data-storage
+          persistentVolumeClaim:
+            claimName: postgresql-data

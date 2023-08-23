@@ -1,0 +1,15 @@
+{
+  "name": "backend-swap-prd",
+  "description": "Trigger production build/deploy for any commit to the main branch",
+
+  "filename": "build/main-cloudbuild.yaml",
+  "triggerTemplate": {
+    "projectId": "novaland-337909",
+    "repoName": "backend-swap",
+    "branchName": "main"
+  },
+  "substitutions": {
+    "_ZONE": "asia-southeast1-a",
+    "_CLUSTER": "vasuny"
+  }
+}

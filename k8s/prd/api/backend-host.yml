@@ -1,0 +1,11 @@
+---
+apiVersion: getambassador.io/v2
+kind: Host
+metadata:
+  name: api.voption.org
+  namespace: swap-prd
+spec:
+  hostname: api.voption.org
+  acmeProvider:
+    authority: https://acme-v02.api.letsencrypt.org/directory # Optional: The CA you want to get your certificate from. Defaults to Let's Encrypt
+    email: admin@netlambda.com

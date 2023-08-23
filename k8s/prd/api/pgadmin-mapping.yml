@@ -1,0 +1,13 @@
+apiVersion: getambassador.io/v2
+kind: Mapping
+metadata:
+  name: pgadmin
+  namespace: swap-prd
+spec:
+  prefix: /
+  host: "^(pgadmin.slotkoin.com)$"
+  host_regex: true
+  service: gastly-pgadmin:5050
+  use_websocket: true
+  timeout_ms: 10000
+  connect_timeout_ms: 10000

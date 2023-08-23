@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: hasura
+    hasuraService: custom
+  name: hasura
+  namespace: backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: hasura
+  template:
+    metadata:
+      labels:
+        app: hasura
+    spec:
+      containers:
+        - image: hasura/graphql-engine:v1.3.0
+          imagePullPolicy: IfNotPresent
+          name: hasura
+          env:
+            - name: HASURA_GRAPHQL_DATABASE_URL
+              value: postgresql://yokef:23f542d1294d68e0@postgresql:5432/yokef-stg
+            - name: HASURA_GRAPHQL_ENABLE_CONSOLE
+              value: 'true'
+            - name: HASURA_GRAPHQL_ADMIN_SECRET
+              value: YmRhMTUyNzQ0MmZkNTVhNDliYmIxMDhlOWRkNDA0YTgK
+            - name: HASURA_GRAPHQL_UNAUTHORIZED_ROLE
+              value: guest
+          ports:
+            - containerPort: 8080
+              protocol: TCP
+          resources: {}

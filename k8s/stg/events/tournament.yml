@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: 2nd-tournament
+  namespace: backend
+  labels:
+    app: 2nd-tournament
+spec:
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  selector:
+    matchLabels:
+      app: 2nd-tournament
+  template:
+    metadata:
+      labels:
+        app: 2nd-tournament
+        node: backend
+      annotations:
+          vault.security.banzaicloud.io/vault-addr: "http://vault.vault.svc.cluster.local:8200"
+          vault.security.banzaicloud.io/vault-role: "default"
+    spec:
+      imagePullSecrets:
+        - name: golduck-registry
+      containers:
+        - name: 2nd-tournament
+          imagePullPolicy: Always
+          image: boregistry.netlambda.com/yokef-stg/backend:20200810-153142-20200811
+          command: ['/bin/sh', '-c']
+          args: ['NODE_ENV=production node dist/services/events-service']
+          env:
+            - name: TOURNAMENT_NAME
+              value: second
+            - name: DATABASE_URL
+              value: vault:secret/backend#DATABASE_URL

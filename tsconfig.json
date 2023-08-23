@@ -1,0 +1,19 @@
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "outDir": "dist",
+    "declaration": true,
+    "declarationMap": true,
+    "sourceMap": true,
+    "strict": false,
+    "lib": ["esnext"],
+    "target": "es2019",
+    "module": "commonjs",
+    "esModuleInterop": true,
+    "moduleResolution": "node",
+    "skipLibCheck": true,
+    "composite": true
+  },
+  "include": ["src/**/*", "src/locales/*.json"],
+  "exclude": ["src/admin-server/*/**"]
+}

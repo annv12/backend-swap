@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: process-round-result
+  namespace: backend
+  labels:
+    app: process-round-result
+spec:
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  selector:
+    matchLabels:
+      app: process-round-result
+  template:
+    metadata:
+      labels:
+        app: process-round-result
+        node: backend
+      annotations:
+        vault.security.banzaicloud.io/vault-addr: "http://vault.vault.svc.cluster.local:8200"
+        vault.security.banzaicloud.io/vault-role: "default"
+    spec:
+      imagePullSecrets:
+        - name: golduck-registry
+      containers:
+        - name: process-round-result
+          imagePullPolicy: Always
+          image: registry.digitalocean.com/golduck-registry/yokef-stg/backend:latest
+          command: ["/bin/sh","-c"]
+          args: ["NODE_ENV=production node dist/lib/processRoundResult"]
+          env:
+            - name: GET_HOSTS_FROM
+              value: dns
+            - name: DATABASE_URL
+              value: vault:secret/backend#DATABASE_URL

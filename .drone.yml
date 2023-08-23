@@ -1,0 +1,237 @@
+---
+kind: pipeline
+type: docker
+name: default
+
+steps:
+  - name: generate-tag-dev
+    image: alpine:3.6
+    environment:
+      BUILD_ENV: dev
+    commands:
+      - VERSION=`date +%Y%m%d-%H%M%S`
+      - echo -n $${VERSION} > .tags
+      - echo -n $${VERSION} > "VERSION.$${BUILD_ENV}"
+    when:
+      branch:
+        - develop
+
+  - name: generate-tag-prd
+    image: alpine:3.6
+    environment:
+      BUILD_ENV: prd
+    commands:
+      - VERSION=`date +%Y%m%d-%H%M%S`
+      - echo -n $${VERSION} > .tags
+      - echo -n $${VERSION} > "VERSION.$${BUILD_ENV}"
+    when:
+      brand:
+        - master
+      event:
+        - tag
+      ref:
+        include:
+          - refs/tags/v**
+
+  - name: generate-tag-tbg-dev
+    image: alpine:3.6
+    environment:
+      BUILD_ENV: tbg-dev
+    commands:
+      - VERSION=`date +%Y%m%d-%H%M%S`
+      - echo -n $${VERSION} > .tags
+      - echo -n $${VERSION} > "VERSION.$${BUILD_ENV}"
+    when:
+      branch:
+        - tbg
+
+  - name: generate-tag-tbg-prd
+    image: alpine:3.6
+    environment:
+      BUILD_ENV: tbg
+    commands:
+      - VERSION=`date +%Y%m%d-%H%M%S`
+      - echo -n $${VERSION} > .tags
+      - echo -n $${VERSION} > "VERSION.$${BUILD_ENV}"
+    when:
+      event:
+        - tag
+      ref:
+        include:
+          - refs/heads/tbg
+          - refs/tags/tbg**
+
+  - name: docker-build-dev
+    image: plugins/docker
+    settings:
+      username:
+        from_secret: docker_username
+      password:
+        from_secret: docker_password
+      repo: registry.digitalocean.com/golduck-registry/begacy-dev/backend
+      registry: registry.digitalocean.com/golduck-registry
+      # <<: *docker_creds
+    when:
+      event:
+        - push
+      branch:
+        - develop
+
+  - name: docker-build-prd
+    image: plugins/docker
+    settings:
+      username:
+        from_secret: docker_username
+      password:
+        from_secret: docker_password
+      repo: registry.digitalocean.com/golduck-registry/begacy-prd/backend
+      registry: registry.digitalocean.com/golduck-registry
+      build_args:
+        - BUILD_ENV=prd
+      # <<: *docker_creds
+    when:
+      brand:
+        - master
+      event:
+        - tag
+      ref:
+        include:
+          - refs/tags/v**
+
+  - name: docker-build-tbg-dev
+    image: plugins/docker
+    settings:
+      username:
+        from_secret: docker_username
+      password:
+        from_secret: docker_password
+      repo: registry.digitalocean.com/golduck-registry/begacy-tbg-dev/backend
+      registry: registry.digitalocean.com/golduck-registry
+      build_args:
+        - BUILD_ENV=tbgdev
+      # <<: *docker_creds
+    when:
+      event:
+        - push
+      branch:
+        - tbg
+
+  - name: docker-build-tbg-prd
+    image: plugins/docker
+    settings:
+      username:
+        from_secret: docker_username
+      password:
+        from_secret: docker_password
+      repo: registry.digitalocean.com/golduck-registry/begacy-tbg/backend
+      registry: registry.digitalocean.com/golduck-registry
+      build_args:
+        - BUILD_ENV=tbg
+      # <<: *docker_creds
+    when:
+      event:
+        - tag
+      ref:
+        include:
+          - refs/heads/tbg
+          - refs/tags/tbg**
+
+  - name: deploy-dev
+    image: registry.digitalocean.com/golduck-registry/sdk/drone-do-deploy-sdk-alpine:latest
+    environment:
+      PROJECT_ID: begacy-dev
+      BUILD_ENV: dev
+      DO_TOKEN:
+        from_secret: do_token
+    commands:
+      - echo $DO_TOKEN
+      - doctl auth init --access-token=$${DO_TOKEN}
+      - doctl kubernetes cluster kubeconfig save begacy-dev-cluster --access-token=$${DO_TOKEN}
+      ## deploy to gke
+      - VERSION=`cat VERSION.$${BUILD_ENV}`
+      - sed -ri "s/backend:.*$/backend:$${VERSION}/g" k8s/$${BUILD_ENV}/api/deployment-app.yml
+      - kubectl apply -f k8s/$${BUILD_ENV}/api/deployment-app.yml
+      - sed -ri "s/backend:.*$/backend:$${VERSION}/g" k8s/$${BUILD_ENV}/api/deployment-agenda.yml
+      - kubectl apply -f k8s/$${BUILD_ENV}/api/deployment-agenda.yml
+    when:
+      event:
+        - push
+      branch:
+        - develop
+
+  - name: deploy-prd
+    image: registry.digitalocean.com/golduck-registry/sdk/drone-do-deploy-sdk-alpine:latest
+    environment:
+      PROJECT_ID: begacy-prd
+      BUILD_ENV: prd
+      DO_TOKEN:
+        from_secret: do_token
+    commands:
+      - echo $DO_TOKEN
+      - doctl auth init --access-token=$${DO_TOKEN}
+      - doctl kubernetes cluster kubeconfig save begacy-prd-cluster --access-token=$${DO_TOKEN}
+      ## deploy to gke
+      - VERSION=`cat VERSION.$${BUILD_ENV}`
+      - sed -ri "s/backend:.*$/backend:$${VERSION}/g" k8s/$${BUILD_ENV}/api/deployment-app.yml
+      - kubectl apply -f k8s/$${BUILD_ENV}/api/deployment-app.yml
+      - sed -ri "s/backend:.*$/backend:$${VERSION}/g" k8s/$${BUILD_ENV}/api/deployment-agenda.yml
+      - kubectl apply -f k8s/$${BUILD_ENV}/api/deployment-agenda.yml
+    when:
+      brand:
+        - master
+      event:
+        - tag
+      ref:
+        include:
+          - refs/tags/v**
+
+  - name: deploy-tbg-dev
+    image: registry.digitalocean.com/golduck-registry/sdk/drone-do-deploy-sdk-alpine:latest
+    environment:
+      PROJECT_ID: begacy-stg
+      BUILD_ENV: tbg-dev
+      DO_TOKEN:
+        from_secret: do_token
+    commands:
+      - echo $DO_TOKEN
+      - doctl auth init --access-token=$${DO_TOKEN}
+      - doctl kubernetes cluster kubeconfig save begacy-dev-cluster --access-token=$${DO_TOKEN}
+      ## deploy to gke
+      - VERSION=`cat VERSION.$${BUILD_ENV}`
+      - sed -ri "s/backend:.*$/backend:$${VERSION}/g" k8s/$${BUILD_ENV}/api/deployment-app.yml
+      - kubectl apply -f k8s/$${BUILD_ENV}/api/deployment-app.yml
+      - sed -ri "s/backend:.*$/backend:$${VERSION}/g" k8s/$${BUILD_ENV}/api/deployment-agenda.yml
+      - kubectl apply -f k8s/$${BUILD_ENV}/api/deployment-agenda.yml
+    when:
+      event:
+        - push
+      branch:
+        - tbg
+
+  - name: deploy-tbg-prd
+    image: registry.digitalocean.com/golduck-registry/sdk/drone-do-deploy-sdk-alpine:latest
+    environment:
+      PROJECT_ID: begacy-tbg-prd
+      BUILD_ENV: tbg
+      DO_TOKEN:
+        from_secret: do_token
+    commands:
+      - echo $DO_TOKEN
+      - doctl auth init --access-token=$${DO_TOKEN}
+      - doctl kubernetes cluster kubeconfig save begacy-prd-cluster --access-token=$${DO_TOKEN}
+      ## deploy to gke
+      - VERSION=`cat VERSION.$${BUILD_ENV}`
+      - sed -ri "s/backend:.*$/backend:$${VERSION}/g" k8s/$${BUILD_ENV}/api/deployment-app.yml
+      - kubectl apply -f k8s/$${BUILD_ENV}/api/deployment-app.yml
+      - sed -ri "s/backend:.*$/backend:$${VERSION}/g" k8s/$${BUILD_ENV}/api/deployment-agenda.yml
+      - kubectl apply -f k8s/$${BUILD_ENV}/api/deployment-agenda.yml
+    when:
+      event:
+        - tag
+      ref:
+        include:
+          - refs/heads/tbg
+          - refs/tags/tbg**
+
+image_pull_secrets:
+  - dockerconfig

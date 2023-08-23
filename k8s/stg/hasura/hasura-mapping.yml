@@ -1,0 +1,13 @@
+apiVersion: getambassador.io/v2
+kind: Mapping
+metadata:
+  name: hasura
+  namespace: backend
+spec:
+  prefix: /hasura/
+  # host: "^(dev.yokef.com|beta.yokef.com)$"
+  # host_regex: true
+  service: hasura
+  use_websocket: true
+  timeout_ms: 25000
+  connect_timeout_ms: 5000

@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: hasura
+    hasuraService: custom
+  name: hasura
+  namespace: swap-dev
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: hasura
+  template:
+    metadata:
+      labels:
+        app: hasura
+    spec:
+      containers:
+        - image: hasura/graphql-engine:v1.3.0
+          imagePullPolicy: IfNotPresent
+          name: hasura
+          env:
+            - name: HASURA_GRAPHQL_DATABASE_URL
+              value: postgresql://voption:b147420fcd09f71649f0d98c9e9c8165@postgresql:5432/swap-dev
+            - name: HASURA_GRAPHQL_ENABLE_CONSOLE
+              value: 'true'
+            - name: HASURA_GRAPHQL_ADMIN_SECRET
+              value: YmRhMTUyNzQ0MmZkNTVhNDliYmIxMDhlOWRkNDA0YTgK
+            - name: HASURA_GRAPHQL_UNAUTHORIZED_ROLE
+              value: guest
+          ports:
+            - containerPort: 8080
+              protocol: TCP
+          resources: {}

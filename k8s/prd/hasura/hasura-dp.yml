@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: hasura
+    hasuraService: custom
+  name: hasura
+  namespace: swap-prd
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: hasura
+  template:
+    metadata:
+      labels:
+        app: hasura
+      # annotations:
+      #   vault.security.banzaicloud.io/vault-addr: "http://vault.vault.svc.cluster.local:8200"
+      #   vault.security.banzaicloud.io/vault-role: "default"
+    spec:
+      containers:
+        - image: hasura/graphql-engine:latest
+          imagePullPolicy: IfNotPresent
+          name: hasura
+          env:
+            - name: HASURA_GRAPHQL_DATABASE_URL
+              value: postgresql://voption:cc96fbc4325507458e797837af3e045b@postgresql:5432/swap-prd
+            - name: HASURA_GRAPHQL_ENABLE_CONSOLE
+              value: 'true'
+            - name: HASURA_GRAPHQL_ADMIN_SECRET
+              value: YmRhMTUyNzQ0MmZkNTVhNDliYmIxMDhlOWRkNDA0YTgK
+            - name: HASURA_GRAPHQL_AUTH_HOOK
+              value: http://auth-service:4000/verify-token
+          ports:
+            - containerPort: 8080
+              protocol: TCP
+          resources: {}

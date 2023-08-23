@@ -1,0 +1,10 @@
+---
+apiVersion: getambassador.io/v2
+kind: Host
+metadata:
+  name: pgadmin-slotkoin-com
+spec:
+  hostname: pgadmin.slotkoin.com
+  acmeProvider:
+    authority: https://acme-v02.api.letsencrypt.org/directory # Optional: The CA you want to get your certificate from. Defaults to Let's Encrypt
+    email: michael@coinhe.com

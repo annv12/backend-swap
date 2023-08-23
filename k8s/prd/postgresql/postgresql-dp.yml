@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgresql
+  namespace: swap-prd
+  labels:
+    app: postgresql
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: postgresql
+  template:
+    metadata:
+      labels:
+        app: postgresql
+        node: backend
+    spec:
+      containers:
+        - name: postgresql
+          image: postgres:15-alpine
+          ports:
+            - containerPort: 5432
+          args:
+            - -c
+            - max_connections=100
+            - -c
+            - shared_buffers=1024MB
+          resources:
+            requests:
+              memory: "512Mi"
+              cpu: "1"
+            limits:
+              memory: "4Gi"
+              cpu: "2"
+          env:
+            - name: POSTGRES_DB
+              value: swap-dev
+            - name: POSTGRES_USER
+              value: user_swap
+            - name: POSTGRES_PASSWORD
+              value: b147420fcd0adfadsfadsfkdkadi9f71649f0d98c9e9c8165
+            - name: PGDATA
+              value: /var/lib/postgresql/data/voption
+          volumeMounts:
+            - mountPath: '/var/lib/postgresql/data'
+              name: 'postgresql-data-storage'
+      volumes:
+        - name: postgresql-data-storage
+          persistentVolumeClaim:
+            claimName: postgresql-data

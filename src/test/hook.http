@@ -1,0 +1,10 @@
+@host = http://localhost:4001
+
+POST {{host}}/bscTokenTransfers
+Content-Type: application/json
+
+{
+  "email": "email1",
+  "username": "email12",
+  "address": "12345622"
+}

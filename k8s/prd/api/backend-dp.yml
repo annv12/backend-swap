@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: service-backend
+  namespace: swap-prd
+  labels:
+    app: service-backend
+spec:
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  selector:
+    matchLabels:
+      app: service-backend
+  template:
+    metadata:
+      labels:
+        app: service-backend
+        node: backend
+      # annotations:
+      #   vault.security.banzaicloud.io/vault-addr: "http://vault.vault.svc.cluster.local:8200"
+      #   vault.security.banzaicloud.io/vault-role: "default"
+    spec:
+      containers:
+        - name: service-backend
+          image: asia-southeast1-docker.pkg.dev/novaland-337909/novaland-registry/backend-swap-api:20221120-224642-20221121
+          # image: gcr.io/novaland-337909/backend-swap-api:20221119-115831-20221120
+          command: ["/bin/sh","-c"]
+          args: ["NODE_ENV=production yarn ts src/server.ts"]
+          # resources:
+            # requests:
+            #   memory: "1Gi"
+            #   cpu: "1"
+            # limits:
+            #   memory: "3Gi"
+            #   cpu: "3"
+          env:
+            - name: GET_HOSTS_FROM
+              value: dns
+          ports:
+            - name: backend
+              containerPort: 4000
+            - name: webhooks
+              containerPort: 4001

@@ -1,0 +1,13 @@
+node_modules
+.DS_STORE
+dist
+src/ws-handler.ts
+.env
+prisma/.env
+*.log
+prisma/migrations
+.drone.status
+version
+.vscode
+.idea
+src/types/ethers

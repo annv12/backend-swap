@@ -1,0 +1,10 @@
+---
+apiVersion: getambassador.io/v2
+kind: Host
+metadata:
+  name: api-stg
+spec:
+  hostname: yokef-stg-api.netlambda.com
+  acmeProvider:
+    authority: https://acme-v02.api.letsencrypt.org/directory # Optional: The CA you want to get your certificate from. Defaults to Let's Encrypt
+    email: jay@coinhe.com

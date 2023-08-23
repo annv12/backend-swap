@@ -1,0 +1,7 @@
+{
+  "watch": ["src"],
+  "ignore": ["src/**/*.test.ts"],
+  "ext": "ts,mjs,js,json,graphql",
+  "exec": "node -r esbuild-register -r dotenv/config ./src/server.ts",
+  "legacyWatch": true
+}

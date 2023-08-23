@@ -1,0 +1,31 @@
+# apiVersion: getambassador.io/v2
+# kind: Mapping
+# metadata:
+#   name: api.voption.org
+#   namespace: swap-prd
+# spec:
+#   prefix: /
+#   host: '^(api.voption.org)$'
+#   host_regex: true
+#   service: backend:4000
+#   use_websocket: true
+#   timeout_ms: 15000
+#   connect_timeout_ms: 15000
+#   envoy_override:
+#     per_connection_buffer_limit_bytes: 5000000
+---
+apiVersion: getambassador.io/v2
+kind: Mapping
+metadata:
+  name: webhooks
+  namespace: swap-prd
+spec:
+  prefix: /webhooks/
+  host: '^(api.voption.org)$'
+  host_regex: true
+  service: backend-webhooks:4001
+  use_websocket: true
+  timeout_ms: 15000
+  connect_timeout_ms: 15000
+  envoy_override:
+    per_connection_buffer_limit_bytes: 5000000

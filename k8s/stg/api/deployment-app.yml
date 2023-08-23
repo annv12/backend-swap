@@ -1,0 +1,95 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend
+  namespace: backend
+  labels:
+    app: backend
+spec:
+  replicas: 3
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  selector:
+    matchLabels:
+      app: backend
+  template:
+    metadata:
+      labels:
+        app: backend
+        node: backend
+      annotations:
+        vault.security.banzaicloud.io/vault-addr: "http://vault.vault.svc.cluster.local:8200"
+        vault.security.banzaicloud.io/vault-role: "default"
+    spec:
+      imagePullSecrets:
+        - name: golduck-registry
+      containers:
+        - name: backend
+          image: registry.digitalocean.com/golduck-registry/yokef-stg/backend:latest
+          command: ["/bin/sh","-c"]
+          args: ["npm run migrate:up; npm start"]
+          env:
+            - name: GET_HOSTS_FROM
+              value: dns
+            - name: DATABASE_URL
+              value: vault:secret/backend#DATABASE_URL
+            - name: AMQP_USER
+              value: vault:secret/backend#AMQP_USER
+            - name: AMQP_PASSWORD
+              value: vault:secret/backend#AMQP_PASSWORD
+            - name: INFLUXDB_USER
+              value: vault:secret/backend#INFLUXDB_USER
+            - name: INFLUXDB_PASSWORD
+              value: vault:secret/backend#INFLUXDB_PASSWORD
+            - name: MONGODB_USER
+              value: vault:secret/backend#MONGODB_USER
+            - name: MONGODB_PASSWORD
+              value: vault:secret/backend#MONGODB_PASSWORD
+            - name: APOLLO_ENGINE_KEY
+              value: vault:secret/backend#APOLLO_ENGINE_KEY
+            - name: ETHEREUM_PROVIDER
+              value: vault:secret/backend#ETHEREUM_PROVIDER
+            - name: ETHEREUM_MIN_ETH_FOR_COLLECT
+              value: vault:secret/backend#ETHEREUM_MIN_ETH_FOR_COLLECT
+            - name: BINANCE_API_KEY
+              value: vault:secret/backend#BINANCE_API_KEY
+            - name: BINANCE_SECRET_KEY
+              value: vault:secret/backend#BINANCE_SECRET_KEY
+            - name: VPBANK_USERNAME
+              value: vault:secret/backend#VPBANK_USERNAME
+            - name: VPBANK_PASS
+              value: vault:secret/backend#VPBANK_PASS
+            - name: ROOT_TIME
+              value: vault:secret/backend#ROOT_TIME
+            - name: BLACKBOX_URL
+              value: vault:secret/backend#BLACKBOX_URL
+            - name: VNBANK_TOKEN
+              value: vault:secret/backend#VNBANK_TOKEN
+            - name: SENDGRID_API_KEY
+              value: vault:secret/backend#SENDGRID_API_KEY
+            - name: OFFICIAL_PAGE
+              value: vault:secret/backend#OFFICIAL_PAGE
+            - name: COINHE_ID_URL
+              value: vault:secret/backend#COINHE_ID_URL
+            - name: COINHE_ID_APP_NAME
+              value: vault:secret/backend#COINHE_ID_APP_NAME
+            - name: SENTRY_URL
+              value: vault:secret/backend#SENTRY_URL
+            - name: S3_BUCKET
+              value: vault:secret/backend#S3_BUCKET
+            - name: S3_KEY
+              value: vault:secret/backend#S3_KEY
+            - name: S3_SECRET
+              value: vault:secret/backend#S3_SECRET
+            - name: JWT_PUBLIC_KEY
+              value: vault:secret/backend#JWT_PUBLIC_KEY
+            - name: JWT_SECRET_KEY
+              value: vault:secret/backend#JWT_SECRET_KEY
+            - name: ALLOW_EXTERNAL_ERRORS
+              value: "true"
+          ports:
+            - name: backend
+              containerPort: 4000

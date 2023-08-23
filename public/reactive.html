@@ -1,0 +1,332 @@
+<head>
+  <style type="text/css">
+    .header {
+      display: table;
+      width: 100%;
+    }
+
+    .logo {
+      display: table-cell;
+      width: 25%;
+      padding-top: 1em;
+      padding-bottom: 1em;
+    }
+
+    .header-text {
+      display: table-cell;
+      text-align: right;
+      vertical-align: middle;
+      width: 75%;
+      padding-right: 24px;
+      padding-top: 1em;
+      padding-bottom: 1em;
+
+      /* 18px/Medium */
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
+        Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+      font-style: normal;
+      font-weight: bold;
+      font-size: 18px;
+      line-height: 22px;
+
+      /* Grey */
+      color: #b2b8d2;
+    }
+
+    .spacing-line {
+      /* Gray 5 */
+      border: 1px solid #e0e0e0;
+      margin-top: 0;
+      margin-bottom: 0;
+    }
+
+    .title {
+      text-align: center;
+      margin-left: 24px;
+      margin-top: 35px;
+      margin-bottom: 24px;
+
+      /* 24px/Bold */
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
+        Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+      font-style: normal;
+      font-weight: bold;
+      font-size: 24px;
+      line-height: 30px;
+      /* identical to box height, or 125% */
+
+      /* Background2 */
+      color: #3c4265;
+    }
+
+    .paragraph {
+      margin: 10px 24px;
+
+      /* 14px/Regular */
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
+        Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+      font-style: normal;
+      font-weight: normal;
+      font-size: 14px;
+      line-height: 21px;
+      /* identical to box height, or 150% */
+
+      /* Line */
+      color: #394f68;
+    }
+
+    .button {
+      display: inline-block;
+      margin-left: 24px;
+      margin-top: 20px;
+      margin-bottom: 20px;
+    }
+
+    .signature {
+      margin-left: 24px;
+
+      /* 14px/Regular */
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
+        Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+      font-style: normal;
+      font-weight: normal;
+      font-size: 14px;
+      line-height: 21px;
+      /* or 150% */
+
+      /* Grey */
+      color: #b2b8d2;
+    }
+
+    .ads {
+      padding: 1px;
+      background: #f1f1f1;
+      margin-top: 24px;
+      margin-bottom: 24px;
+    }
+
+    .ads-description {
+      text-align: center;
+      margin-left: 24px;
+      margin-right: 24px;
+
+      /* 14px/Regular */
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
+        Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+      font-style: normal;
+      font-weight: normal;
+      font-size: 14px;
+      line-height: 21px;
+      /* or 150% */
+
+      /* Lighten */
+      color: #5e758e;
+    }
+
+    .footer-description {
+      text-align: center;
+      margin-left: 24px;
+      margin-right: 24px;
+      padding-bottom: 10px;
+      /* margin: '0px 24px 54px 24px'; */
+
+      /* 14px/Regular */
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
+        Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+      font-style: normal;
+      font-weight: normal;
+      font-size: 13px;
+      line-height: 21px;
+      /* or 150% */
+      /* Lighten */
+      color: #5e758e;
+    }
+
+    .ads-app {
+      text-align: center;
+      margin-left: 24px;
+      margin-right: 24px;
+      margin-bottom: 1em;
+    }
+
+    .ads-app-logo {
+      display: inline-block;
+      margin: 4px;
+    }
+
+    .warning {
+      margin: 24px;
+
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
+        Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+      font-style: normal;
+      font-weight: 500;
+      font-size: 12px;
+      line-height: 16px;
+      /* or 133% */
+      display: flex;
+      align-items: center;
+      text-align: center;
+
+      /* Lighten */
+      color: #5e758e;
+    }
+
+    .footer {
+      text-align: center;
+      margin-left: 24px;
+      margin-right: 24px;
+    }
+
+    .copyrights {
+      /* display: inline-block; */
+      vertical-align: middle;
+
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
+        Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+      font-style: normal;
+      font-weight: normal;
+      font-size: 13px;
+      /* line-height: 20px; */
+      /* identical to box height, or 215% */
+
+      /* Lighten */
+      color: #5e758e;
+    }
+
+    .fanpage-logo {
+      display: inline-block;
+      vertical-align: middle;
+      margin-bottom: 16px;
+      margin-left: 1em;
+      margin-right: 1em;
+    }
+  </style>
+</head>
+
+<body style="background: #f2f2f2;">
+  <div style="width: 640px; margin: 0 auto; background: #ffffff;">
+    <div class="header">
+      <div class="logo">
+        <a
+          href="{{official_page}}"
+          style="display: inline-block; margin-left: 24px;"
+        >
+          <img
+            style="width: 113px; height: 36px;"
+            src="{{official_logo_png}}"
+            alt="logo"
+          />
+        </a>
+      </div>
+      <h1 class="header-text">Voption</h1>
+    </div>
+
+    <p class="spacing-line"></p>
+
+    <div>
+      <p class="title">
+        Re-Activate account Notice
+      </p>
+      <p class="paragraph">Hello <b>{{username}}</b>,</p>
+      <p class="paragraph">
+        Để phục vụ cho việc:
+      </p>
+      <p class="paragraph">
+        - Nâng cấp các chức năng mới, bao gồm COPY TRADE sắp ra mắt
+      </p>
+      <p class="paragraph">
+        - Đăng ký giao dịch tại thị trường Singapore
+      </p>
+      <p class="paragraph">
+        Chúng tôi tiến hành soát lại một số tài khoản bất thường hoặc ngẫu nhiên
+        theo yêu cầu của cơ quan kiểm soát minh bạch để đảm bảo phù hợp với quy
+        định AML và minh bạch của hệ thống.
+      </p>
+      <p class="paragraph">
+        Nếu tài khoản của bạn nhận được email từ chúng tôi bạn phải:
+      </p>
+      <p class="paragraph">
+        - Trả lời trung thực và chính xác tất cả các các câu hỏi trong google
+        form
+      </p>
+      <p class="paragraph">
+        - Trả lời 1 lần, không trả lời trùng, nếu không nhớ số liệu cụ thể thì
+        trả lời số gần đúng cận dưới nhất còn nhớ
+      </p>
+      <p class="paragraph">
+        - Không đăng nhập hoặc sử dụng tài khoản BeDefi đến khi nhận được email
+        thông báo đã xác minh xong tài khoản của bạn.
+      </p>
+      <p class="paragraph">
+        - Hoàn tất việc cung cấp thông tin trước ngày 25/8/2022
+      </p>
+      <p class="paragraph">
+        - Nếu bạn là người bảo trợ, những tài khoản bị đóng băng sẽ không xuất
+        hiện trong phần hệ thống đại lý của bạn cho đến khi được xác minh xong.
+      </p>
+
+      <p class="paragraph">
+        Link google form:
+        <a href="https://forms.gle/7DDdvaaxypFYzbwJ9"
+          >https://forms.gle/7DDdvaaxypFYzbwJ9</a
+        >
+      </p>
+
+      <p class="paragraph">
+        For further information and support, please
+        <a href="mailto:support@voption.org" target="_blank">contact our team</a>.
+      </p>
+      <p class="signature">
+        Regards,
+        <br>BeDefi Team.
+    </p>
+      <p class="signature"><i>This email was sent automatically. If you think you received it by mistake, just ignore it or unsubscribe.</i></p>
+    </div>
+
+    <div>
+      <p class="warning">
+        Transactions with financial instruments offered on the Website involve
+        substantial risk. If you make Transactions with the financial
+        instruments offered on this Website, you might incur substantial losses
+        or even lose everything in your Account. BeDefi is not responsible for
+        any direct, indirect or consequential losses, or any other damages
+        resulting from the user's actions on this site.
+      </p>
+    </div>
+    <p class="spacing-line"></p>
+    <div class="footer">
+      <p class="copyrights">© 2022 voption.org All Rights Reserved</p>
+      <p class="copyrights">
+        URL：www.voption.org &nbsp;&nbsp; E-mail：support@voption.org
+      </p>
+      <p class="copyrights">Want to disable these emails?</p>
+      <a class="copyrights" href="https://voption.org/privacy-policy">Review our Anti-Spam Policy.</a>
+      <p></p>
+      <div style="vertical-align: middle;">
+        <a class="fanpage-logo" href="{{facebook_link}}">
+          <img
+            style="width: 1em; height: 1em;"
+            src="{{facebook_png}}"
+            alt="Facebook"
+          />
+        </a>
+        <a class="fanpage-logo" href="{{twitter_link}}">
+          <img
+            style="width: 1em; height: 1em;"
+            src="{{twitter_png}}"
+            alt="Twitter"
+          />
+        </a>
+        <a class="fanpage-logo" href="{{telegram_link}}">
+          <img
+            style="width: 1em; height: 1em;"
+            src="{{telegram_png}}"
+            alt="Telegram"
+          />
+        </a>
+      </div>
+      
+    </div>
+  </div>
+</body>
