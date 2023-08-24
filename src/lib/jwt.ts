@@ -3,9 +3,9 @@ import jwt from 'jsonwebtoken'
 const privateKey = process.env.JWT_SECRET_KEY
 const publicKey = process.env.JWT_PUBLIC_KEY
 
-const i = 'Voption' // Issuer
-const s = 'admin@voption.org' // Subject
-const a = 'https://voption.org' // Audience
+const i = 'Swap Token' // Issuer
+const s = 'admin@swaptoken.org' // Subject
+const a = 'https://swaptoken.org' // Audience
 
 export function sign(
   payload: string | object | Buffer,

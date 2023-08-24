@@ -1,7 +1,3 @@
-# networks:
-#   app-network:
-#     driver: bridge
-
 services:
   redis:
     image: redis
@@ -15,108 +11,18 @@ services:
       - redis-data:/data
     restart: always
     entrypoint: redis-server --appendonly yes
-    # networks:
-    #   - app-network
 
   postgres:
     image: postgres:14.1-alpine
     restart: always
     environment:
-      - POSTGRES_USER=voption
-      - POSTGRES_PASSWORD=voption
+      - POSTGRES_USER=user_swap
+      - POSTGRES_PASSWORD=b147420fcd0adfadsfadsfkdkadi9f71649f0d98c9e9c8165
       - POSTGRES_DB=swap-dev
     ports:
       - 5432:5432
     volumes:
       - postgres-db:/var/lib/postgresql/data
-    # networks:
-    #   - app-network
-
-  backend:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    image: backend-api:20230706-093946-20230707
-    command: sh -c "yarn ts src/server.ts"
-    ports:
-      - 4000:4000
-      - 4001:4001
-    working_dir: /app
-    volumes:
-      - ./:/app
-      - /app/node_modules
-    environment:
-      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/swap-dev?schema=public
-
-      BINANCE_API_KEY: kFimq0BqXCdLiHx5P6PuquBOEkbH53GM25gWBnRvI7URDozRRnfgKqmFmVJUZP6d
-      BINANCE_SECRET_KEY: UBt3egyfxCZhSSdDna6chIklouwMdSXOylxymaPITu8LJw6GNV3pJsrLgCudNl4z
-
-      ROOT_TIME: 1590969600
-      MAILGUN_DOMAIN: mg.voption.org
-      MAILGUN_API_KEY: a0acc796e06356f18bbe7579dd887450-62916a6c-c305a9da
-      OFFICIAL_PAGE: https://copycat.voption.org
-
-      SENTRY_URL: https://77527fb4dfb34d868a411d3c68040c8a@o430578.ingest.sentry.io/5390032
-
-      PROJECT_ID: swap-dev
-      S3_ENDPOINT: storage.googleapis.com
-      S3_BUCKET: 0xlambda
-      S3_KEY: GOOGP4EQJNOIFRQTZ4MTHMQ3
-      S3_SECRET: P91a+23FHTM8gr7M+Lf92Yho2tEnWf1fXiuOM/8G
-
-      ALLOW_EXTERNAL_ERRORS: true
-
-      FIREBASE_PUSH_KEY: AAAAUSNLaks:APA91bHDyvuESylXtGCJoiLfkMsnPBbq-2rK734FeOnQfDV5-56-foUD4jNXmvC6t_yeBpB1XQABcke-8d3E3RkBB4A8Db1iY-lxPlmS9B-RWRkzrqeGYNg9_gqhDrpaohr7T047BqfY
-
-      RPC_NODE_1: https://data-seed-prebsc-1-s1.binance.org:8545/
-      RPC_NODE_2: https://data-seed-prebsc-2-s1.binance.org:8545/
-      RPC_NODE_3: https://data-seed-prebsc-1-s2.binance.org:8545/
-
-      BSC_USDT_ADDRESS: 0x55d398326f99059ff775485246999027b3197955
-
-      MORALIS_SERVER_URL: https://6swmpkvjtsnn.grandmoralis.com:2053/server
-      MORALIS_APP_ID: QtzqqOdIUvdfKjVeGJUR9g1FKk9AHlQojpmOaQwP
-      MORALIS_MASTER_KEY: cGesMYlxsDQhmU83L04tmNN9PVFwmuIYz3GfQxYu
-      MORALIS_API_KEY: xn6zQOWUUwy7JUku3GO1lUmqB1md2DU6jalBfqX8PvWYdaURuZOyQ8o2xDhSpIAk
-      MORALIS_STREAM_ID: 8f97bf44-c8a8-409e-9389-e1bbf151e531
-      NODE_ENV: production
-      RATE_INSURANCE_WIN: 0.25
-      MAX_ROUND_INSURANCE: 7
-      BOT_TOKEN: 6182011053:AAGv2eCoEAni4_7_y0q3woSGLPfChWmyWzE
-      CHAT_ID: 1210753029
-      PROJECT_API_URL: http://localhost:4000/
-
-    depends_on:
-      - redis
-      - postgres
-    # networks:
-    #   - app-network
-  service-clock-machine:
-    image: backend-api:20230706-093946-20230707
-    command: sh -c "yarn ts src/clock.ts"
-    environment:
-      NODE_ENV: production
-      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/swap-dev?schema=public
-    depends_on:
-      - backend
-
-  # heart-beat:
-  #   image: backend-api:20230706-093946-20230707
-  #   command: sh -c "yarn ts src/services/binance-order.ts"
-  #   environment:
-  #     NODE_ENV: production
-  #     DATABASE_URL: postgresql://postgres:postgres@postgres:5432/swap-dev?schema=public
-  #   depends_on:
-  #     - backend
-
-  # round-tracking:
-  #   image: backend-api:20230706-093946-20230707
-  #   command: sh -c "yarn ts src/services/round-services.ts"
-  #   environment:
-  #     NODE_ENV: production
-  #     DATABASE_URL: postgresql://postgres:postgres@postgres:5432/swap-dev?schema=public
-  #   depends_on:
-  #     - backend
 
 volumes:
   postgres-db:

@@ -117,30 +117,30 @@ If this activity is not your own, please contact us immediately.`
 
 If this activity is not your own, please contact us immediately.`
       break
-  //   case 'REVERT_INVESTING_FUND':
-  //     title = noticeTitle ?? 'Revert Investing Fund'
-  //     body =
-  //       message ??
-  //       `For ensuring the balance of betting fund between Call option and Put option in round xxx, your investing amount will be reverted $xxx
-  
-  // If this activity is not your own, please contact us immediately.`
-  //     break
-  //   case 'AGENCY_COMMISSION':
-  //     title = noticeTitle ?? 'Agency Commission'
-  //     body =
-  //       message ?? `You have received $xxx agency commission from your downline`
-  //     break
-  //   case 'TRADING_COMMISSION':
-  //     title = noticeTitle ?? 'Trading Commission'
-  //     body =
-  //       message ??
-  //       `You have received $xxx trading commission from your downline`
-  //     break
-  //   case 'SEND_GIFT_CODE':
-  //     title = noticeTitle ?? 'Giftcode Promotion'
-  //     body =
-  //       message ?? `Congratulations! You’ve been received $xx by giftcode xxxx expired xxx`
-  //     break
+    //   case 'REVERT_INVESTING_FUND':
+    //     title = noticeTitle ?? 'Revert Investing Fund'
+    //     body =
+    //       message ??
+    //       `For ensuring the balance of betting fund between Call option and Put option in round xxx, your investing amount will be reverted $xxx
+
+    // If this activity is not your own, please contact us immediately.`
+    //     break
+    //   case 'AGENCY_COMMISSION':
+    //     title = noticeTitle ?? 'Agency Commission'
+    //     body =
+    //       message ?? `You have received $xxx agency commission from your downline`
+    //     break
+    //   case 'TRADING_COMMISSION':
+    //     title = noticeTitle ?? 'Trading Commission'
+    //     body =
+    //       message ??
+    //       `You have received $xxx trading commission from your downline`
+    //     break
+    //   case 'SEND_GIFT_CODE':
+    //     title = noticeTitle ?? 'Giftcode Promotion'
+    //     body =
+    //       message ?? `Congratulations! You’ve been received $xx by giftcode xxxx expired xxx`
+    //     break
     default:
       break
   }
@@ -200,7 +200,7 @@ export async function sendPushNotication(
       icon: host + '/icon/Favicon128x128.png',
     },
     android: {
-      channel_id: 'Voption',
+      channel_id: 'Swap Token',
       icon: process.env.OFFICIAL_PAGE + '/icon/Favicon128x128.png',
     },
     apns: {
@@ -270,7 +270,7 @@ export async function notifyThresholdWithdrawTransaction(
     'Withdraw Threshold Notification',
     'https://eevee.coinhe.io/hooks/8oxkbpapppb7jcxdodmpi37tir',
     'Voption-withdraw-threshold',
-    'Voption',
+    'Swap Token',
     LEVEL.WARNING,
   )
   return true
@@ -292,7 +292,7 @@ export function notifyBankTransaction(
     tx_type,
     'https://eevee.coinhe.io/hooks/ej49de4mofbp8d6fr1cbzuyo5o',
     'Voption-bank-notification',
-    'Voption',
+    'Swap Token',
     lelvel,
   )
   return true
@@ -304,7 +304,7 @@ export function notifyUnknownBankTransaction(sms: string) {
     'Unknown Bank Transaction',
     'https://eevee.coinhe.io/hooks/ej49de4mofbp8d6fr1cbzuyo5o',
     'Voption-bank-notification',
-    'Voption',
+    'Swap Token',
     LEVEL.DANGER,
   )
   return true
@@ -321,7 +321,7 @@ export async function notifyMasterWalletBalance(
     'Master Balance is not enough',
     'https://eevee.coinhe.io/hooks/3rqzca8zqtdmbb948ujgbm5ieo',
     'Voption-master-wallet-monitor',
-    'Voption',
+    'Swap Token',
     LEVEL.WARNING,
   )
   return true
@@ -360,7 +360,7 @@ export function notifyTransaction(
     tx_type,
     'https://eevee.coinhe.io/hooks/i5artnk7kjgqxkpnn4khr4r1ky',
     'Voption-transaction-all-notification',
-    'Voption',
+    'Swap Token',
     lelvel,
   )
   return true
@@ -368,7 +368,24 @@ export function notifyTransaction(
 
 export async function notifyTele(content: string, tokenBot: string = '') {
   let token = tokenBot || botToken
-  let characters = ['[', ']', '(', ')', '~', '`', '>', '#', '+', '-', '=', '|', '{', '}', '.', '!']
+  let characters = [
+    '[',
+    ']',
+    '(',
+    ')',
+    '~',
+    '`',
+    '>',
+    '#',
+    '+',
+    '-',
+    '=',
+    '|',
+    '{',
+    '}',
+    '.',
+    '!',
+  ]
   content = characters.reduce((str: string, character) => {
     return str.replaceAll(character, `\\${character}`)
   }, content)

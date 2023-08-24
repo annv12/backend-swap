@@ -10,7 +10,7 @@ export interface BackupCode {
 }
 
 export function generateQrUrlTwoFA(secret: string, email: string): string {
-  const appName = 'Voption' // process.env.AppName
+  const appName = 'Swap Token' // process.env.AppName
   return `otpauth://totp/${appName}:${email}?secret=${secret}&issuer=${appName}`
 }
 

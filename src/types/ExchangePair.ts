@@ -10,7 +10,7 @@ export const ExchangePair = objectType({
     t.model.fee_rate()
     t.model.max_bet()
     t.model.min_bet()
-    t.model.Order()
+    // t.model.Order()
   },
 })
 

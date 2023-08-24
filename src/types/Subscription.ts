@@ -43,47 +43,6 @@ export const clockSubscription = subscriptionField('clock', {
   },
 })
 
-export const orderResultSubscription = subscriptionField(
-  'orderResultSubscription',
-  {
-    type: 'OrderResult',
-    subscribe: async (_, args, ctx) => {
-      return ctx.pubsub.asyncIterator(`user-round-result.${ctx.user}`)
-    },
-    resolve: (payload: any) => {
-      logger.info('user-round-result subscription payload', payload)
-      if (payload) return payload
-    },
-  },
-)
-
-export const lastRoundResultSubscription = subscriptionField(
-  'lastRoundResult',
-  {
-    type: 'DropletPayload',
-    subscribe: async (_, args, ctx) => {
-      return ctx.pubsub.asyncIterator('last-candlestick')
-    },
-    resolve: (payload) => {
-      if (payload) return payload
-    },
-  },
-)
-
-export const noticeRoundWinnerSubscription = subscriptionField(
-  'noticeRoundWinner',
-  {
-    type: 'OrderResult',
-    list: true,
-    subscribe: async (_, args, ctx) => {
-      return ctx.pubsub.asyncIterator('round-orders-result')
-    },
-    resolve: (payload: any) => {
-      if (payload) return payload
-    },
-  },
-)
-
 export const userOpinionSubscription = subscriptionField('userOpinion', {
   type: 'Int',
   subscribe: async (_, args, ctx) => {
@@ -119,32 +78,32 @@ export const newNotify = subscriptionField('newNotify', {
   resolve: (payload: any) => payload,
 })
 
-export const currentRound = subscriptionField('adminRoundTracking', {
-  type: 'AdminRoundTracking',
-  list: true,
-  subscribe: async (_, args, ctx) => {
-    return ctx.pubsub.asyncIterator(`round-result-admin`)
-  },
-  resolve: (payload: any) => payload,
-})
+// export const currentRound = subscriptionField('adminRoundTracking', {
+//   type: 'AdminRoundTracking',
+//   list: true,
+//   subscribe: async (_, args, ctx) => {
+//     return ctx.pubsub.asyncIterator(`round-result-admin`)
+//   },
+//   resolve: (payload: any) => payload,
+// })
 
-export const insuranceSubscriptionPayload = objectType({
-  name: 'InsuranceSubscriptionPayload',
-  definition: (t) => {
-    t.boolean('is_enable')
-    t.int('round')
-  },
-})
+// export const insuranceSubscriptionPayload = objectType({
+//   name: 'InsuranceSubscriptionPayload',
+//   definition: (t) => {
+//     t.boolean('is_enable')
+//     t.int('round')
+//   },
+// })
 
-export const insuranceSubscription = subscriptionField('insuranceInfo', {
-  type: 'InsuranceSubscriptionPayload',
-  subscribe: async (_, args, ctx) => {
-    return ctx.pubsub.asyncIterator('insurance-info')
-  },
-  resolve: (payload) => {
-    if (payload) return payload
-  },
-})
+// export const insuranceSubscription = subscriptionField('insuranceInfo', {
+//   type: 'InsuranceSubscriptionPayload',
+//   subscribe: async (_, args, ctx) => {
+//     return ctx.pubsub.asyncIterator('insurance-info')
+//   },
+//   resolve: (payload) => {
+//     if (payload) return payload
+//   },
+// })
 
 export const PoolInfoPayload = objectType({
   name: 'PoolInfo',
@@ -173,16 +132,13 @@ export const refundSubscriptionPayload = objectType({
   },
 })
 
-export const refundSubscription = subscriptionField(
-  'refundSubscription',
-  {
-    type: 'RefundSubscriptionPayload',
-    subscribe: async (_, args, ctx) => {
-      return ctx.pubsub.asyncIterator(`user-refund.${ctx.user}`)
-    },
-    resolve: (payload: any) => {
-      logger.info('user-refund subscription payload', payload)
-      if (payload) return payload
-    },
+export const refundSubscription = subscriptionField('refundSubscription', {
+  type: 'RefundSubscriptionPayload',
+  subscribe: async (_, args, ctx) => {
+    return ctx.pubsub.asyncIterator(`user-refund.${ctx.user}`)
   },
-)
+  resolve: (payload: any) => {
+    logger.info('user-refund subscription payload', payload)
+    if (payload) return payload
+  },
+})

@@ -25,44 +25,7 @@ export const User = objectType({
     t.model.Ref()
     t.model.role()
     t.model.permissions()
-    t.field('is_expert', {
-      type: 'Boolean',
-      resolve: async (root, args, ctx) => {
-        const r = await ctx.prisma.tradingExpertRegister.findUnique({
-          where: { user_id: ctx.user },
-        })
-        return (
-          r?.approved_status === 'APPROVED' || r?.approved_status === 'PAUSE'
-        )
-      },
-    })
-    t.field('expertStatus', {
-      type: 'TradingExpertRegisterStatus',
-      nullable: true,
-      resolve: async (root, args, ctx) => {
-        const r = await ctx.prisma.tradingExpertRegister.findUnique({
-          where: { user_id: ctx.user },
-        })
-        return r?.approved_status
-      },
-    })
-    t.model.UserBotAirdrop()
     t.model.ip()
-    // t.field('is_premium_account', {
-    //   type: 'Boolean',
-    //   resolve: async (root, args, ctx) => {
-    //     const r = await ctx.prisma.serviceSubscription.findMany({
-    //       where: {
-    //         user_id: ctx.user,
-    //         end_time: {
-    //           gte: new Date(),
-    //         },
-    //       },
-    //     })
-
-    //     return r.length > 0
-    //   },
-    // })
   },
 })
 

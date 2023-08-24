@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
         - name: postgresql
-          image: postgres:15-alpine
+          image: postgres:14.1-alpine
           ports:
             - containerPort: 5432
           args:
@@ -41,7 +41,7 @@ spec:
             - name: POSTGRES_PASSWORD
               value: b147420fcd0adfadsfadsfkdkadi9f71649f0d98c9e9c8165
             - name: PGDATA
-              value: /var/lib/postgresql/data/voption
+              value: /var/lib/postgresql/data/swap_token
           volumeMounts:
             - mountPath: '/var/lib/postgresql/data'
               name: 'postgresql-data-storage'

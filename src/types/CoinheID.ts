@@ -1,9 +1,4 @@
-import {
-  objectType,
-  extendType,
-  stringArg,
-  booleanArg,
-} from 'nexus'
+import { objectType, extendType, stringArg, booleanArg } from 'nexus'
 import { generateRefId } from '../utils'
 import { compare, hash } from 'bcryptjs'
 import logger from '../lib/logger'
@@ -54,7 +49,7 @@ export const coinheIDMutation = extendType({
         password_confirmation: stringArg({ required: true }),
         refCode: stringArg({ required: false }),
         phoneNumber: stringArg({ required: false }),
-        countryId: stringArg({ required: false })
+        countryId: stringArg({ required: false }),
         // tbrTokenAddress: stringArg({ required: false }),
       },
       resolve: async (
@@ -81,7 +76,7 @@ export const coinheIDMutation = extendType({
           })
         }
 
-        // validate BEP-20 and check EXIST 
+        // validate BEP-20 and check EXIST
         // const existWalletAddress = await ctx.prisma.userProfile.count({
         //   where: {
         //     tbrTokenAddress: `${tbrTokenAddress}`
@@ -92,7 +87,7 @@ export const coinheIDMutation = extendType({
         //     message: ctx.i18n.__('Your Wallet Address EXIST'),
         //   })
         // }
-        
+
         // const validTbrTokenAddress = WAValidator.validate(
         //   `${tbrTokenAddress}`,
         //   'bnb',
@@ -149,7 +144,7 @@ export const coinheIDMutation = extendType({
         }
 
         const hashedPassword = await hash(password, 10)
-        let  ip = ctx.request.headers['x-forwarded-for'] || ''
+        let ip = ctx.request.headers['x-forwarded-for'] || ''
         ip = ip.split(',')[0]
         // console.log(require('ipware')().get_ip(ctx.request)?.clientIp)
         const user = await ctx.prisma.user.create({
@@ -228,11 +223,11 @@ export const coinheIDMutation = extendType({
           },
           '1d',
         )
-        sendVerifyMail(
-          user.email,
-          user.username,
-          `${process.env.OFFICIAL_PAGE}/active?token=${token}`,
-        )
+        // sendVerifyMail(
+        //   user.email,
+        //   user.username,
+        //   `${process.env.OFFICIAL_PAGE}/active?token=${token}`,
+        // )
 
         return {
           token: '',
@@ -337,28 +332,25 @@ export const coinheIDMutation = extendType({
         }
 
         // check enable two fa
-        // const twoFA = await ctx.prisma.twoFactor.findUnique({
-        //   where: {
-        //     user_id: user.id,
-        //   },
-        // })
-        // if (twoFA && twoFA.status === 'VERIFIED') {
-        //   // must verify 2fa to login
-        //   return {
-        //     hasTwoFactor: true,
-        //     user,
-        //     token: null,
-        //   }
-        // }
+        const twoFA = await ctx.prisma.twoFactor.findUnique({
+          where: {
+            user_id: user.id,
+          },
+        })
+        if (twoFA && twoFA.status === 'VERIFIED') {
+          // must verify 2fa to login
+          return {
+            hasTwoFactor: true,
+            user,
+            token: null,
+          }
+        }
 
         if (user.role !== UserRole.ADMIN) {
           sendLoginMail(user.email, user.username, ctx.request)
         }
 
         ctx.user = user.id
-        // pushNotication('LOGIN', ctx)
-
-        // sendReactiveMail(user.email, user.username)
         return {
           token: jwt.sign({ userId: user.id, role: user.role }),
           user,
