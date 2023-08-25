@@ -4,19 +4,19 @@ import { Context } from './context'
 import {
   PrismaClient,
   ConvertionPair,
-  Ref,
-  ExchangeWallet,
+  // ExchangeWallet,
   RefTransactionEventType,
   MainWallet,
   ConvertionDirection,
   UserRole,
+  Currency,
 } from '@prisma/client'
 import { RefNote } from './types'
-import fetch from 'node-fetch'
+// import fetch from 'node-fetch'
 import { getConvertPrice } from './lib/convert-utils'
 import logger from './lib/logger'
 import { getF1Volume } from './lib/ref-utils'
-import { ValidationError } from './lib/error-util'
+// import { ValidationError } from './lib/error-util'
 import jwt from './lib/jwt'
 
 const nanoid = customAlphabet('1234567890QWERTYUIOPASDFGHJKLZXCVBNM', 6)
@@ -48,38 +48,27 @@ export function getUserId(ctx: Context) {
 
 export async function validateConvertion(
   amount: number,
-  convertionPair: ConvertionPair,
+  convertionPair: ConvertionPair & {
+    CurrencyFrom: Currency
+    CurrencyTo: Currency
+  },
   direction: ConvertionDirection,
   i18n: any,
   prisma: PrismaClient,
 ) {
-  const currency = await prisma.currency.findUnique({
-    where: {
-      id: convertionPair.currency_id,
-    },
-  })
-  const price = await getConvertPrice(currency.symbol, direction, prisma)
+  const price = await getConvertPrice(
+    convertionPair.CurrencyFrom.symbol,
+    convertionPair.CurrencyTo.symbol,
+    prisma,
+  )
   const recieve = math.mul(price, amount).toNumber()
 
   if (direction === 'MAIN_TO_EXCHANGE') {
-    if (convertionPair.buy_max_amount < recieve) {
+    if (convertionPair.buy_min_amount > recieve) {
       return {
         error: true,
         message: i18n.__(
-          'Maximum recieve amount is %@USD'.replace(
-            '%@',
-            `${convertionPair.buy_max_amount}`,
-          ),
-        ),
-      }
-    } else if (convertionPair.buy_min_amount > recieve) {
-      return {
-        error: true,
-        message: i18n.__(
-          'Minimum recieve amount is %@USD'.replace(
-            '%@',
-            `${convertionPair.buy_min_amount}`,
-          ),
+          `Minimum recieve amount is ${convertionPair.buy_min_amount} ${convertionPair.CurrencyTo.symbol}`,
         ),
       }
     } else {
@@ -89,24 +78,13 @@ export async function validateConvertion(
       }
     }
   } else {
-    if (convertionPair.sell_max_amount < amount) {
+    if (convertionPair.sell_min_amount > amount) {
       return {
         error: true,
         message: i18n.__(
-          'Maximum amount allowed is %@USD'.replace(
-            '%@',
-            `${convertionPair.sell_max_amount}`,
-          ),
-        ),
-      }
-    } else if (convertionPair.sell_min_amount > amount) {
-      return {
-        error: true,
-        message: i18n.__(
-          'Minimum amount allowed is %@USD'.replace(
-            '%@',
-            `${convertionPair.sell_min_amount}`,
-          ),
+          `Minimum amount allowed is ${convertionPair.sell_min_amount} ${convertionPair.CurrencyFrom.symbol}`,
+          '%@',
+          `${convertionPair.sell_min_amount}`,
         ),
       }
     } else {
@@ -157,46 +135,6 @@ export async function getMainWalletBalance(
   const balance = math
     .add(wallet.base_balance, newWalletChangeAggregation._sum.amount ?? 0)
     .toFixed(8)
-
-  return Number(balance) < 0 ? 0 : Number(balance)
-}
-
-export async function getExchangeWalletBalance(
-  wallet: ExchangeWallet,
-  prisma: PrismaClient,
-) {
-  let amountSum = 0
-  if (wallet.type === 'DEMO') {
-    const newWalletChangeAggregation =
-      await prisma.exchangeWalletChangeDemo.aggregate({
-        where: {
-          createdAt: {
-            gt: wallet.balance_cache_datetime,
-          },
-          exchange_wallet_id: wallet.id,
-        },
-        _sum: {
-          amount: true,
-        },
-      })
-    amountSum = newWalletChangeAggregation._sum.amount ?? 0
-  } else {
-    const newWalletChangeAggregation =
-      await prisma.exchangeWalletChange.aggregate({
-        where: {
-          createdAt: {
-            gt: wallet.balance_cache_datetime,
-          },
-          exchange_wallet_id: wallet.id,
-        },
-        _sum: {
-          amount: true,
-        },
-      })
-    amountSum = newWalletChangeAggregation._sum.amount ?? 0
-  }
-
-  const balance = math.add(wallet.base_balance, amountSum).toFixed(2)
 
   return Number(balance) < 0 ? 0 : Number(balance)
 }
@@ -369,107 +307,107 @@ export async function isAgency(user: string, prisma: PrismaClient) {
 //   return await getDownlineRef([user])
 // }
 
-export async function sendCommissionToSponsorList(
-  senderId: string,
-  sponsorList: RefNote[],
-  type: RefTransactionEventType,
-  userSpentAmount: number,
-  agencyTransactionId: string,
-  prisma: PrismaClient,
-) {
-  // Create RefTransaction transaction
-  const prArr = sponsorList.map(async (i) => {
-    const sponsorLevel = await getRefLevel(i.user_id, i.position, type, prisma)
-    logger.info(`[x] user ${i.user_id} is Lv. ${sponsorLevel?.level}`)
-    if (!sponsorLevel) return
+// export async function sendCommissionToSponsorList(
+//   senderId: string,
+//   sponsorList: RefNote[],
+//   type: RefTransactionEventType,
+//   userSpentAmount: number,
+//   agencyTransactionId: string,
+//   prisma: PrismaClient,
+// ) {
+//   // Create RefTransaction transaction
+//   const prArr = sponsorList.map(async (i) => {
+//     const sponsorLevel = await getRefLevel(i.user_id, i.position, type, prisma)
+//     logger.info(`[x] user ${i.user_id} is Lv. ${sponsorLevel?.level}`)
+//     if (!sponsorLevel) return
 
-    const refs = await prisma.ref.findMany({
-      where: {
-        sponsor_id: i.user_id,
-        user_id:
-          i.position === 1
-            ? senderId
-            : sponsorList.find((s) => s.position === i.position - 1).user_id,
-      },
-    })
-    const ref = refs[0]
-    if (!ref) {
-      logger.error(`[x] Sponsor ref is not existed`)
-      return
-    }
+//     const refs = await prisma.ref.findMany({
+//       where: {
+//         sponsor_id: i.user_id,
+//         user_id:
+//           i.position === 1
+//             ? senderId
+//             : sponsorList.find((s) => s.position === i.position - 1).user_id,
+//       },
+//     })
+//     const ref = refs[0]
+//     if (!ref) {
+//       logger.error(`[x] Sponsor ref is not existed`)
+//       return
+//     }
 
-    const rate =
-      type === 'AGENCY'
-        ? sponsorLevel.agency_com_rate
-        : sponsorLevel.trading_com_rate
+//     const rate =
+//       type === 'AGENCY'
+//         ? sponsorLevel.agency_com_rate
+//         : sponsorLevel.trading_com_rate
 
-    const existed_txs = await prisma.refTransaction.findMany({
-      where: {
-        user_id: senderId,
-        sponsor_id: i.user_id,
-        event_type: type,
-        event_id: agencyTransactionId,
-      },
-    })
-    const existed_tx = existed_txs[0]
-    if (existed_tx) {
-      logger.error('Ref transaction is existed')
-      return
-    }
-    logger.info('[x] create transaction for: ', i)
-    const ref_tx = await prisma.refTransaction.create({
-      data: {
-        event_type: type,
-        event_id: agencyTransactionId,
-        Ref: {
-          connect: {
-            id: ref.id,
-          },
-        },
-        RefLevel: {
-          connect: {
-            id: sponsorLevel.id,
-          },
-        },
-        User: {
-          connect: {
-            id: senderId,
-          },
-        },
-        Sponsor: {
-          connect: {
-            id: i.user_id,
-          },
-        },
-        amount: userSpentAmount,
-        rate,
-        earned: math.mul(userSpentAmount, rate).toNumber(),
-      },
-    })
+//     const existed_txs = await prisma.refTransaction.findMany({
+//       where: {
+//         user_id: senderId,
+//         sponsor_id: i.user_id,
+//         event_type: type,
+//         event_id: agencyTransactionId,
+//       },
+//     })
+//     const existed_tx = existed_txs[0]
+//     if (existed_tx) {
+//       logger.error('Ref transaction is existed')
+//       return
+//     }
+//     logger.info('[x] create transaction for: ', i)
+//     const ref_tx = await prisma.refTransaction.create({
+//       data: {
+//         event_type: type,
+//         event_id: agencyTransactionId,
+//         Ref: {
+//           connect: {
+//             id: ref.id,
+//           },
+//         },
+//         RefLevel: {
+//           connect: {
+//             id: sponsorLevel.id,
+//           },
+//         },
+//         User: {
+//           connect: {
+//             id: senderId,
+//           },
+//         },
+//         Sponsor: {
+//           connect: {
+//             id: i.user_id,
+//           },
+//         },
+//         amount: userSpentAmount,
+//         rate,
+//         earned: math.mul(userSpentAmount, rate).toNumber(),
+//       },
+//     })
 
-    const liveWallets = await prisma.exchangeWallet.findMany({
-      where: {
-        user_id: ref_tx.sponsor_id,
-        type: 'MAIN',
-      },
-    })
-    const liveWallet = liveWallets[0]
-    const res = await prisma.exchangeWalletChange.create({
-      data: {
-        event_type: 'REF',
-        event_id: ref_tx.id,
-        ExchangeWallet: {
-          connect: {
-            id: liveWallet.id,
-          },
-        },
-        amount: ref_tx.earned,
-      },
-    })
-    logger.info(`[x] Transaction created`, { ref_tx })
+//     const liveWallets = await prisma.exchangeWallet.findMany({
+//       where: {
+//         user_id: ref_tx.sponsor_id,
+//         type: 'MAIN',
+//       },
+//     })
+//     const liveWallet = liveWallets[0]
+//     const res = await prisma.exchangeWalletChange.create({
+//       data: {
+//         event_type: 'REF',
+//         event_id: ref_tx.id,
+//         ExchangeWallet: {
+//           connect: {
+//             id: liveWallet.id,
+//           },
+//         },
+//         amount: ref_tx.earned,
+//       },
+//     })
+//     logger.info(`[x] Transaction created`, { ref_tx })
 
-    return ref_tx
-  })
+//     return ref_tx
+//   })
 
-  return await Promise.all(prArr)
-}
+//   return await Promise.all(prArr)
+// }

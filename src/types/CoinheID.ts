@@ -14,7 +14,6 @@ import { AuthenticationError, ValidationError } from '../lib/error-util'
 import { pushNotication } from '../lib/notify-utils'
 import { validatePassword } from '../lib/utils'
 import { UserRole } from '@prisma/client'
-// import geoip from 'geoip-lite'
 
 export const coinheIDAuthMessagePayload = objectType({
   name: 'CoinheIDAuthMessagePayload',
@@ -48,22 +47,10 @@ export const coinheIDMutation = extendType({
         password: stringArg({ required: true }),
         password_confirmation: stringArg({ required: true }),
         refCode: stringArg({ required: false }),
-        phoneNumber: stringArg({ required: false }),
-        countryId: stringArg({ required: false }),
-        // tbrTokenAddress: stringArg({ required: false }),
       },
       resolve: async (
         _,
-        {
-          username,
-          email,
-          password,
-          refCode,
-          password_confirmation,
-          phoneNumber,
-          countryId,
-          // tbrTokenAddress,
-        },
+        { username, email, password, password_confirmation, refCode },
         ctx,
       ) => {
         username = username.toLowerCase()
@@ -75,28 +62,6 @@ export const coinheIDMutation = extendType({
             ),
           })
         }
-
-        // validate BEP-20 and check EXIST
-        // const existWalletAddress = await ctx.prisma.userProfile.count({
-        //   where: {
-        //     tbrTokenAddress: `${tbrTokenAddress}`
-        //   },
-        // })
-        // if (existWalletAddress > 0) {
-        //   throw new ValidationError({
-        //     message: ctx.i18n.__('Your Wallet Address EXIST'),
-        //   })
-        // }
-
-        // const validTbrTokenAddress = WAValidator.validate(
-        //   `${tbrTokenAddress}`,
-        //   'bnb',
-        // )
-        // if (!validTbrTokenAddress) {
-        //   throw new ValidationError({
-        //     message: ctx.i18n.__('Your Wallet Address INVALID'),
-        //   })
-        // }
 
         if (!validatePassword(password)) {
           throw new ValidationError({
@@ -146,7 +111,6 @@ export const coinheIDMutation = extendType({
         const hashedPassword = await hash(password, 10)
         let ip = ctx.request.headers['x-forwarded-for'] || ''
         ip = ip.split(',')[0]
-        // console.log(require('ipware')().get_ip(ctx.request)?.clientIp)
         const user = await ctx.prisma.user.create({
           data: {
             username: username.trim().toLowerCase(),
@@ -156,17 +120,7 @@ export const coinheIDMutation = extendType({
             ExchangeWallet: {
               create: [
                 {
-                  type: 'DEMO',
-                  base_balance: 1000,
-                  balance_cache_datetime: new Date(),
-                },
-                {
                   type: 'MAIN',
-                  base_balance: 0,
-                  balance_cache_datetime: new Date(),
-                },
-                {
-                  type: 'PROMOTION',
                   base_balance: 0,
                   balance_cache_datetime: new Date(),
                 },
@@ -179,8 +133,6 @@ export const coinheIDMutation = extendType({
               },
             },
             ip,
-            country_id: countryId,
-            phoneNumber,
           },
         })
         logger.info('[register] Created user', user)
@@ -217,12 +169,6 @@ export const coinheIDMutation = extendType({
 
         logger.info(`[register] Done registered user: ${user.id}`)
         // send email active
-        const token = jwt.sign(
-          {
-            userId: user.id,
-          },
-          '1d',
-        )
         // sendVerifyMail(
         //   user.email,
         //   user.username,
@@ -248,10 +194,10 @@ export const coinheIDMutation = extendType({
           },
         })
         if (!user) {
-          throw new ValidationError(ctx.i18n.__('bad_request'))
+          throw new ValidationError({ message: ctx.i18n.__('bad_request') })
         }
         if (user.is_active == true) {
-          throw new ValidationError(ctx.i18n.__('bad_request'))
+          throw new ValidationError({ message: ctx.i18n.__('bad_request') })
         }
         // send email active
         const token = jwt.sign(
@@ -371,7 +317,7 @@ export const coinheIDMutation = extendType({
           },
         })
         if (!user) {
-          throw new ValidationError(ctx.i18n.__('bad_request'))
+          throw new ValidationError({ message: ctx.i18n.__('bad_request') })
         }
         await checkTokenTwoFaEnabled(otp, userId, ctx.prisma, ctx.i18n)
         sendLoginMail(user.email, user.username, ctx.request)

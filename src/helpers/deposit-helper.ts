@@ -1,4 +1,9 @@
-import { MainWallet, MainWalletAddress, PrismaClient } from '@prisma/client'
+import {
+  MainWallet,
+  MainWalletAddress,
+  PrismaClient,
+  WalletChangeEventType,
+} from '@prisma/client'
 import { notifyTele } from '../lib/notify-utils'
 
 export async function processDepositToUserMainWallet(
@@ -41,7 +46,7 @@ export async function processDepositToUserMainWallet(
           id: recieverWalletAddress.MainWallet.id,
         },
       },
-      event_type: 'TRANSACTION',
+      event_type: WalletChangeEventType.DEPOSIT,
       event_id: usdt_tx.id,
       amount: usdt_tx.amount,
     },
@@ -56,5 +61,7 @@ export async function processDepositToUserMainWallet(
     },
   })
 
-  await notifyTele(`username [${usdt_tx.User.username}] deposit ${usdt_tx.amount} ${usdt_tx.Currency.symbol} network: ${usdt_tx.Currency.crypto_service}`)
+  await notifyTele(
+    `username [${usdt_tx.User.username}] deposit ${usdt_tx.amount} ${usdt_tx.Currency.symbol} network: ${usdt_tx.Currency.crypto_service}`,
+  )
 }

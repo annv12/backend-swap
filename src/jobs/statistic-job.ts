@@ -1,6 +1,6 @@
 import { Prisma, PrismaClient } from '@prisma/client'
 import math from '../lib/math'
-import { getUSDTPrice, getUSDTCurrencyMap } from '../lib/convert-utils'
+import { getUSDTCurrencyMap } from '../lib/convert-utils'
 
 const prisma = new PrismaClient({
   // log: ['query', 'info', 'warn'],
@@ -110,34 +110,34 @@ GROUP BY "currency".id
         converted_amount: true,
       },
     }),
-    prisma.order.aggregate({
-      where: {
-        account_type: {
-          not: 'DEMO',
-        },
-        createdAt: {
-          gt: cachedAt,
-        },
-      },
-      _sum: {
-        bet_amount: true,
-      },
-    }),
-    prisma.orderResult.aggregate({
-      where: {
-        Order: {
-          account_type: {
-            not: 'DEMO',
-          },
-        },
-        createdAt: {
-          gt: cachedAt,
-        },
-      },
-      _sum: {
-        win_amount: true,
-      },
-    }),
+    // prisma.order.aggregate({
+    //   where: {
+    //     account_type: {
+    //       not: 'DEMO',
+    //     },
+    //     createdAt: {
+    //       gt: cachedAt,
+    //     },
+    //   },
+    //   _sum: {
+    //     bet_amount: true,
+    //   },
+    // }),
+    // prisma.orderResult.aggregate({
+    //   where: {
+    //     Order: {
+    //       account_type: {
+    //         not: 'DEMO',
+    //       },
+    //     },
+    //     createdAt: {
+    //       gt: cachedAt,
+    //     },
+    //   },
+    //   _sum: {
+    //     win_amount: true,
+    //   },
+    // }),
     prisma.refTransaction.aggregate({
       where: {
         createdAt: {
@@ -148,36 +148,18 @@ GROUP BY "currency".id
         earned: true,
       },
     }),
-    prisma.exchangeWalletChange.aggregate({
-      where: {
-        ExchangeWallet: {
-          type: {
-            not: 'DEMO',
-          },
-        },
-        createdAt: {
-          gt: cachedAt,
-        },
-      },
-      _sum: {
-        amount: true,
-      },
-    }),
   ])
 
   let convertToMain = aggregates[0]._sum.amount
   let convertToExchange = aggregates[1]._sum.converted_amount
-  bet = aggregates[2]._sum.bet_amount
-  win = aggregates[3]._sum.win_amount
-  let commission = aggregates[4]._sum.earned
-  let exchangeBalance = aggregates[5]._sum.amount
+  let commission = aggregates[2]._sum.earned
 
   return {
     deposit,
     withdraw,
     pendingWithdraw,
     balance,
-    exchangeBalance,
+    // exchangeBalance,
     transactionFee,
     convertToExchange,
     convertToMain,
@@ -206,7 +188,7 @@ export async function updateDailyStatistic() {
           transactionFee: statisticData.transactionFee,
           convertToExchange: statisticData.convertToExchange ?? 0,
           convertToMain: statisticData.convertToMain ?? 0,
-          exchangeBalance: statisticData.exchangeBalance ?? 0,
+          exchangeBalance: 0,
           bet: statisticData.bet ?? 0,
           win: statisticData.win ?? 0,
           balance: statisticData.balance ?? 0,
@@ -222,7 +204,7 @@ export async function updateDailyStatistic() {
           transactionFee: statisticData.transactionFee,
           convertToExchange: statisticData.convertToExchange ?? 0,
           convertToMain: statisticData.convertToMain ?? 0,
-          exchangeBalance: statisticData.exchangeBalance ?? 0,
+          exchangeBalance: 0,
           bet: statisticData.bet ?? 0,
           win: statisticData.win ?? 0,
           balance: statisticData.balance ?? 0,

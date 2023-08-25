@@ -1,10 +1,16 @@
 require('dotenv').config()
-import { PrismaClient, Prisma, ConvertionDirection } from '@prisma/client'
+import {
+  PrismaClient,
+  Prisma,
+  ConvertionDirection,
+  Currency,
+} from '@prisma/client'
 import BigNumber from 'bignumber.js'
 import Binance, { AvgPriceResult, OrderSide, OrderType } from 'binance-api-node'
-import fetch from 'node-fetch'
 import config from '../config'
 import * as math from '../lib/math'
+import { ValidationError } from './error-util'
+import fs from 'fs'
 
 const client = Binance({
   apiKey: process.env.BINANCE_API_KEY,
@@ -19,27 +25,15 @@ async function getPrice(pair_name: string) {
   return Number(avg_price.price)
 }
 
-export async function getUSDTPrice(symbol: string, prisma: PrismaClient) {
-  // const pair_name = symbol + '/' + 'USD'
-
-  // const convertion_pairs = await prisma.convertionPair.findMany({
-  //   where: {
-  //     // is_enable: true,
-  //     name: pair_name.toUpperCase(),
-  //   },
-  //   include: {
-  //     Currency: true,
-  //   },
-  //   take: 1,
-  // })
-  // const convertion_pair = convertion_pairs[0]
-  // if (!convertion_pair) return
-
+export async function getUSDTPrice(currency: Currency) {
   let base_price = 0
-  if (symbol === 'USDT') {
+  if (currency.symbol === 'USDT') {
     base_price = 1
   } else {
-    const binance_pair_name = symbol + 'USDT'
+    if (config.priceConfigableCurrencies.has(currency.symbol)) {
+      return currency.admin_config_price
+    }
+    const binance_pair_name = currency.symbol + 'USDT'
     base_price = await getPrice(binance_pair_name.toUpperCase())
   }
   return base_price
@@ -54,7 +48,7 @@ export async function getUSDTCurrencyMap(prisma: PrismaClient) {
 
   for (let item of currencies) {
     // cache usdt rate
-    let usdtRate = await getUSDTPrice(item.symbol, prisma)
+    let usdtRate = await getUSDTPrice(item)
     // console.log('usdt: ', usdt)
     usdtMap.set(`${item.id}`, usdtRate)
   }
@@ -62,41 +56,44 @@ export async function getUSDTCurrencyMap(prisma: PrismaClient) {
 }
 
 export async function getConvertPrice(
-  symbol: string,
-  direction: string,
+  symbolFrom: string,
+  symbolTo: string,
   prisma: PrismaClient,
 ) {
-  const pair_name = symbol + '/' + 'USD'
+  const pair_name = symbolFrom + '/' + symbolTo
+  const pair_name2 = symbolFrom + '/' + symbolTo
 
-  const convertion_pairs = await prisma.convertionPair.findMany({
+  const convertion_pair = await prisma.convertionPair.findFirst({
     where: {
       is_enable: true,
-      name: pair_name.toUpperCase(),
+      OR: [
+        { name: pair_name.toUpperCase() },
+        { name: pair_name2.toUpperCase() },
+      ],
     },
     include: {
-      Currency: true,
+      CurrencyFrom: true,
+      CurrencyTo: true,
     },
-    take: 1,
   })
-  const convertion_pair = convertion_pairs[0]
+  // const convertion_pair = convertion_pairs[0]
   if (!convertion_pair) {
-    throw new ValidationError(
-      `Convertion pair ${pair_name.toUpperCase()} not found`,
-    )
+    throw new ValidationError({
+      message: `Convertion pair [${pair_name.toUpperCase()}] | [${pair_name2.toUpperCase()}] not found`,
+    })
   }
 
-  let base_price = 0
-  if (symbol.includes('USD')) {
-    base_price = 1
-  } else if (config.priceConfigableCurrencies.has(symbol)) {
-    base_price = convertion_pair.Currency.admin_config_price
-  } else {
-    const binance_pair_name = symbol + 'USDT'
-    base_price = await getPrice(binance_pair_name.toUpperCase())
-  }
+  const [priceFrom, priceTo] = await Promise.all([
+    getUSDTPrice(convertion_pair.CurrencyFrom),
+    getUSDTPrice(convertion_pair.CurrencyTo),
+  ])
 
+  // BNBP = BNB/USDT
+  // X = X/USDT
+
+  let base_price = math.div(priceFrom, priceTo).toNumber()
   let convert_price = 0
-  if (direction === 'MAIN_TO_EXCHANGE') {
+  if (symbolTo === convertion_pair.CurrencyTo.symbol) {
     const buy_fee = math
       .add(
         math.mul(base_price, convertion_pair.buy_fee_pct).toNumber(),
@@ -181,20 +178,7 @@ export async function getMaxConvertToTBRAmount(
   convertionPairId: string,
   prisma: PrismaClient,
 ) {
-  const totalBetAmount = await prisma.order.aggregate({
-    where: {
-      user_id: userId,
-    },
-    _sum: { bet_amount: true },
-  })
-  const totalWinAmount = await prisma.orderResult.aggregate({
-    where: {
-      user_id: userId,
-    },
-    _sum: { win_amount: true },
-  })
-  const profit =
-    (totalWinAmount._sum.win_amount ?? 0) - (totalBetAmount._sum.bet_amount ?? 0)
+  const profit = 0
   const totalCommission = await prisma.refTransaction.aggregate({
     where: {
       sponsor_id: userId,
@@ -223,24 +207,24 @@ export async function getMaxConvertToTBRAmount(
 /**
  *  Save total_convert_in/out to convertionPair
  */
-export async function updatePlatformConvertionVolume(
-  convertionPairId: string,
-  amount: number,
-  direction: ConvertionDirection,
-  prisma: PrismaClient,
-) {
-  const updateConvertionPairInput: Prisma.ConvertionPairUpdateArgs = {
-    where: {
-      id: convertionPairId,
-    },
-    data: {
-      total_convert_out: {
-        increment: direction === 'EXCHANGE_TO_MAIN' ? amount : 0,
-      },
-      total_convert_in: {
-        increment: direction === 'MAIN_TO_EXCHANGE' ? amount : 0,
-      },
-    },
-  }
-  const r = await prisma.convertionPair.update(updateConvertionPairInput)
-}
+// export async function updatePlatformConvertionVolume(
+//   convertionPairId: string,
+//   amount: number,
+//   direction: ConvertionDirection,
+//   prisma: PrismaClient,
+// ) {
+//   const updateConvertionPairInput: Prisma.ConvertionPairUpdateArgs = {
+//     where: {
+//       id: convertionPairId,
+//     },
+//     data: {
+//       total_convert_out: {
+//         increment: direction === 'EXCHANGE_TO_MAIN' ? amount : 0,
+//       },
+//       total_convert_in: {
+//         increment: direction === 'MAIN_TO_EXCHANGE' ? amount : 0,
+//       },
+//     },
+//   }
+//   const r = await prisma.convertionPair.update(updateConvertionPairInput)
+// }

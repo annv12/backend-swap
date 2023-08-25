@@ -1,6 +1,4 @@
 import {
-  getBalanceByChainWithKey,
-  getEthBalanceByChain,
   getLastBlockByChain,
   getTransactionFromBlock,
   sendEthTransactionByChain,
@@ -9,16 +7,10 @@ import {
 import logger from '../lib/logger'
 import BigNumber from 'bignumber.js'
 import { processDepositToUserMainWallet } from '../helpers/deposit-helper'
-import {
-  Currency,
-  MainWalletAddress,
-  MasterWallet,
-  PrismaClient,
-} from '@prisma/client'
+import { PrismaClient } from '@prisma/client'
 import { Wallet, ethers } from 'ethers'
 import * as R from 'ramda'
 import { getProviderByChain } from '../helpers/providers'
-import Moralis from 'moralis'
 import {
   getNativeBalance,
   getWalletTokenBalances,
@@ -375,14 +367,16 @@ export async function collectEthAndTokenToMasterWallet(prisma: PrismaClient) {
           .parseEther(crypto_data.min_eth_for_collect)
           .mul(Currency.symbol == 'ETH' ? 3 : 2)
 
-      const transactionExisted = await prisma.mainWalletTransaction.findFirst({
+        const transactionExisted = await prisma.mainWalletTransaction.findFirst(
+          {
             where: {
               user_id: mainWallet.user_id,
               Currency: {
                 id: Currency.id,
               },
             },
-      })
+          },
+        )
 
         if (!transactionExisted) continue
 
@@ -404,16 +398,16 @@ export async function collectEthAndTokenToMasterWallet(prisma: PrismaClient) {
               Currency.symbol
             } from ${address} to master wallet`,
           )
-          await notifyTele(
-            `[Transfer-eth-1] Transfer ${ethers.utils.formatEther(amount)} ${
-              Currency.symbol
-            } from ${address} to master wallet`,
-          )
           const tx_hash = await sendEthTransactionByChain(
             MainWalletAddress.encrypt_data,
             master_wallet_address,
             amount,
             crypto_data,
+          )
+          await notifyTele(
+            `[Transfer-eth-1] Transfer ${ethers.utils.formatEther(amount)} ${
+              Currency.symbol
+            } from ${address} to master wallet hash: ${tx_hash}`,
           )
           await insertTxToDb(
             tx_hash,
@@ -436,11 +430,9 @@ export async function collectEthAndTokenToMasterWallet(prisma: PrismaClient) {
               const fee = minEth.sub(nativeBalanceBeforCollect.toString())
 
               logger.info(
-                `[Transfer-fee] Transfer ${ethers.utils.formatEther(fee)} BNB from fee wallet to ${address}`,
-              )
-
-              await notifyTele(
-                `[Transfer-fee] Transfer ${ethers.utils.formatEther(fee)} BNB from fee wallet to ${address}`,
+                `[Transfer-fee] Transfer ${ethers.utils.formatEther(
+                  fee,
+                )} BNB from fee wallet to ${address}`,
               )
 
               try {
@@ -457,6 +449,11 @@ export async function collectEthAndTokenToMasterWallet(prisma: PrismaClient) {
                 await tx_fee.wait()
 
                 if (tx_fee.hash) {
+                  await notifyTele(
+                    `[Transfer-fee] Transfer ${ethers.utils.formatEther(
+                      fee,
+                    )} BNB from fee wallet to ${address} hash: ${tx_fee.hash}`,
+                  )
                   await prisma.transactionMaster.create({
                     data: {
                       Currency: {

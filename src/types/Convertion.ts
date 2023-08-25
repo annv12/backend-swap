@@ -1,18 +1,11 @@
 import { objectType, extendType, floatArg, intArg, arg, stringArg } from 'nexus'
-import { getMainWalletBalance, getExchangeWalletBalance } from '../utils'
+import { getMainWalletBalance } from '../utils'
 import { validateConvertion } from '../utils'
 import * as math from '../lib/math'
-import {
-  getConvertPrice,
-  exchangeWithBinance,
-  updateTBRPriceData,
-  getMaxConvertToTBRAmount,
-  updatePlatformConvertionVolume,
-} from '../lib/convert-utils'
+import { getConvertPrice } from '../lib/convert-utils'
 import { verifyMainWallet } from '../lib/main-wallet-utils'
 import { ValidationError } from '../lib/error-util'
-import logger from '../lib/logger'
-import config from '../config'
+import { ConvertionDirection } from '@prisma/client'
 
 export const ConvertionTransaction = objectType({
   name: 'ConvertionTransaction',
@@ -20,14 +13,13 @@ export const ConvertionTransaction = objectType({
     t.model.id
     t.model.createdAt()
     t.model.updatedAt()
-    t.model.ExchangeWallet()
-    t.model.MainWallet()
+    t.model.MainWalletFrom()
+    t.model.MainWalletTo()
     t.model.price()
     t.model.amount()
     t.model.fee()
     t.model.converted_amount()
     t.model.user_id()
-    t.model.direction()
   },
 })
 
@@ -52,128 +44,126 @@ export const convertCurrency = extendType({
       type: 'ConvertCurrencyPayload',
       args: {
         amount: floatArg({ required: true }),
-        main_wallet: stringArg({ required: true }),
-        exchange_wallet: stringArg({ required: true }),
-        direction: arg({ type: 'ConvertionDirection', required: true }),
+        currency_from: stringArg({ required: true }),
+        currency_to: stringArg({ required: true }),
       },
-      resolve: async (
-        parent,
-        { amount, direction, main_wallet, exchange_wallet },
-        ctx,
-      ) => {
+      resolve: async (parent, { amount, currency_from, currency_to }, ctx) => {
         const lock = await ctx.redlock.lock(`lock:convert:${ctx.user}`, 3000)
         try {
-          const userMainWallet = await ctx.prisma.mainWallet.findUnique({
-            where: {
-              id: main_wallet,
-            },
-            include: {
-              Currency: true,
-            },
-          })
+          const [userMainWalletFrom, userMainWalletTo] = await Promise.all([
+            ctx.prisma.mainWallet.findFirst({
+              where: {
+                currency_id: currency_from,
+                user_id: ctx.user,
+              },
+              include: {
+                Currency: true,
+              },
+            }),
+            ctx.prisma.mainWallet.findFirst({
+              where: {
+                currency_id: currency_to,
+                user_id: ctx.user,
+              },
+              include: {
+                Currency: true,
+              },
+            }),
+          ])
 
           // Verify currency config
-          const currency = userMainWallet.Currency
-          if (direction === 'MAIN_TO_EXCHANGE') {
-            if (!currency.is_enable_convert_from) {
-              throw new ValidationError({
-                message: ctx.i18n.__(
-                  'Convert from %@ is not enable'.replace(
-                    '%@',
-                    `${currency.name}`,
-                  ),
+          const currencyFrom = userMainWalletFrom.Currency
+          const currencyTo = userMainWalletTo.Currency
+          // if (direction === 'MAIN_TO_EXCHANGE') {
+          if (!currencyFrom.is_enable_convert_from) {
+            throw new ValidationError({
+              message: ctx.i18n.__(
+                'Convert from %@ is not enable'.replace(
+                  '%@',
+                  `${currencyFrom.name}`,
                 ),
-              })
-            }
-          } else if (direction === 'EXCHANGE_TO_MAIN') {
-            if (!currency.is_enable_convert_to) {
-              throw new ValidationError({
-                message: ctx.i18n.__(
-                  'Convert to %@ is not enable'.replace(
-                    '%@',
-                    `${currency.name}`,
-                  ),
-                ),
-              })
-            }
+              ),
+            })
           }
+          // }
+          // else if (direction === 'EXCHANGE_TO_MAIN') {
+          if (!currencyTo.is_enable_convert_to) {
+            throw new ValidationError({
+              message: ctx.i18n.__(
+                'Convert to %@ is not enable'.replace(
+                  '%@',
+                  `${currencyTo.name}`,
+                ),
+              ),
+            })
+          }
+          // }
 
           // Verify Main Wallet
-          const is_valid_main_wallet = await verifyMainWallet(userMainWallet)
-          if (!is_valid_main_wallet) {
+          const [is_valid_main_wallet_from, is_valid_main_wallet_to] =
+            await Promise.all([
+              verifyMainWallet(userMainWalletFrom),
+              verifyMainWallet(userMainWalletTo),
+            ])
+          if (!is_valid_main_wallet_from || !is_valid_main_wallet_to) {
             throw new ValidationError({
               message: ctx.i18n.__('invalid_main_wallet'),
             })
           }
 
-          const mainWalletBalace = await getMainWalletBalance(
-            userMainWallet,
+          const mainWalletBalaceFrom = await getMainWalletBalance(
+            userMainWalletFrom,
             ctx.prisma,
           )
 
-          const userExchangeWallet = await ctx.prisma.exchangeWallet.findUnique(
-            {
-              where: {
-                id: exchange_wallet,
-              },
-            },
-          )
-          const exchangeWalletBalance = await getExchangeWalletBalance(
-            userExchangeWallet,
-            ctx.prisma,
-          )
-
-          if (direction === 'MAIN_TO_EXCHANGE') {
-            if (mainWalletBalace < amount) {
-              throw new ValidationError({
-                message: ctx.i18n.__('not_enough_balance'),
-              })
-            }
-          } else if (direction === 'EXCHANGE_TO_MAIN') {
-            if (exchangeWalletBalance < amount) {
-              throw new ValidationError({
-                message: ctx.i18n.__('not_enough_balance'),
-              })
-            }
+          // if (direction === 'MAIN_TO_EXCHANGE') {
+          if (mainWalletBalaceFrom < amount) {
+            throw new ValidationError({
+              message: ctx.i18n.__('not_enough_balance'),
+            })
           }
+          // } else if (direction === 'EXCHANGE_TO_MAIN') {
+          //   if (exchangeWalletBalance < amount) {
+          //     throw new ValidationError({
+          //       message: ctx.i18n.__('not_enough_balance'),
+          //     })
+          //   }
+          // }
 
-          const convertionPairs = await ctx.prisma.convertionPair.findMany({
+          const convertionPair = await ctx.prisma.convertionPair.findFirst({
             where: {
-              currency_id: userMainWallet.currency_id,
+              OR: [
+                {
+                  currency_from,
+                  currency_to,
+                },
+                {
+                  currency_from: currency_to,
+                  currency_to: currency_from,
+                },
+              ],
+            },
+            include: {
+              CurrencyFrom: true,
+              CurrencyTo: true,
             },
           })
-          const convertionPair = convertionPairs[0]
+
+          if (!convertionPair) {
+            throw new ValidationError({
+              message: ctx.i18n.__(`Convertion pair not found`),
+            })
+          }
 
           if (!convertionPair.is_enable) {
             throw new ValidationError({
               message: ctx.i18n.__(`Convertion pair not enable`),
             })
           }
-          if (
-            direction === 'MAIN_TO_EXCHANGE' &&
-            convertionPair.max_convert_in &&
-            convertionPair.total_convert_in + amount >=
-              convertionPair.max_convert_in
-          ) {
-            throw new ValidationError({
-              message: ctx.i18n.__(
-                `Convert from ${currency.symbol} reached maximum`,
-              ),
-            })
-          }
-          if (
-            direction === 'EXCHANGE_TO_MAIN' &&
-            convertionPair.max_convert_out &&
-            convertionPair.total_convert_out + amount >=
-              convertionPair.max_convert_out
-          ) {
-            throw new ValidationError({
-              message: ctx.i18n.__(
-                `Convert to ${currency.symbol} reached maximum`,
-              ),
-            })
-          }
-
+          let direction: ConvertionDirection =
+            userMainWalletFrom.currency_id == convertionPair.currency_from
+              ? ConvertionDirection.MAIN_TO_EXCHANGE
+              : ConvertionDirection.EXCHANGE_TO_MAIN
           const isConvertionAmountValid = await validateConvertion(
             amount,
             convertionPair,
@@ -187,139 +177,45 @@ export const convertCurrency = extendType({
             })
           }
 
-          if (
-            (convertionPair.name === 'TBR/USD' ||
-              convertionPair.name === 'BDF/USD') &&
-            direction === 'EXCHANGE_TO_MAIN'
-          ) {
-            const maxOut = await getMaxConvertToTBRAmount(
-              ctx.user,
-              convertionPair.id,
-              ctx.prisma,
-            )
-            if (amount > maxOut) {
-              throw new ValidationError({
-                message: ctx.i18n.__(
-                  'Amount over max out %@USD'.replace('%@', `${maxOut}`),
-                ),
-              })
-            }
-          }
-
           let price = await getConvertPrice(
-            userMainWallet.Currency.symbol,
-            direction,
+            userMainWalletFrom.Currency.symbol,
+            userMainWalletTo.Currency.symbol,
+            // direction,
             ctx.prisma,
           )
 
           const converted_amount = math.mul(amount, price).toNumber()
-          const convcertionTransaction =
+          const convertionTransaction =
             await ctx.prisma.convertionTransaction.create({
               data: {
                 amount,
                 price,
-                direction,
+                direction: ConvertionDirection.MAIN_TO_MAIN,
                 converted_amount,
-                MainWallet: {
-                  connect: {
-                    id: userMainWallet.id,
-                  },
-                },
-                ExchangeWallet: {
-                  connect: {
-                    id: userExchangeWallet.id,
-                  },
-                },
-                ConvertionPair: {
-                  connect: {
-                    id: convertionPair.id,
-                  },
-                },
-                User: {
-                  connect: {
-                    id: ctx.user,
-                  },
-                },
+                main_wallet_id_from: userMainWalletFrom.id,
+                main_wallet_id_to: userMainWalletTo.id,
+                convertion_pair_id: convertionPair.id,
+                user_id: ctx.user,
               },
             })
-
-          if (direction === 'MAIN_TO_EXCHANGE') {
-            await ctx.prisma.mainWalletChange.create({
+          await Promise.all([
+            ctx.prisma.mainWalletChange.create({
               data: {
-                MainWallet: {
-                  connect: {
-                    id: userMainWallet.id,
-                  },
-                },
-                event_id: convcertionTransaction.id,
+                main_wallet_id: userMainWalletFrom.id,
+                event_id: convertionTransaction.id,
                 event_type: 'CONVERT',
                 amount: -amount,
               },
-            })
-            await ctx.prisma.exchangeWalletChange.create({
+            }),
+            ctx.prisma.mainWalletChange.create({
               data: {
-                ExchangeWallet: {
-                  connect: {
-                    id: userExchangeWallet.id,
-                  },
-                },
-                amount: math.mul(amount, price).toNumber(),
-                event_id: convcertionTransaction.id,
-                event_type: 'CONVERT',
-              },
-            })
-          } else if (direction === 'EXCHANGE_TO_MAIN') {
-            await ctx.prisma.exchangeWalletChange.create({
-              data: {
-                ExchangeWallet: {
-                  connect: {
-                    id: userExchangeWallet.id,
-                  },
-                },
-                amount: -amount,
-                event_id: convcertionTransaction.id,
-                event_type: 'CONVERT',
-              },
-            })
-            await ctx.prisma.mainWalletChange.create({
-              data: {
-                MainWallet: {
-                  connect: {
-                    id: userMainWallet.id,
-                  },
-                },
-                event_id: convcertionTransaction.id,
+                main_wallet_id: userMainWalletTo.id,
+                event_id: convertionTransaction.id,
                 event_type: 'CONVERT',
                 amount: converted_amount,
               },
-            })
-          }
-
-          // save total_convert_in/out to convertion pair
-          await updatePlatformConvertionVolume(
-            convertionPair.id,
-            amount,
-            direction,
-            ctx.prisma,
-          )
-
-          // if (userMainWallet.Currency.symbol === 'TBR') {
-          //   await updateTBRPriceData(amount, ctx.prisma)
-          // }
-
-          // Exchange with Binance
-          // if (['ETH', 'BTC'].includes(userMainWallet.Currency.symbol)) {
-          //   const binance_symbol = userMainWallet.Currency.symbol + 'USDT'
-          //   const binance_side =
-          //     direction === 'MAIN_TO_EXCHANGE' ? 'SELL' : 'BUY'
-          //   const binance_amount =
-          //     direction === 'MAIN_TO_EXCHANGE' ? amount : converted_amount
-          //   exchangeWithBinance(
-          //     binance_symbol.toUpperCase(),
-          //     binance_side,
-          //     binance_amount,
-          //   )
-          // }
+            }),
+          ])
 
           return { success: true }
         } catch (error) {
@@ -361,36 +257,21 @@ export const convertions = extendType({
     t.field('getConvetionPrice', {
       type: 'Float',
       args: {
-        currencySymbol: stringArg(),
-        direction: arg({ type: 'ConvertionDirection' }),
+        currencySymbolFrom: stringArg({ required: true }),
+        currencySymbolTo: stringArg({ required: true }),
       },
-      resolve: async (_, args, ctx) => {
-        // Admin config price
-        if (config.priceConfigableCurrencies.has(args.currencySymbol)) {
-          const currency = await ctx.prisma.currency.findFirst({
-            where: {
-              symbol: args.currencySymbol,
-            },
-          })
-          if (currency && currency.admin_config_price) {
-            const price =
-              args.direction === 'MAIN_TO_EXCHANGE'
-                ? currency.admin_config_price
-                : 1 / currency.admin_config_price
-            return price
-          } else {
-            logger.error(
-              `Currency ${args.currencySymbol} price is not configured!`,
-            )
-          }
-        }
-
-        // get price from 3rd party service
+      resolve: async (_, { currencySymbolFrom, currencySymbolTo }, ctx) => {
+        console.log(
+          '🚀 ~ file: Convertion.ts:276 ~ resolve: ~ currencySymbolFrom, currencySymbolTo:',
+          currencySymbolFrom,
+          currencySymbolTo,
+        )
         const res = await getConvertPrice(
-          args.currencySymbol,
-          args.direction,
+          currencySymbolFrom,
+          currencySymbolTo,
           ctx.prisma,
         )
+        console.log('🚀 ~ file: Convertion.ts:281 ~ resolve: ~ res:', res)
         return res
       },
     })

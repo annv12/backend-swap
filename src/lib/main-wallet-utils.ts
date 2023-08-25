@@ -8,7 +8,7 @@ import {
   generateAddress as generateEthereumAddress,
   // getTransactionInfo as getEthereumTransactionInfo,
 } from '../eth-service'
-import { getExchangeWalletBalance, getMainWalletBalance } from '../utils'
+import { getMainWalletBalance } from '../utils'
 import logger from './logger'
 import { sendWithdrawSucceededMail, sendWithdrawFailedMail } from './mail-utils'
 import math from './math'
@@ -114,26 +114,6 @@ export async function generateWalletAddress(
     const { address } = await generateWalletAddressV2()
     return { address, encrypt_data: '' }
   }
-}
-
-export async function updateExchangeWalletBalanceCacheTime() {
-  const exchange_wallets = await prisma.exchangeWallet.findMany()
-  exchange_wallets.forEach(async (exchange_wallet) => {
-    const balance = await getExchangeWalletBalance(exchange_wallet, prisma)
-    await prisma.exchangeWallet.update({
-      where: {
-        id: exchange_wallet.id,
-      },
-      data: {
-        base_balance: balance,
-        balance_cache_datetime: new Date(),
-      },
-    })
-    logger.info('Update Exchange Wallet Balance Cache Time', {
-      wallet_id: exchange_wallet.id,
-      balance: balance,
-    })
-  })
 }
 
 export async function verifyMainWallet(main_wallet: MainWallet) {

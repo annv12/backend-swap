@@ -3,7 +3,7 @@ export type Config = {
 }
 
 export const config: Config = {
-  priceConfigableCurrencies: new Set(['BDF', 'TBR']),
+  priceConfigableCurrencies: new Set(['BDF', 'TBR', 'X']),
 }
 
 export default config

@@ -10,7 +10,7 @@ import { getUSDTPrice } from '../../lib/convert-utils'
 import math from '../../lib/math'
 import { getMainWalletBalance } from '../../utils'
 import { getConvertionSumary } from './convertion'
-import { exchangeSumary } from './exchange'
+// import { exchangeSumary } from './exchange'
 import { getOrderByQuery } from '../../lib/utils'
 import { Permission, Prisma } from '@prisma/client'
 import { checkPermissions } from '../../lib/auth-utils'
@@ -28,9 +28,9 @@ export const walletGeneral = objectType({
 export const userSumary = objectType({
   name: 'UserSumary',
   definition: (t) => {
-    t.field('exchange', {
-      type: 'ExchangeSumary',
-    })
+    // t.field('exchange', {
+    //   type: 'ExchangeSumary',
+    // })
     t.field('convertion', {
       type: 'ConvertionSumaries',
     })
@@ -268,7 +268,7 @@ export const adUserQuery = extendType({
         }
         let usdtMap = new Map()
         for (let item of currencies) {
-          let usdt = await getUSDTPrice(item.symbol, ctx.prisma)
+          let usdt = await getUSDTPrice(item)
           // console.log('usdt: ', usdt)
           usdtMap.set(item.id, usdt)
         }
@@ -326,7 +326,7 @@ export const adUserQuery = extendType({
           totalBalance = math.add(estimateUsdBalance, totalBalance).toNumber()
         })
         // get exchange sumary
-        let exchange = await exchangeSumary(ctx, user_id)
+        // let exchange = await exchangeSumary(ctx, user_id)
         let convertion = await getConvertionSumary(ctx, user_id)
         // console.log('convertion: ', convertion)
         // console.log('userSumary: ', {
@@ -341,7 +341,7 @@ export const adUserQuery = extendType({
         // })
         return {
           convertion,
-          exchange,
+          // exchange,
           general: {
             balance: totalBalance,
             deposit: totaldeposit,
@@ -467,7 +467,7 @@ export const adUserQuery = extendType({
       resolve: async (_, { username }, ctx) => {
         return await ctx.prisma.user.findFirst({
           where: {
-            username
+            username,
           },
         })
       },

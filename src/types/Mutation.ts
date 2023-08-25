@@ -6,7 +6,7 @@ export const Mutation = mutationType({
   definition(t) {
     t.crud.updateOneCurrency({
       alias: 'adminUpdateOneCurrency',
-      type: 'AdminCurrency'
+      type: 'AdminCurrency',
     })
 
     t.field('createCurrency', {
@@ -18,7 +18,10 @@ export const Mutation = mutationType({
       },
       resolve: async (parent, { name, symbol, icon }, ctx) => {
         const userId = getUserId(ctx)
-        if (!userId) throw new ValidationError(ctx.i18n.__('Not authenticated'))
+        if (!userId)
+          throw new ValidationError({
+            message: ctx.i18n.__('Not authenticated'),
+          })
         return await ctx.prisma.currency.create({
           data: {
             name,

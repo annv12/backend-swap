@@ -177,34 +177,57 @@ export interface NexusGenInputs {
   BuyPromotionCodeTransactionWhereUniqueInput: { // input type
     id?: string | null; // String
   }
-  ConvertionPairCreateManyCurrencyInput: { // input type
+  ConvertionPairCreateManyCurrencyFromInput: { // input type
     buy_fee_flat?: number | null; // Float
     buy_fee_pct?: number | null; // Float
     buy_max_amount?: number | null; // Float
     buy_min_amount?: number | null; // Float
     createdAt?: NexusGenScalars['DateTime'] | null; // DateTime
+    currency_to: string; // String!
     id?: string | null; // String
     is_enable?: boolean | null; // Boolean
-    max_convert_in?: number | null; // Float
-    max_convert_out?: number | null; // Float
     name: string; // String!
     sell_fee_flat?: number | null; // Float
     sell_fee_pct?: number | null; // Float
     sell_max_amount?: number | null; // Float
     sell_min_amount?: number | null; // Float
-    total_convert_in?: number | null; // Float
-    total_convert_out?: number | null; // Float
     updatedAt?: NexusGenScalars['DateTime'] | null; // DateTime
   }
-  ConvertionPairCreateManyCurrencyInputEnvelope: { // input type
-    data?: NexusGenInputs['ConvertionPairCreateManyCurrencyInput'][] | null; // [ConvertionPairCreateManyCurrencyInput!]
+  ConvertionPairCreateManyCurrencyFromInputEnvelope: { // input type
+    data?: NexusGenInputs['ConvertionPairCreateManyCurrencyFromInput'][] | null; // [ConvertionPairCreateManyCurrencyFromInput!]
     skipDuplicates?: boolean | null; // Boolean
   }
-  ConvertionPairCreateNestedManyWithoutCurrencyInput: { // input type
+  ConvertionPairCreateManyCurrencyToInput: { // input type
+    buy_fee_flat?: number | null; // Float
+    buy_fee_pct?: number | null; // Float
+    buy_max_amount?: number | null; // Float
+    buy_min_amount?: number | null; // Float
+    createdAt?: NexusGenScalars['DateTime'] | null; // DateTime
+    currency_from: string; // String!
+    id?: string | null; // String
+    is_enable?: boolean | null; // Boolean
+    name: string; // String!
+    sell_fee_flat?: number | null; // Float
+    sell_fee_pct?: number | null; // Float
+    sell_max_amount?: number | null; // Float
+    sell_min_amount?: number | null; // Float
+    updatedAt?: NexusGenScalars['DateTime'] | null; // DateTime
+  }
+  ConvertionPairCreateManyCurrencyToInputEnvelope: { // input type
+    data?: NexusGenInputs['ConvertionPairCreateManyCurrencyToInput'][] | null; // [ConvertionPairCreateManyCurrencyToInput!]
+    skipDuplicates?: boolean | null; // Boolean
+  }
+  ConvertionPairCreateNestedManyWithoutCurrencyFromInput: { // input type
     connect?: NexusGenInputs['ConvertionPairWhereUniqueInput'][] | null; // [ConvertionPairWhereUniqueInput!]
-    connectOrCreate?: NexusGenInputs['ConvertionPairCreateOrConnectWithoutCurrencyInput'][] | null; // [ConvertionPairCreateOrConnectWithoutCurrencyInput!]
-    create?: NexusGenInputs['ConvertionPairCreateWithoutCurrencyInput'][] | null; // [ConvertionPairCreateWithoutCurrencyInput!]
-    createMany?: NexusGenInputs['ConvertionPairCreateManyCurrencyInputEnvelope'] | null; // ConvertionPairCreateManyCurrencyInputEnvelope
+    connectOrCreate?: NexusGenInputs['ConvertionPairCreateOrConnectWithoutCurrencyFromInput'][] | null; // [ConvertionPairCreateOrConnectWithoutCurrencyFromInput!]
+    create?: NexusGenInputs['ConvertionPairCreateWithoutCurrencyFromInput'][] | null; // [ConvertionPairCreateWithoutCurrencyFromInput!]
+    createMany?: NexusGenInputs['ConvertionPairCreateManyCurrencyFromInputEnvelope'] | null; // ConvertionPairCreateManyCurrencyFromInputEnvelope
+  }
+  ConvertionPairCreateNestedManyWithoutCurrencyToInput: { // input type
+    connect?: NexusGenInputs['ConvertionPairWhereUniqueInput'][] | null; // [ConvertionPairWhereUniqueInput!]
+    connectOrCreate?: NexusGenInputs['ConvertionPairCreateOrConnectWithoutCurrencyToInput'][] | null; // [ConvertionPairCreateOrConnectWithoutCurrencyToInput!]
+    create?: NexusGenInputs['ConvertionPairCreateWithoutCurrencyToInput'][] | null; // [ConvertionPairCreateWithoutCurrencyToInput!]
+    createMany?: NexusGenInputs['ConvertionPairCreateManyCurrencyToInputEnvelope'] | null; // ConvertionPairCreateManyCurrencyToInputEnvelope
   }
   ConvertionPairCreateNestedOneWithoutConvertionTransactionInput: { // input type
     connect?: NexusGenInputs['ConvertionPairWhereUniqueInput'] | null; // ConvertionPairWhereUniqueInput
@@ -215,8 +238,12 @@ export interface NexusGenInputs {
     create: NexusGenInputs['ConvertionPairCreateWithoutConvertionTransactionInput']; // ConvertionPairCreateWithoutConvertionTransactionInput!
     where: NexusGenInputs['ConvertionPairWhereUniqueInput']; // ConvertionPairWhereUniqueInput!
   }
-  ConvertionPairCreateOrConnectWithoutCurrencyInput: { // input type
-    create: NexusGenInputs['ConvertionPairCreateWithoutCurrencyInput']; // ConvertionPairCreateWithoutCurrencyInput!
+  ConvertionPairCreateOrConnectWithoutCurrencyFromInput: { // input type
+    create: NexusGenInputs['ConvertionPairCreateWithoutCurrencyFromInput']; // ConvertionPairCreateWithoutCurrencyFromInput!
+    where: NexusGenInputs['ConvertionPairWhereUniqueInput']; // ConvertionPairWhereUniqueInput!
+  }
+  ConvertionPairCreateOrConnectWithoutCurrencyToInput: { // input type
+    create: NexusGenInputs['ConvertionPairCreateWithoutCurrencyToInput']; // ConvertionPairCreateWithoutCurrencyToInput!
     where: NexusGenInputs['ConvertionPairWhereUniqueInput']; // ConvertionPairWhereUniqueInput!
   }
   ConvertionPairCreateWithoutConvertionTransactionInput: { // input type
@@ -225,38 +252,49 @@ export interface NexusGenInputs {
     buy_max_amount?: number | null; // Float
     buy_min_amount?: number | null; // Float
     createdAt?: NexusGenScalars['DateTime'] | null; // DateTime
-    Currency: NexusGenInputs['CurrencyCreateNestedOneWithoutConvertionPairInput']; // CurrencyCreateNestedOneWithoutConvertionPairInput!
+    CurrencyFrom: NexusGenInputs['CurrencyCreateNestedOneWithoutConvertionPairFromInput']; // CurrencyCreateNestedOneWithoutConvertionPairFromInput!
+    CurrencyTo: NexusGenInputs['CurrencyCreateNestedOneWithoutConvertionPairToInput']; // CurrencyCreateNestedOneWithoutConvertionPairToInput!
     id?: string | null; // String
     is_enable?: boolean | null; // Boolean
-    max_convert_in?: number | null; // Float
-    max_convert_out?: number | null; // Float
     name: string; // String!
     sell_fee_flat?: number | null; // Float
     sell_fee_pct?: number | null; // Float
     sell_max_amount?: number | null; // Float
     sell_min_amount?: number | null; // Float
-    total_convert_in?: number | null; // Float
-    total_convert_out?: number | null; // Float
     updatedAt?: NexusGenScalars['DateTime'] | null; // DateTime
   }
-  ConvertionPairCreateWithoutCurrencyInput: { // input type
+  ConvertionPairCreateWithoutCurrencyFromInput: { // input type
     buy_fee_flat?: number | null; // Float
     buy_fee_pct?: number | null; // Float
     buy_max_amount?: number | null; // Float
     buy_min_amount?: number | null; // Float
     ConvertionTransaction?: NexusGenInputs['ConvertionTransactionCreateNestedManyWithoutConvertionPairInput'] | null; // ConvertionTransactionCreateNestedManyWithoutConvertionPairInput
     createdAt?: NexusGenScalars['DateTime'] | null; // DateTime
+    CurrencyTo: NexusGenInputs['CurrencyCreateNestedOneWithoutConvertionPairToInput']; // CurrencyCreateNestedOneWithoutConvertionPairToInput!
     id?: string | null; // String
     is_enable?: boolean | null; // Boolean
-    max_convert_in?: number | null; // Float
-    max_convert_out?: number | null; // Float
     name: string; // String!
     sell_fee_flat?: number | null; // Float
     sell_fee_pct?: number | null; // Float
     sell_max_amount?: number | null; // Float
     sell_min_amount?: number | null; // Float
-    total_convert_in?: number | null; // Float
-    total_convert_out?: number | null; // Float
+    updatedAt?: NexusGenScalars['DateTime'] | null; // DateTime
+  }
+  ConvertionPairCreateWithoutCurrencyToInput: { // input type
+    buy_fee_flat?: number | null; // Float
+    buy_fee_pct?: number | null; // Float
+    buy_max_amount?: number | null; // Float
+    buy_min_amount?: number | null; // Float
+    ConvertionTransaction?: NexusGenInputs['ConvertionTransactionCreateNestedManyWithoutConvertionPairInput'] | null; // ConvertionTransactionCreateNestedManyWithoutConvertionPairInput
+    createdAt?: NexusGenScalars['DateTime'] | null; // DateTime
+    CurrencyFrom: NexusGenInputs['CurrencyCreateNestedOneWithoutConvertionPairFromInput']; // CurrencyCreateNestedOneWithoutConvertionPairFromInput!
+    id?: string | null; // String
+    is_enable?: boolean | null; // Boolean
+    name: string; // String!
+    sell_fee_flat?: number | null; // Float
+    sell_fee_pct?: number | null; // Float
+    sell_max_amount?: number | null; // Float
+    sell_min_amount?: number | null; // Float
     updatedAt?: NexusGenScalars['DateTime'] | null; // DateTime
   }
   ConvertionPairScalarWhereInput: { // input type
@@ -266,11 +304,10 @@ export interface NexusGenInputs {
     buy_max_amount?: NexusGenInputs['FloatNullableFilter'] | null; // FloatNullableFilter
     buy_min_amount?: NexusGenInputs['FloatNullableFilter'] | null; // FloatNullableFilter
     createdAt?: NexusGenInputs['DateTimeFilter'] | null; // DateTimeFilter
-    currency_id?: NexusGenInputs['StringFilter'] | null; // StringFilter
+    currency_from?: NexusGenInputs['StringFilter'] | null; // StringFilter
+    currency_to?: NexusGenInputs['StringFilter'] | null; // StringFilter
     id?: NexusGenInputs['StringFilter'] | null; // StringFilter
     is_enable?: NexusGenInputs['BoolFilter'] | null; // BoolFilter
-    max_convert_in?: NexusGenInputs['FloatNullableFilter'] | null; // FloatNullableFilter
-    max_convert_out?: NexusGenInputs['FloatNullableFilter'] | null; // FloatNullableFilter
     name?: NexusGenInputs['StringFilter'] | null; // StringFilter
     NOT?: NexusGenInputs['ConvertionPairScalarWhereInput'][] | null; // [ConvertionPairScalarWhereInput!]
     OR?: NexusGenInputs['ConvertionPairScalarWhereInput'][] | null; // [ConvertionPairScalarWhereInput!]
@@ -278,8 +315,6 @@ export interface NexusGenInputs {
     sell_fee_pct?: NexusGenInputs['FloatNullableFilter'] | null; // FloatNullableFilter
     sell_max_amount?: NexusGenInputs['FloatNullableFilter'] | null; // FloatNullableFilter
     sell_min_amount?: NexusGenInputs['FloatNullableFilter'] | null; // FloatNullableFilter
-    total_convert_in?: NexusGenInputs['FloatNullableFilter'] | null; // FloatNullableFilter
-    total_convert_out?: NexusGenInputs['FloatNullableFilter'] | null; // FloatNullableFilter
     updatedAt?: NexusGenInputs['DateTimeFilter'] | null; // DateTimeFilter
   }
   ConvertionPairUpdateInput: { // input type
@@ -289,18 +324,15 @@ export interface NexusGenInputs {
     buy_min_amount?: NexusGenInputs['NullableFloatFieldUpdateOperationsInput'] | null; // NullableFloatFieldUpdateOperationsInput
     ConvertionTransaction?: NexusGenInputs['ConvertionTransactionUpdateManyWithoutConvertionPairInput'] | null; // ConvertionTransactionUpdateManyWithoutConvertionPairInput
     createdAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
-    Currency?: NexusGenInputs['CurrencyUpdateOneRequiredWithoutConvertionPairInput'] | null; // CurrencyUpdateOneRequiredWithoutConvertionPairInput
+    CurrencyFrom?: NexusGenInputs['CurrencyUpdateOneRequiredWithoutConvertionPairFromInput'] | null; // CurrencyUpdateOneRequiredWithoutConvertionPairFromInput
+    CurrencyTo?: NexusGenInputs['CurrencyUpdateOneRequiredWithoutConvertionPairToInput'] | null; // CurrencyUpdateOneRequiredWithoutConvertionPairToInput
     id?: NexusGenInputs['StringFieldUpdateOperationsInput'] | null; // StringFieldUpdateOperationsInput
     is_enable?: NexusGenInputs['BoolFieldUpdateOperationsInput'] | null; // BoolFieldUpdateOperationsInput
-    max_convert_in?: NexusGenInputs['NullableFloatFieldUpdateOperationsInput'] | null; // NullableFloatFieldUpdateOperationsInput
-    max_convert_out?: NexusGenInputs['NullableFloatFieldUpdateOperationsInput'] | null; // NullableFloatFieldUpdateOperationsInput
     name?: NexusGenInputs['StringFieldUpdateOperationsInput'] | null; // StringFieldUpdateOperationsInput
     sell_fee_flat?: NexusGenInputs['NullableFloatFieldUpdateOperationsInput'] | null; // NullableFloatFieldUpdateOperationsInput
     sell_fee_pct?: NexusGenInputs['NullableFloatFieldUpdateOperationsInput'] | null; // NullableFloatFieldUpdateOperationsInput
     sell_max_amount?: NexusGenInputs['NullableFloatFieldUpdateOperationsInput'] | null; // NullableFloatFieldUpdateOperationsInput
     sell_min_amount?: NexusGenInputs['NullableFloatFieldUpdateOperationsInput'] | null; // NullableFloatFieldUpdateOperationsInput
-    total_convert_in?: NexusGenInputs['NullableFloatFieldUpdateOperationsInput'] | null; // NullableFloatFieldUpdateOperationsInput
-    total_convert_out?: NexusGenInputs['NullableFloatFieldUpdateOperationsInput'] | null; // NullableFloatFieldUpdateOperationsInput
     updatedAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
   }
   ConvertionPairUpdateManyMutationInput: { // input type
@@ -311,33 +343,46 @@ export interface NexusGenInputs {
     createdAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
     id?: NexusGenInputs['StringFieldUpdateOperationsInput'] | null; // StringFieldUpdateOperationsInput
     is_enable?: NexusGenInputs['BoolFieldUpdateOperationsInput'] | null; // BoolFieldUpdateOperationsInput
-    max_convert_in?: NexusGenInputs['NullableFloatFieldUpdateOperationsInput'] | null; // NullableFloatFieldUpdateOperationsInput
-    max_convert_out?: NexusGenInputs['NullableFloatFieldUpdateOperationsInput'] | null; // NullableFloatFieldUpdateOperationsInput
     name?: NexusGenInputs['StringFieldUpdateOperationsInput'] | null; // StringFieldUpdateOperationsInput
     sell_fee_flat?: NexusGenInputs['NullableFloatFieldUpdateOperationsInput'] | null; // NullableFloatFieldUpdateOperationsInput
     sell_fee_pct?: NexusGenInputs['NullableFloatFieldUpdateOperationsInput'] | null; // NullableFloatFieldUpdateOperationsInput
     sell_max_amount?: NexusGenInputs['NullableFloatFieldUpdateOperationsInput'] | null; // NullableFloatFieldUpdateOperationsInput
     sell_min_amount?: NexusGenInputs['NullableFloatFieldUpdateOperationsInput'] | null; // NullableFloatFieldUpdateOperationsInput
-    total_convert_in?: NexusGenInputs['NullableFloatFieldUpdateOperationsInput'] | null; // NullableFloatFieldUpdateOperationsInput
-    total_convert_out?: NexusGenInputs['NullableFloatFieldUpdateOperationsInput'] | null; // NullableFloatFieldUpdateOperationsInput
     updatedAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
   }
-  ConvertionPairUpdateManyWithWhereWithoutCurrencyInput: { // input type
+  ConvertionPairUpdateManyWithWhereWithoutCurrencyFromInput: { // input type
     data: NexusGenInputs['ConvertionPairUpdateManyMutationInput']; // ConvertionPairUpdateManyMutationInput!
     where: NexusGenInputs['ConvertionPairScalarWhereInput']; // ConvertionPairScalarWhereInput!
   }
-  ConvertionPairUpdateManyWithoutCurrencyInput: { // input type
+  ConvertionPairUpdateManyWithWhereWithoutCurrencyToInput: { // input type
+    data: NexusGenInputs['ConvertionPairUpdateManyMutationInput']; // ConvertionPairUpdateManyMutationInput!
+    where: NexusGenInputs['ConvertionPairScalarWhereInput']; // ConvertionPairScalarWhereInput!
+  }
+  ConvertionPairUpdateManyWithoutCurrencyFromInput: { // input type
     connect?: NexusGenInputs['ConvertionPairWhereUniqueInput'][] | null; // [ConvertionPairWhereUniqueInput!]
-    connectOrCreate?: NexusGenInputs['ConvertionPairCreateOrConnectWithoutCurrencyInput'][] | null; // [ConvertionPairCreateOrConnectWithoutCurrencyInput!]
-    create?: NexusGenInputs['ConvertionPairCreateWithoutCurrencyInput'][] | null; // [ConvertionPairCreateWithoutCurrencyInput!]
-    createMany?: NexusGenInputs['ConvertionPairCreateManyCurrencyInputEnvelope'] | null; // ConvertionPairCreateManyCurrencyInputEnvelope
+    connectOrCreate?: NexusGenInputs['ConvertionPairCreateOrConnectWithoutCurrencyFromInput'][] | null; // [ConvertionPairCreateOrConnectWithoutCurrencyFromInput!]
+    create?: NexusGenInputs['ConvertionPairCreateWithoutCurrencyFromInput'][] | null; // [ConvertionPairCreateWithoutCurrencyFromInput!]
+    createMany?: NexusGenInputs['ConvertionPairCreateManyCurrencyFromInputEnvelope'] | null; // ConvertionPairCreateManyCurrencyFromInputEnvelope
     delete?: NexusGenInputs['ConvertionPairWhereUniqueInput'][] | null; // [ConvertionPairWhereUniqueInput!]
     deleteMany?: NexusGenInputs['ConvertionPairScalarWhereInput'][] | null; // [ConvertionPairScalarWhereInput!]
     disconnect?: NexusGenInputs['ConvertionPairWhereUniqueInput'][] | null; // [ConvertionPairWhereUniqueInput!]
     set?: NexusGenInputs['ConvertionPairWhereUniqueInput'][] | null; // [ConvertionPairWhereUniqueInput!]
-    update?: NexusGenInputs['ConvertionPairUpdateWithWhereUniqueWithoutCurrencyInput'][] | null; // [ConvertionPairUpdateWithWhereUniqueWithoutCurrencyInput!]
-    updateMany?: NexusGenInputs['ConvertionPairUpdateManyWithWhereWithoutCurrencyInput'][] | null; // [ConvertionPairUpdateManyWithWhereWithoutCurrencyInput!]
-    upsert?: NexusGenInputs['ConvertionPairUpsertWithWhereUniqueWithoutCurrencyInput'][] | null; // [ConvertionPairUpsertWithWhereUniqueWithoutCurrencyInput!]
+    update?: NexusGenInputs['ConvertionPairUpdateWithWhereUniqueWithoutCurrencyFromInput'][] | null; // [ConvertionPairUpdateWithWhereUniqueWithoutCurrencyFromInput!]
+    updateMany?: NexusGenInputs['ConvertionPairUpdateManyWithWhereWithoutCurrencyFromInput'][] | null; // [ConvertionPairUpdateManyWithWhereWithoutCurrencyFromInput!]
+    upsert?: NexusGenInputs['ConvertionPairUpsertWithWhereUniqueWithoutCurrencyFromInput'][] | null; // [ConvertionPairUpsertWithWhereUniqueWithoutCurrencyFromInput!]
+  }
+  ConvertionPairUpdateManyWithoutCurrencyToInput: { // input type
+    connect?: NexusGenInputs['ConvertionPairWhereUniqueInput'][] | null; // [ConvertionPairWhereUniqueInput!]
+    connectOrCreate?: NexusGenInputs['ConvertionPairCreateOrConnectWithoutCurrencyToInput'][] | null; // [ConvertionPairCreateOrConnectWithoutCurrencyToInput!]
+    create?: NexusGenInputs['ConvertionPairCreateWithoutCurrencyToInput'][] | null; // [ConvertionPairCreateWithoutCurrencyToInput!]
+    createMany?: NexusGenInputs['ConvertionPairCreateManyCurrencyToInputEnvelope'] | null; // ConvertionPairCreateManyCurrencyToInputEnvelope
+    delete?: NexusGenInputs['ConvertionPairWhereUniqueInput'][] | null; // [ConvertionPairWhereUniqueInput!]
+    deleteMany?: NexusGenInputs['ConvertionPairScalarWhereInput'][] | null; // [ConvertionPairScalarWhereInput!]
+    disconnect?: NexusGenInputs['ConvertionPairWhereUniqueInput'][] | null; // [ConvertionPairWhereUniqueInput!]
+    set?: NexusGenInputs['ConvertionPairWhereUniqueInput'][] | null; // [ConvertionPairWhereUniqueInput!]
+    update?: NexusGenInputs['ConvertionPairUpdateWithWhereUniqueWithoutCurrencyToInput'][] | null; // [ConvertionPairUpdateWithWhereUniqueWithoutCurrencyToInput!]
+    updateMany?: NexusGenInputs['ConvertionPairUpdateManyWithWhereWithoutCurrencyToInput'][] | null; // [ConvertionPairUpdateManyWithWhereWithoutCurrencyToInput!]
+    upsert?: NexusGenInputs['ConvertionPairUpsertWithWhereUniqueWithoutCurrencyToInput'][] | null; // [ConvertionPairUpsertWithWhereUniqueWithoutCurrencyToInput!]
   }
   ConvertionPairUpdateOneRequiredWithoutConvertionTransactionInput: { // input type
     connect?: NexusGenInputs['ConvertionPairWhereUniqueInput'] | null; // ConvertionPairWhereUniqueInput
@@ -346,8 +391,12 @@ export interface NexusGenInputs {
     update?: NexusGenInputs['ConvertionPairUpdateWithoutConvertionTransactionInput'] | null; // ConvertionPairUpdateWithoutConvertionTransactionInput
     upsert?: NexusGenInputs['ConvertionPairUpsertWithoutConvertionTransactionInput'] | null; // ConvertionPairUpsertWithoutConvertionTransactionInput
   }
-  ConvertionPairUpdateWithWhereUniqueWithoutCurrencyInput: { // input type
-    data: NexusGenInputs['ConvertionPairUpdateWithoutCurrencyInput']; // ConvertionPairUpdateWithoutCurrencyInput!
+  ConvertionPairUpdateWithWhereUniqueWithoutCurrencyFromInput: { // input type
+    data: NexusGenInputs['ConvertionPairUpdateWithoutCurrencyFromInput']; // ConvertionPairUpdateWithoutCurrencyFromInput!
+    where: NexusGenInputs['ConvertionPairWhereUniqueInput']; // ConvertionPairWhereUniqueInput!
+  }
+  ConvertionPairUpdateWithWhereUniqueWithoutCurrencyToInput: { // input type
+    data: NexusGenInputs['ConvertionPairUpdateWithoutCurrencyToInput']; // ConvertionPairUpdateWithoutCurrencyToInput!
     where: NexusGenInputs['ConvertionPairWhereUniqueInput']; // ConvertionPairWhereUniqueInput!
   }
   ConvertionPairUpdateWithoutConvertionTransactionInput: { // input type
@@ -356,43 +405,59 @@ export interface NexusGenInputs {
     buy_max_amount?: NexusGenInputs['NullableFloatFieldUpdateOperationsInput'] | null; // NullableFloatFieldUpdateOperationsInput
     buy_min_amount?: NexusGenInputs['NullableFloatFieldUpdateOperationsInput'] | null; // NullableFloatFieldUpdateOperationsInput
     createdAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
-    Currency?: NexusGenInputs['CurrencyUpdateOneRequiredWithoutConvertionPairInput'] | null; // CurrencyUpdateOneRequiredWithoutConvertionPairInput
+    CurrencyFrom?: NexusGenInputs['CurrencyUpdateOneRequiredWithoutConvertionPairFromInput'] | null; // CurrencyUpdateOneRequiredWithoutConvertionPairFromInput
+    CurrencyTo?: NexusGenInputs['CurrencyUpdateOneRequiredWithoutConvertionPairToInput'] | null; // CurrencyUpdateOneRequiredWithoutConvertionPairToInput
     id?: NexusGenInputs['StringFieldUpdateOperationsInput'] | null; // StringFieldUpdateOperationsInput
     is_enable?: NexusGenInputs['BoolFieldUpdateOperationsInput'] | null; // BoolFieldUpdateOperationsInput
-    max_convert_in?: NexusGenInputs['NullableFloatFieldUpdateOperationsInput'] | null; // NullableFloatFieldUpdateOperationsInput
-    max_convert_out?: NexusGenInputs['NullableFloatFieldUpdateOperationsInput'] | null; // NullableFloatFieldUpdateOperationsInput
     name?: NexusGenInputs['StringFieldUpdateOperationsInput'] | null; // StringFieldUpdateOperationsInput
     sell_fee_flat?: NexusGenInputs['NullableFloatFieldUpdateOperationsInput'] | null; // NullableFloatFieldUpdateOperationsInput
     sell_fee_pct?: NexusGenInputs['NullableFloatFieldUpdateOperationsInput'] | null; // NullableFloatFieldUpdateOperationsInput
     sell_max_amount?: NexusGenInputs['NullableFloatFieldUpdateOperationsInput'] | null; // NullableFloatFieldUpdateOperationsInput
     sell_min_amount?: NexusGenInputs['NullableFloatFieldUpdateOperationsInput'] | null; // NullableFloatFieldUpdateOperationsInput
-    total_convert_in?: NexusGenInputs['NullableFloatFieldUpdateOperationsInput'] | null; // NullableFloatFieldUpdateOperationsInput
-    total_convert_out?: NexusGenInputs['NullableFloatFieldUpdateOperationsInput'] | null; // NullableFloatFieldUpdateOperationsInput
     updatedAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
   }
-  ConvertionPairUpdateWithoutCurrencyInput: { // input type
+  ConvertionPairUpdateWithoutCurrencyFromInput: { // input type
     buy_fee_flat?: NexusGenInputs['NullableFloatFieldUpdateOperationsInput'] | null; // NullableFloatFieldUpdateOperationsInput
     buy_fee_pct?: NexusGenInputs['NullableFloatFieldUpdateOperationsInput'] | null; // NullableFloatFieldUpdateOperationsInput
     buy_max_amount?: NexusGenInputs['NullableFloatFieldUpdateOperationsInput'] | null; // NullableFloatFieldUpdateOperationsInput
     buy_min_amount?: NexusGenInputs['NullableFloatFieldUpdateOperationsInput'] | null; // NullableFloatFieldUpdateOperationsInput
     ConvertionTransaction?: NexusGenInputs['ConvertionTransactionUpdateManyWithoutConvertionPairInput'] | null; // ConvertionTransactionUpdateManyWithoutConvertionPairInput
     createdAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
+    CurrencyTo?: NexusGenInputs['CurrencyUpdateOneRequiredWithoutConvertionPairToInput'] | null; // CurrencyUpdateOneRequiredWithoutConvertionPairToInput
     id?: NexusGenInputs['StringFieldUpdateOperationsInput'] | null; // StringFieldUpdateOperationsInput
     is_enable?: NexusGenInputs['BoolFieldUpdateOperationsInput'] | null; // BoolFieldUpdateOperationsInput
-    max_convert_in?: NexusGenInputs['NullableFloatFieldUpdateOperationsInput'] | null; // NullableFloatFieldUpdateOperationsInput
-    max_convert_out?: NexusGenInputs['NullableFloatFieldUpdateOperationsInput'] | null; // NullableFloatFieldUpdateOperationsInput
     name?: NexusGenInputs['StringFieldUpdateOperationsInput'] | null; // StringFieldUpdateOperationsInput
     sell_fee_flat?: NexusGenInputs['NullableFloatFieldUpdateOperationsInput'] | null; // NullableFloatFieldUpdateOperationsInput
     sell_fee_pct?: NexusGenInputs['NullableFloatFieldUpdateOperationsInput'] | null; // NullableFloatFieldUpdateOperationsInput
     sell_max_amount?: NexusGenInputs['NullableFloatFieldUpdateOperationsInput'] | null; // NullableFloatFieldUpdateOperationsInput
     sell_min_amount?: NexusGenInputs['NullableFloatFieldUpdateOperationsInput'] | null; // NullableFloatFieldUpdateOperationsInput
-    total_convert_in?: NexusGenInputs['NullableFloatFieldUpdateOperationsInput'] | null; // NullableFloatFieldUpdateOperationsInput
-    total_convert_out?: NexusGenInputs['NullableFloatFieldUpdateOperationsInput'] | null; // NullableFloatFieldUpdateOperationsInput
     updatedAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
   }
-  ConvertionPairUpsertWithWhereUniqueWithoutCurrencyInput: { // input type
-    create: NexusGenInputs['ConvertionPairCreateWithoutCurrencyInput']; // ConvertionPairCreateWithoutCurrencyInput!
-    update: NexusGenInputs['ConvertionPairUpdateWithoutCurrencyInput']; // ConvertionPairUpdateWithoutCurrencyInput!
+  ConvertionPairUpdateWithoutCurrencyToInput: { // input type
+    buy_fee_flat?: NexusGenInputs['NullableFloatFieldUpdateOperationsInput'] | null; // NullableFloatFieldUpdateOperationsInput
+    buy_fee_pct?: NexusGenInputs['NullableFloatFieldUpdateOperationsInput'] | null; // NullableFloatFieldUpdateOperationsInput
+    buy_max_amount?: NexusGenInputs['NullableFloatFieldUpdateOperationsInput'] | null; // NullableFloatFieldUpdateOperationsInput
+    buy_min_amount?: NexusGenInputs['NullableFloatFieldUpdateOperationsInput'] | null; // NullableFloatFieldUpdateOperationsInput
+    ConvertionTransaction?: NexusGenInputs['ConvertionTransactionUpdateManyWithoutConvertionPairInput'] | null; // ConvertionTransactionUpdateManyWithoutConvertionPairInput
+    createdAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
+    CurrencyFrom?: NexusGenInputs['CurrencyUpdateOneRequiredWithoutConvertionPairFromInput'] | null; // CurrencyUpdateOneRequiredWithoutConvertionPairFromInput
+    id?: NexusGenInputs['StringFieldUpdateOperationsInput'] | null; // StringFieldUpdateOperationsInput
+    is_enable?: NexusGenInputs['BoolFieldUpdateOperationsInput'] | null; // BoolFieldUpdateOperationsInput
+    name?: NexusGenInputs['StringFieldUpdateOperationsInput'] | null; // StringFieldUpdateOperationsInput
+    sell_fee_flat?: NexusGenInputs['NullableFloatFieldUpdateOperationsInput'] | null; // NullableFloatFieldUpdateOperationsInput
+    sell_fee_pct?: NexusGenInputs['NullableFloatFieldUpdateOperationsInput'] | null; // NullableFloatFieldUpdateOperationsInput
+    sell_max_amount?: NexusGenInputs['NullableFloatFieldUpdateOperationsInput'] | null; // NullableFloatFieldUpdateOperationsInput
+    sell_min_amount?: NexusGenInputs['NullableFloatFieldUpdateOperationsInput'] | null; // NullableFloatFieldUpdateOperationsInput
+    updatedAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
+  }
+  ConvertionPairUpsertWithWhereUniqueWithoutCurrencyFromInput: { // input type
+    create: NexusGenInputs['ConvertionPairCreateWithoutCurrencyFromInput']; // ConvertionPairCreateWithoutCurrencyFromInput!
+    update: NexusGenInputs['ConvertionPairUpdateWithoutCurrencyFromInput']; // ConvertionPairUpdateWithoutCurrencyFromInput!
+    where: NexusGenInputs['ConvertionPairWhereUniqueInput']; // ConvertionPairWhereUniqueInput!
+  }
+  ConvertionPairUpsertWithWhereUniqueWithoutCurrencyToInput: { // input type
+    create: NexusGenInputs['ConvertionPairCreateWithoutCurrencyToInput']; // ConvertionPairCreateWithoutCurrencyToInput!
+    update: NexusGenInputs['ConvertionPairUpdateWithoutCurrencyToInput']; // ConvertionPairUpdateWithoutCurrencyToInput!
     where: NexusGenInputs['ConvertionPairWhereUniqueInput']; // ConvertionPairWhereUniqueInput!
   }
   ConvertionPairUpsertWithoutConvertionTransactionInput: { // input type
@@ -407,10 +472,10 @@ export interface NexusGenInputs {
     converted_amount?: number | null; // Float
     createdAt?: NexusGenScalars['DateTime'] | null; // DateTime
     direction: NexusGenEnums['ConvertionDirection']; // ConvertionDirection!
-    exchange_wallet_id: string; // String!
     fee?: number | null; // Float
     id?: string | null; // String
-    main_wallet_id: string; // String!
+    main_wallet_id_from: string; // String!
+    main_wallet_id_to: string; // String!
     price: number; // Float!
     updatedAt?: NexusGenScalars['DateTime'] | null; // DateTime
     user_id: string; // String!
@@ -419,7 +484,7 @@ export interface NexusGenInputs {
     data?: NexusGenInputs['ConvertionTransactionCreateManyConvertionPairInput'][] | null; // [ConvertionTransactionCreateManyConvertionPairInput!]
     skipDuplicates?: boolean | null; // Boolean
   }
-  ConvertionTransactionCreateManyExchangeWalletInput: { // input type
+  ConvertionTransactionCreateManyMainWalletFromInput: { // input type
     amount: number; // Float!
     converted_amount?: number | null; // Float
     convertion_pair_id: string; // String!
@@ -427,30 +492,30 @@ export interface NexusGenInputs {
     direction: NexusGenEnums['ConvertionDirection']; // ConvertionDirection!
     fee?: number | null; // Float
     id?: string | null; // String
-    main_wallet_id: string; // String!
+    main_wallet_id_to: string; // String!
     price: number; // Float!
     updatedAt?: NexusGenScalars['DateTime'] | null; // DateTime
     user_id: string; // String!
   }
-  ConvertionTransactionCreateManyExchangeWalletInputEnvelope: { // input type
-    data?: NexusGenInputs['ConvertionTransactionCreateManyExchangeWalletInput'][] | null; // [ConvertionTransactionCreateManyExchangeWalletInput!]
+  ConvertionTransactionCreateManyMainWalletFromInputEnvelope: { // input type
+    data?: NexusGenInputs['ConvertionTransactionCreateManyMainWalletFromInput'][] | null; // [ConvertionTransactionCreateManyMainWalletFromInput!]
     skipDuplicates?: boolean | null; // Boolean
   }
-  ConvertionTransactionCreateManyMainWalletInput: { // input type
+  ConvertionTransactionCreateManyMainWalletToInput: { // input type
     amount: number; // Float!
     converted_amount?: number | null; // Float
     convertion_pair_id: string; // String!
     createdAt?: NexusGenScalars['DateTime'] | null; // DateTime
     direction: NexusGenEnums['ConvertionDirection']; // ConvertionDirection!
-    exchange_wallet_id: string; // String!
     fee?: number | null; // Float
     id?: string | null; // String
+    main_wallet_id_from: string; // String!
     price: number; // Float!
     updatedAt?: NexusGenScalars['DateTime'] | null; // DateTime
     user_id: string; // String!
   }
-  ConvertionTransactionCreateManyMainWalletInputEnvelope: { // input type
-    data?: NexusGenInputs['ConvertionTransactionCreateManyMainWalletInput'][] | null; // [ConvertionTransactionCreateManyMainWalletInput!]
+  ConvertionTransactionCreateManyMainWalletToInputEnvelope: { // input type
+    data?: NexusGenInputs['ConvertionTransactionCreateManyMainWalletToInput'][] | null; // [ConvertionTransactionCreateManyMainWalletToInput!]
     skipDuplicates?: boolean | null; // Boolean
   }
   ConvertionTransactionCreateManyUserInput: { // input type
@@ -459,10 +524,10 @@ export interface NexusGenInputs {
     convertion_pair_id: string; // String!
     createdAt?: NexusGenScalars['DateTime'] | null; // DateTime
     direction: NexusGenEnums['ConvertionDirection']; // ConvertionDirection!
-    exchange_wallet_id: string; // String!
     fee?: number | null; // Float
     id?: string | null; // String
-    main_wallet_id: string; // String!
+    main_wallet_id_from: string; // String!
+    main_wallet_id_to: string; // String!
     price: number; // Float!
     updatedAt?: NexusGenScalars['DateTime'] | null; // DateTime
   }
@@ -476,17 +541,17 @@ export interface NexusGenInputs {
     create?: NexusGenInputs['ConvertionTransactionCreateWithoutConvertionPairInput'][] | null; // [ConvertionTransactionCreateWithoutConvertionPairInput!]
     createMany?: NexusGenInputs['ConvertionTransactionCreateManyConvertionPairInputEnvelope'] | null; // ConvertionTransactionCreateManyConvertionPairInputEnvelope
   }
-  ConvertionTransactionCreateNestedManyWithoutExchangeWalletInput: { // input type
+  ConvertionTransactionCreateNestedManyWithoutMainWalletFromInput: { // input type
     connect?: NexusGenInputs['ConvertionTransactionWhereUniqueInput'][] | null; // [ConvertionTransactionWhereUniqueInput!]
-    connectOrCreate?: NexusGenInputs['ConvertionTransactionCreateOrConnectWithoutExchangeWalletInput'][] | null; // [ConvertionTransactionCreateOrConnectWithoutExchangeWalletInput!]
-    create?: NexusGenInputs['ConvertionTransactionCreateWithoutExchangeWalletInput'][] | null; // [ConvertionTransactionCreateWithoutExchangeWalletInput!]
-    createMany?: NexusGenInputs['ConvertionTransactionCreateManyExchangeWalletInputEnvelope'] | null; // ConvertionTransactionCreateManyExchangeWalletInputEnvelope
+    connectOrCreate?: NexusGenInputs['ConvertionTransactionCreateOrConnectWithoutMainWalletFromInput'][] | null; // [ConvertionTransactionCreateOrConnectWithoutMainWalletFromInput!]
+    create?: NexusGenInputs['ConvertionTransactionCreateWithoutMainWalletFromInput'][] | null; // [ConvertionTransactionCreateWithoutMainWalletFromInput!]
+    createMany?: NexusGenInputs['ConvertionTransactionCreateManyMainWalletFromInputEnvelope'] | null; // ConvertionTransactionCreateManyMainWalletFromInputEnvelope
   }
-  ConvertionTransactionCreateNestedManyWithoutMainWalletInput: { // input type
+  ConvertionTransactionCreateNestedManyWithoutMainWalletToInput: { // input type
     connect?: NexusGenInputs['ConvertionTransactionWhereUniqueInput'][] | null; // [ConvertionTransactionWhereUniqueInput!]
-    connectOrCreate?: NexusGenInputs['ConvertionTransactionCreateOrConnectWithoutMainWalletInput'][] | null; // [ConvertionTransactionCreateOrConnectWithoutMainWalletInput!]
-    create?: NexusGenInputs['ConvertionTransactionCreateWithoutMainWalletInput'][] | null; // [ConvertionTransactionCreateWithoutMainWalletInput!]
-    createMany?: NexusGenInputs['ConvertionTransactionCreateManyMainWalletInputEnvelope'] | null; // ConvertionTransactionCreateManyMainWalletInputEnvelope
+    connectOrCreate?: NexusGenInputs['ConvertionTransactionCreateOrConnectWithoutMainWalletToInput'][] | null; // [ConvertionTransactionCreateOrConnectWithoutMainWalletToInput!]
+    create?: NexusGenInputs['ConvertionTransactionCreateWithoutMainWalletToInput'][] | null; // [ConvertionTransactionCreateWithoutMainWalletToInput!]
+    createMany?: NexusGenInputs['ConvertionTransactionCreateManyMainWalletToInputEnvelope'] | null; // ConvertionTransactionCreateManyMainWalletToInputEnvelope
   }
   ConvertionTransactionCreateNestedManyWithoutUserInput: { // input type
     connect?: NexusGenInputs['ConvertionTransactionWhereUniqueInput'][] | null; // [ConvertionTransactionWhereUniqueInput!]
@@ -498,12 +563,12 @@ export interface NexusGenInputs {
     create: NexusGenInputs['ConvertionTransactionCreateWithoutConvertionPairInput']; // ConvertionTransactionCreateWithoutConvertionPairInput!
     where: NexusGenInputs['ConvertionTransactionWhereUniqueInput']; // ConvertionTransactionWhereUniqueInput!
   }
-  ConvertionTransactionCreateOrConnectWithoutExchangeWalletInput: { // input type
-    create: NexusGenInputs['ConvertionTransactionCreateWithoutExchangeWalletInput']; // ConvertionTransactionCreateWithoutExchangeWalletInput!
+  ConvertionTransactionCreateOrConnectWithoutMainWalletFromInput: { // input type
+    create: NexusGenInputs['ConvertionTransactionCreateWithoutMainWalletFromInput']; // ConvertionTransactionCreateWithoutMainWalletFromInput!
     where: NexusGenInputs['ConvertionTransactionWhereUniqueInput']; // ConvertionTransactionWhereUniqueInput!
   }
-  ConvertionTransactionCreateOrConnectWithoutMainWalletInput: { // input type
-    create: NexusGenInputs['ConvertionTransactionCreateWithoutMainWalletInput']; // ConvertionTransactionCreateWithoutMainWalletInput!
+  ConvertionTransactionCreateOrConnectWithoutMainWalletToInput: { // input type
+    create: NexusGenInputs['ConvertionTransactionCreateWithoutMainWalletToInput']; // ConvertionTransactionCreateWithoutMainWalletToInput!
     where: NexusGenInputs['ConvertionTransactionWhereUniqueInput']; // ConvertionTransactionWhereUniqueInput!
   }
   ConvertionTransactionCreateOrConnectWithoutUserInput: { // input type
@@ -515,15 +580,15 @@ export interface NexusGenInputs {
     converted_amount?: number | null; // Float
     createdAt?: NexusGenScalars['DateTime'] | null; // DateTime
     direction: NexusGenEnums['ConvertionDirection']; // ConvertionDirection!
-    ExchangeWallet: NexusGenInputs['ExchangeWalletCreateNestedOneWithoutConvertionTransactionInput']; // ExchangeWalletCreateNestedOneWithoutConvertionTransactionInput!
     fee?: number | null; // Float
     id?: string | null; // String
-    MainWallet: NexusGenInputs['MainWalletCreateNestedOneWithoutConvertionTransactionInput']; // MainWalletCreateNestedOneWithoutConvertionTransactionInput!
+    MainWalletFrom: NexusGenInputs['MainWalletCreateNestedOneWithoutConvertionTransactionFromInput']; // MainWalletCreateNestedOneWithoutConvertionTransactionFromInput!
+    MainWalletTo: NexusGenInputs['MainWalletCreateNestedOneWithoutConvertionTransactionToInput']; // MainWalletCreateNestedOneWithoutConvertionTransactionToInput!
     price: number; // Float!
     updatedAt?: NexusGenScalars['DateTime'] | null; // DateTime
     User: NexusGenInputs['UserCreateNestedOneWithoutConvertionTransactionInput']; // UserCreateNestedOneWithoutConvertionTransactionInput!
   }
-  ConvertionTransactionCreateWithoutExchangeWalletInput: { // input type
+  ConvertionTransactionCreateWithoutMainWalletFromInput: { // input type
     amount: number; // Float!
     converted_amount?: number | null; // Float
     ConvertionPair: NexusGenInputs['ConvertionPairCreateNestedOneWithoutConvertionTransactionInput']; // ConvertionPairCreateNestedOneWithoutConvertionTransactionInput!
@@ -531,20 +596,20 @@ export interface NexusGenInputs {
     direction: NexusGenEnums['ConvertionDirection']; // ConvertionDirection!
     fee?: number | null; // Float
     id?: string | null; // String
-    MainWallet: NexusGenInputs['MainWalletCreateNestedOneWithoutConvertionTransactionInput']; // MainWalletCreateNestedOneWithoutConvertionTransactionInput!
+    MainWalletTo: NexusGenInputs['MainWalletCreateNestedOneWithoutConvertionTransactionToInput']; // MainWalletCreateNestedOneWithoutConvertionTransactionToInput!
     price: number; // Float!
     updatedAt?: NexusGenScalars['DateTime'] | null; // DateTime
     User: NexusGenInputs['UserCreateNestedOneWithoutConvertionTransactionInput']; // UserCreateNestedOneWithoutConvertionTransactionInput!
   }
-  ConvertionTransactionCreateWithoutMainWalletInput: { // input type
+  ConvertionTransactionCreateWithoutMainWalletToInput: { // input type
     amount: number; // Float!
     converted_amount?: number | null; // Float
     ConvertionPair: NexusGenInputs['ConvertionPairCreateNestedOneWithoutConvertionTransactionInput']; // ConvertionPairCreateNestedOneWithoutConvertionTransactionInput!
     createdAt?: NexusGenScalars['DateTime'] | null; // DateTime
     direction: NexusGenEnums['ConvertionDirection']; // ConvertionDirection!
-    ExchangeWallet: NexusGenInputs['ExchangeWalletCreateNestedOneWithoutConvertionTransactionInput']; // ExchangeWalletCreateNestedOneWithoutConvertionTransactionInput!
     fee?: number | null; // Float
     id?: string | null; // String
+    MainWalletFrom: NexusGenInputs['MainWalletCreateNestedOneWithoutConvertionTransactionFromInput']; // MainWalletCreateNestedOneWithoutConvertionTransactionFromInput!
     price: number; // Float!
     updatedAt?: NexusGenScalars['DateTime'] | null; // DateTime
     User: NexusGenInputs['UserCreateNestedOneWithoutConvertionTransactionInput']; // UserCreateNestedOneWithoutConvertionTransactionInput!
@@ -555,10 +620,10 @@ export interface NexusGenInputs {
     ConvertionPair: NexusGenInputs['ConvertionPairCreateNestedOneWithoutConvertionTransactionInput']; // ConvertionPairCreateNestedOneWithoutConvertionTransactionInput!
     createdAt?: NexusGenScalars['DateTime'] | null; // DateTime
     direction: NexusGenEnums['ConvertionDirection']; // ConvertionDirection!
-    ExchangeWallet: NexusGenInputs['ExchangeWalletCreateNestedOneWithoutConvertionTransactionInput']; // ExchangeWalletCreateNestedOneWithoutConvertionTransactionInput!
     fee?: number | null; // Float
     id?: string | null; // String
-    MainWallet: NexusGenInputs['MainWalletCreateNestedOneWithoutConvertionTransactionInput']; // MainWalletCreateNestedOneWithoutConvertionTransactionInput!
+    MainWalletFrom: NexusGenInputs['MainWalletCreateNestedOneWithoutConvertionTransactionFromInput']; // MainWalletCreateNestedOneWithoutConvertionTransactionFromInput!
+    MainWalletTo: NexusGenInputs['MainWalletCreateNestedOneWithoutConvertionTransactionToInput']; // MainWalletCreateNestedOneWithoutConvertionTransactionToInput!
     price: number; // Float!
     updatedAt?: NexusGenScalars['DateTime'] | null; // DateTime
   }
@@ -569,10 +634,10 @@ export interface NexusGenInputs {
     convertion_pair_id?: NexusGenInputs['StringFilter'] | null; // StringFilter
     createdAt?: NexusGenInputs['DateTimeFilter'] | null; // DateTimeFilter
     direction?: NexusGenInputs['EnumConvertionDirectionFilter'] | null; // EnumConvertionDirectionFilter
-    exchange_wallet_id?: NexusGenInputs['StringFilter'] | null; // StringFilter
     fee?: NexusGenInputs['FloatNullableFilter'] | null; // FloatNullableFilter
     id?: NexusGenInputs['StringFilter'] | null; // StringFilter
-    main_wallet_id?: NexusGenInputs['StringFilter'] | null; // StringFilter
+    main_wallet_id_from?: NexusGenInputs['StringFilter'] | null; // StringFilter
+    main_wallet_id_to?: NexusGenInputs['StringFilter'] | null; // StringFilter
     NOT?: NexusGenInputs['ConvertionTransactionScalarWhereInput'][] | null; // [ConvertionTransactionScalarWhereInput!]
     OR?: NexusGenInputs['ConvertionTransactionScalarWhereInput'][] | null; // [ConvertionTransactionScalarWhereInput!]
     price?: NexusGenInputs['FloatFilter'] | null; // FloatFilter
@@ -593,11 +658,11 @@ export interface NexusGenInputs {
     data: NexusGenInputs['ConvertionTransactionUpdateManyMutationInput']; // ConvertionTransactionUpdateManyMutationInput!
     where: NexusGenInputs['ConvertionTransactionScalarWhereInput']; // ConvertionTransactionScalarWhereInput!
   }
-  ConvertionTransactionUpdateManyWithWhereWithoutExchangeWalletInput: { // input type
+  ConvertionTransactionUpdateManyWithWhereWithoutMainWalletFromInput: { // input type
     data: NexusGenInputs['ConvertionTransactionUpdateManyMutationInput']; // ConvertionTransactionUpdateManyMutationInput!
     where: NexusGenInputs['ConvertionTransactionScalarWhereInput']; // ConvertionTransactionScalarWhereInput!
   }
-  ConvertionTransactionUpdateManyWithWhereWithoutMainWalletInput: { // input type
+  ConvertionTransactionUpdateManyWithWhereWithoutMainWalletToInput: { // input type
     data: NexusGenInputs['ConvertionTransactionUpdateManyMutationInput']; // ConvertionTransactionUpdateManyMutationInput!
     where: NexusGenInputs['ConvertionTransactionScalarWhereInput']; // ConvertionTransactionScalarWhereInput!
   }
@@ -618,31 +683,31 @@ export interface NexusGenInputs {
     updateMany?: NexusGenInputs['ConvertionTransactionUpdateManyWithWhereWithoutConvertionPairInput'][] | null; // [ConvertionTransactionUpdateManyWithWhereWithoutConvertionPairInput!]
     upsert?: NexusGenInputs['ConvertionTransactionUpsertWithWhereUniqueWithoutConvertionPairInput'][] | null; // [ConvertionTransactionUpsertWithWhereUniqueWithoutConvertionPairInput!]
   }
-  ConvertionTransactionUpdateManyWithoutExchangeWalletInput: { // input type
+  ConvertionTransactionUpdateManyWithoutMainWalletFromInput: { // input type
     connect?: NexusGenInputs['ConvertionTransactionWhereUniqueInput'][] | null; // [ConvertionTransactionWhereUniqueInput!]
-    connectOrCreate?: NexusGenInputs['ConvertionTransactionCreateOrConnectWithoutExchangeWalletInput'][] | null; // [ConvertionTransactionCreateOrConnectWithoutExchangeWalletInput!]
-    create?: NexusGenInputs['ConvertionTransactionCreateWithoutExchangeWalletInput'][] | null; // [ConvertionTransactionCreateWithoutExchangeWalletInput!]
-    createMany?: NexusGenInputs['ConvertionTransactionCreateManyExchangeWalletInputEnvelope'] | null; // ConvertionTransactionCreateManyExchangeWalletInputEnvelope
+    connectOrCreate?: NexusGenInputs['ConvertionTransactionCreateOrConnectWithoutMainWalletFromInput'][] | null; // [ConvertionTransactionCreateOrConnectWithoutMainWalletFromInput!]
+    create?: NexusGenInputs['ConvertionTransactionCreateWithoutMainWalletFromInput'][] | null; // [ConvertionTransactionCreateWithoutMainWalletFromInput!]
+    createMany?: NexusGenInputs['ConvertionTransactionCreateManyMainWalletFromInputEnvelope'] | null; // ConvertionTransactionCreateManyMainWalletFromInputEnvelope
     delete?: NexusGenInputs['ConvertionTransactionWhereUniqueInput'][] | null; // [ConvertionTransactionWhereUniqueInput!]
     deleteMany?: NexusGenInputs['ConvertionTransactionScalarWhereInput'][] | null; // [ConvertionTransactionScalarWhereInput!]
     disconnect?: NexusGenInputs['ConvertionTransactionWhereUniqueInput'][] | null; // [ConvertionTransactionWhereUniqueInput!]
     set?: NexusGenInputs['ConvertionTransactionWhereUniqueInput'][] | null; // [ConvertionTransactionWhereUniqueInput!]
-    update?: NexusGenInputs['ConvertionTransactionUpdateWithWhereUniqueWithoutExchangeWalletInput'][] | null; // [ConvertionTransactionUpdateWithWhereUniqueWithoutExchangeWalletInput!]
-    updateMany?: NexusGenInputs['ConvertionTransactionUpdateManyWithWhereWithoutExchangeWalletInput'][] | null; // [ConvertionTransactionUpdateManyWithWhereWithoutExchangeWalletInput!]
-    upsert?: NexusGenInputs['ConvertionTransactionUpsertWithWhereUniqueWithoutExchangeWalletInput'][] | null; // [ConvertionTransactionUpsertWithWhereUniqueWithoutExchangeWalletInput!]
+    update?: NexusGenInputs['ConvertionTransactionUpdateWithWhereUniqueWithoutMainWalletFromInput'][] | null; // [ConvertionTransactionUpdateWithWhereUniqueWithoutMainWalletFromInput!]
+    updateMany?: NexusGenInputs['ConvertionTransactionUpdateManyWithWhereWithoutMainWalletFromInput'][] | null; // [ConvertionTransactionUpdateManyWithWhereWithoutMainWalletFromInput!]
+    upsert?: NexusGenInputs['ConvertionTransactionUpsertWithWhereUniqueWithoutMainWalletFromInput'][] | null; // [ConvertionTransactionUpsertWithWhereUniqueWithoutMainWalletFromInput!]
   }
-  ConvertionTransactionUpdateManyWithoutMainWalletInput: { // input type
+  ConvertionTransactionUpdateManyWithoutMainWalletToInput: { // input type
     connect?: NexusGenInputs['ConvertionTransactionWhereUniqueInput'][] | null; // [ConvertionTransactionWhereUniqueInput!]
-    connectOrCreate?: NexusGenInputs['ConvertionTransactionCreateOrConnectWithoutMainWalletInput'][] | null; // [ConvertionTransactionCreateOrConnectWithoutMainWalletInput!]
-    create?: NexusGenInputs['ConvertionTransactionCreateWithoutMainWalletInput'][] | null; // [ConvertionTransactionCreateWithoutMainWalletInput!]
-    createMany?: NexusGenInputs['ConvertionTransactionCreateManyMainWalletInputEnvelope'] | null; // ConvertionTransactionCreateManyMainWalletInputEnvelope
+    connectOrCreate?: NexusGenInputs['ConvertionTransactionCreateOrConnectWithoutMainWalletToInput'][] | null; // [ConvertionTransactionCreateOrConnectWithoutMainWalletToInput!]
+    create?: NexusGenInputs['ConvertionTransactionCreateWithoutMainWalletToInput'][] | null; // [ConvertionTransactionCreateWithoutMainWalletToInput!]
+    createMany?: NexusGenInputs['ConvertionTransactionCreateManyMainWalletToInputEnvelope'] | null; // ConvertionTransactionCreateManyMainWalletToInputEnvelope
     delete?: NexusGenInputs['ConvertionTransactionWhereUniqueInput'][] | null; // [ConvertionTransactionWhereUniqueInput!]
     deleteMany?: NexusGenInputs['ConvertionTransactionScalarWhereInput'][] | null; // [ConvertionTransactionScalarWhereInput!]
     disconnect?: NexusGenInputs['ConvertionTransactionWhereUniqueInput'][] | null; // [ConvertionTransactionWhereUniqueInput!]
     set?: NexusGenInputs['ConvertionTransactionWhereUniqueInput'][] | null; // [ConvertionTransactionWhereUniqueInput!]
-    update?: NexusGenInputs['ConvertionTransactionUpdateWithWhereUniqueWithoutMainWalletInput'][] | null; // [ConvertionTransactionUpdateWithWhereUniqueWithoutMainWalletInput!]
-    updateMany?: NexusGenInputs['ConvertionTransactionUpdateManyWithWhereWithoutMainWalletInput'][] | null; // [ConvertionTransactionUpdateManyWithWhereWithoutMainWalletInput!]
-    upsert?: NexusGenInputs['ConvertionTransactionUpsertWithWhereUniqueWithoutMainWalletInput'][] | null; // [ConvertionTransactionUpsertWithWhereUniqueWithoutMainWalletInput!]
+    update?: NexusGenInputs['ConvertionTransactionUpdateWithWhereUniqueWithoutMainWalletToInput'][] | null; // [ConvertionTransactionUpdateWithWhereUniqueWithoutMainWalletToInput!]
+    updateMany?: NexusGenInputs['ConvertionTransactionUpdateManyWithWhereWithoutMainWalletToInput'][] | null; // [ConvertionTransactionUpdateManyWithWhereWithoutMainWalletToInput!]
+    upsert?: NexusGenInputs['ConvertionTransactionUpsertWithWhereUniqueWithoutMainWalletToInput'][] | null; // [ConvertionTransactionUpsertWithWhereUniqueWithoutMainWalletToInput!]
   }
   ConvertionTransactionUpdateManyWithoutUserInput: { // input type
     connect?: NexusGenInputs['ConvertionTransactionWhereUniqueInput'][] | null; // [ConvertionTransactionWhereUniqueInput!]
@@ -661,12 +726,12 @@ export interface NexusGenInputs {
     data: NexusGenInputs['ConvertionTransactionUpdateWithoutConvertionPairInput']; // ConvertionTransactionUpdateWithoutConvertionPairInput!
     where: NexusGenInputs['ConvertionTransactionWhereUniqueInput']; // ConvertionTransactionWhereUniqueInput!
   }
-  ConvertionTransactionUpdateWithWhereUniqueWithoutExchangeWalletInput: { // input type
-    data: NexusGenInputs['ConvertionTransactionUpdateWithoutExchangeWalletInput']; // ConvertionTransactionUpdateWithoutExchangeWalletInput!
+  ConvertionTransactionUpdateWithWhereUniqueWithoutMainWalletFromInput: { // input type
+    data: NexusGenInputs['ConvertionTransactionUpdateWithoutMainWalletFromInput']; // ConvertionTransactionUpdateWithoutMainWalletFromInput!
     where: NexusGenInputs['ConvertionTransactionWhereUniqueInput']; // ConvertionTransactionWhereUniqueInput!
   }
-  ConvertionTransactionUpdateWithWhereUniqueWithoutMainWalletInput: { // input type
-    data: NexusGenInputs['ConvertionTransactionUpdateWithoutMainWalletInput']; // ConvertionTransactionUpdateWithoutMainWalletInput!
+  ConvertionTransactionUpdateWithWhereUniqueWithoutMainWalletToInput: { // input type
+    data: NexusGenInputs['ConvertionTransactionUpdateWithoutMainWalletToInput']; // ConvertionTransactionUpdateWithoutMainWalletToInput!
     where: NexusGenInputs['ConvertionTransactionWhereUniqueInput']; // ConvertionTransactionWhereUniqueInput!
   }
   ConvertionTransactionUpdateWithWhereUniqueWithoutUserInput: { // input type
@@ -678,15 +743,15 @@ export interface NexusGenInputs {
     converted_amount?: NexusGenInputs['NullableFloatFieldUpdateOperationsInput'] | null; // NullableFloatFieldUpdateOperationsInput
     createdAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
     direction?: NexusGenInputs['EnumConvertionDirectionFieldUpdateOperationsInput'] | null; // EnumConvertionDirectionFieldUpdateOperationsInput
-    ExchangeWallet?: NexusGenInputs['ExchangeWalletUpdateOneRequiredWithoutConvertionTransactionInput'] | null; // ExchangeWalletUpdateOneRequiredWithoutConvertionTransactionInput
     fee?: NexusGenInputs['NullableFloatFieldUpdateOperationsInput'] | null; // NullableFloatFieldUpdateOperationsInput
     id?: NexusGenInputs['StringFieldUpdateOperationsInput'] | null; // StringFieldUpdateOperationsInput
-    MainWallet?: NexusGenInputs['MainWalletUpdateOneRequiredWithoutConvertionTransactionInput'] | null; // MainWalletUpdateOneRequiredWithoutConvertionTransactionInput
+    MainWalletFrom?: NexusGenInputs['MainWalletUpdateOneRequiredWithoutConvertionTransactionFromInput'] | null; // MainWalletUpdateOneRequiredWithoutConvertionTransactionFromInput
+    MainWalletTo?: NexusGenInputs['MainWalletUpdateOneRequiredWithoutConvertionTransactionToInput'] | null; // MainWalletUpdateOneRequiredWithoutConvertionTransactionToInput
     price?: NexusGenInputs['FloatFieldUpdateOperationsInput'] | null; // FloatFieldUpdateOperationsInput
     updatedAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
     User?: NexusGenInputs['UserUpdateOneRequiredWithoutConvertionTransactionInput'] | null; // UserUpdateOneRequiredWithoutConvertionTransactionInput
   }
-  ConvertionTransactionUpdateWithoutExchangeWalletInput: { // input type
+  ConvertionTransactionUpdateWithoutMainWalletFromInput: { // input type
     amount?: NexusGenInputs['FloatFieldUpdateOperationsInput'] | null; // FloatFieldUpdateOperationsInput
     converted_amount?: NexusGenInputs['NullableFloatFieldUpdateOperationsInput'] | null; // NullableFloatFieldUpdateOperationsInput
     ConvertionPair?: NexusGenInputs['ConvertionPairUpdateOneRequiredWithoutConvertionTransactionInput'] | null; // ConvertionPairUpdateOneRequiredWithoutConvertionTransactionInput
@@ -694,20 +759,20 @@ export interface NexusGenInputs {
     direction?: NexusGenInputs['EnumConvertionDirectionFieldUpdateOperationsInput'] | null; // EnumConvertionDirectionFieldUpdateOperationsInput
     fee?: NexusGenInputs['NullableFloatFieldUpdateOperationsInput'] | null; // NullableFloatFieldUpdateOperationsInput
     id?: NexusGenInputs['StringFieldUpdateOperationsInput'] | null; // StringFieldUpdateOperationsInput
-    MainWallet?: NexusGenInputs['MainWalletUpdateOneRequiredWithoutConvertionTransactionInput'] | null; // MainWalletUpdateOneRequiredWithoutConvertionTransactionInput
+    MainWalletTo?: NexusGenInputs['MainWalletUpdateOneRequiredWithoutConvertionTransactionToInput'] | null; // MainWalletUpdateOneRequiredWithoutConvertionTransactionToInput
     price?: NexusGenInputs['FloatFieldUpdateOperationsInput'] | null; // FloatFieldUpdateOperationsInput
     updatedAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
     User?: NexusGenInputs['UserUpdateOneRequiredWithoutConvertionTransactionInput'] | null; // UserUpdateOneRequiredWithoutConvertionTransactionInput
   }
-  ConvertionTransactionUpdateWithoutMainWalletInput: { // input type
+  ConvertionTransactionUpdateWithoutMainWalletToInput: { // input type
     amount?: NexusGenInputs['FloatFieldUpdateOperationsInput'] | null; // FloatFieldUpdateOperationsInput
     converted_amount?: NexusGenInputs['NullableFloatFieldUpdateOperationsInput'] | null; // NullableFloatFieldUpdateOperationsInput
     ConvertionPair?: NexusGenInputs['ConvertionPairUpdateOneRequiredWithoutConvertionTransactionInput'] | null; // ConvertionPairUpdateOneRequiredWithoutConvertionTransactionInput
     createdAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
     direction?: NexusGenInputs['EnumConvertionDirectionFieldUpdateOperationsInput'] | null; // EnumConvertionDirectionFieldUpdateOperationsInput
-    ExchangeWallet?: NexusGenInputs['ExchangeWalletUpdateOneRequiredWithoutConvertionTransactionInput'] | null; // ExchangeWalletUpdateOneRequiredWithoutConvertionTransactionInput
     fee?: NexusGenInputs['NullableFloatFieldUpdateOperationsInput'] | null; // NullableFloatFieldUpdateOperationsInput
     id?: NexusGenInputs['StringFieldUpdateOperationsInput'] | null; // StringFieldUpdateOperationsInput
+    MainWalletFrom?: NexusGenInputs['MainWalletUpdateOneRequiredWithoutConvertionTransactionFromInput'] | null; // MainWalletUpdateOneRequiredWithoutConvertionTransactionFromInput
     price?: NexusGenInputs['FloatFieldUpdateOperationsInput'] | null; // FloatFieldUpdateOperationsInput
     updatedAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
     User?: NexusGenInputs['UserUpdateOneRequiredWithoutConvertionTransactionInput'] | null; // UserUpdateOneRequiredWithoutConvertionTransactionInput
@@ -718,10 +783,10 @@ export interface NexusGenInputs {
     ConvertionPair?: NexusGenInputs['ConvertionPairUpdateOneRequiredWithoutConvertionTransactionInput'] | null; // ConvertionPairUpdateOneRequiredWithoutConvertionTransactionInput
     createdAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
     direction?: NexusGenInputs['EnumConvertionDirectionFieldUpdateOperationsInput'] | null; // EnumConvertionDirectionFieldUpdateOperationsInput
-    ExchangeWallet?: NexusGenInputs['ExchangeWalletUpdateOneRequiredWithoutConvertionTransactionInput'] | null; // ExchangeWalletUpdateOneRequiredWithoutConvertionTransactionInput
     fee?: NexusGenInputs['NullableFloatFieldUpdateOperationsInput'] | null; // NullableFloatFieldUpdateOperationsInput
     id?: NexusGenInputs['StringFieldUpdateOperationsInput'] | null; // StringFieldUpdateOperationsInput
-    MainWallet?: NexusGenInputs['MainWalletUpdateOneRequiredWithoutConvertionTransactionInput'] | null; // MainWalletUpdateOneRequiredWithoutConvertionTransactionInput
+    MainWalletFrom?: NexusGenInputs['MainWalletUpdateOneRequiredWithoutConvertionTransactionFromInput'] | null; // MainWalletUpdateOneRequiredWithoutConvertionTransactionFromInput
+    MainWalletTo?: NexusGenInputs['MainWalletUpdateOneRequiredWithoutConvertionTransactionToInput'] | null; // MainWalletUpdateOneRequiredWithoutConvertionTransactionToInput
     price?: NexusGenInputs['FloatFieldUpdateOperationsInput'] | null; // FloatFieldUpdateOperationsInput
     updatedAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
   }
@@ -730,14 +795,14 @@ export interface NexusGenInputs {
     update: NexusGenInputs['ConvertionTransactionUpdateWithoutConvertionPairInput']; // ConvertionTransactionUpdateWithoutConvertionPairInput!
     where: NexusGenInputs['ConvertionTransactionWhereUniqueInput']; // ConvertionTransactionWhereUniqueInput!
   }
-  ConvertionTransactionUpsertWithWhereUniqueWithoutExchangeWalletInput: { // input type
-    create: NexusGenInputs['ConvertionTransactionCreateWithoutExchangeWalletInput']; // ConvertionTransactionCreateWithoutExchangeWalletInput!
-    update: NexusGenInputs['ConvertionTransactionUpdateWithoutExchangeWalletInput']; // ConvertionTransactionUpdateWithoutExchangeWalletInput!
+  ConvertionTransactionUpsertWithWhereUniqueWithoutMainWalletFromInput: { // input type
+    create: NexusGenInputs['ConvertionTransactionCreateWithoutMainWalletFromInput']; // ConvertionTransactionCreateWithoutMainWalletFromInput!
+    update: NexusGenInputs['ConvertionTransactionUpdateWithoutMainWalletFromInput']; // ConvertionTransactionUpdateWithoutMainWalletFromInput!
     where: NexusGenInputs['ConvertionTransactionWhereUniqueInput']; // ConvertionTransactionWhereUniqueInput!
   }
-  ConvertionTransactionUpsertWithWhereUniqueWithoutMainWalletInput: { // input type
-    create: NexusGenInputs['ConvertionTransactionCreateWithoutMainWalletInput']; // ConvertionTransactionCreateWithoutMainWalletInput!
-    update: NexusGenInputs['ConvertionTransactionUpdateWithoutMainWalletInput']; // ConvertionTransactionUpdateWithoutMainWalletInput!
+  ConvertionTransactionUpsertWithWhereUniqueWithoutMainWalletToInput: { // input type
+    create: NexusGenInputs['ConvertionTransactionCreateWithoutMainWalletToInput']; // ConvertionTransactionCreateWithoutMainWalletToInput!
+    update: NexusGenInputs['ConvertionTransactionUpdateWithoutMainWalletToInput']; // ConvertionTransactionUpdateWithoutMainWalletToInput!
     where: NexusGenInputs['ConvertionTransactionWhereUniqueInput']; // ConvertionTransactionWhereUniqueInput!
   }
   ConvertionTransactionUpsertWithWhereUniqueWithoutUserInput: { // input type
@@ -789,10 +854,15 @@ export interface NexusGenInputs {
   CountryWhereUniqueInput: { // input type
     id?: string | null; // String
   }
-  CurrencyCreateNestedOneWithoutConvertionPairInput: { // input type
+  CurrencyCreateNestedOneWithoutConvertionPairFromInput: { // input type
     connect?: NexusGenInputs['CurrencyWhereUniqueInput'] | null; // CurrencyWhereUniqueInput
-    connectOrCreate?: NexusGenInputs['CurrencyCreateOrConnectWithoutConvertionPairInput'] | null; // CurrencyCreateOrConnectWithoutConvertionPairInput
-    create?: NexusGenInputs['CurrencyCreateWithoutConvertionPairInput'] | null; // CurrencyCreateWithoutConvertionPairInput
+    connectOrCreate?: NexusGenInputs['CurrencyCreateOrConnectWithoutConvertionPairFromInput'] | null; // CurrencyCreateOrConnectWithoutConvertionPairFromInput
+    create?: NexusGenInputs['CurrencyCreateWithoutConvertionPairFromInput'] | null; // CurrencyCreateWithoutConvertionPairFromInput
+  }
+  CurrencyCreateNestedOneWithoutConvertionPairToInput: { // input type
+    connect?: NexusGenInputs['CurrencyWhereUniqueInput'] | null; // CurrencyWhereUniqueInput
+    connectOrCreate?: NexusGenInputs['CurrencyCreateOrConnectWithoutConvertionPairToInput'] | null; // CurrencyCreateOrConnectWithoutConvertionPairToInput
+    create?: NexusGenInputs['CurrencyCreateWithoutConvertionPairToInput'] | null; // CurrencyCreateWithoutConvertionPairToInput
   }
   CurrencyCreateNestedOneWithoutMainWalletInput: { // input type
     connect?: NexusGenInputs['CurrencyWhereUniqueInput'] | null; // CurrencyWhereUniqueInput
@@ -809,8 +879,12 @@ export interface NexusGenInputs {
     connectOrCreate?: NexusGenInputs['CurrencyCreateOrConnectWithoutTransactionMasterInput'] | null; // CurrencyCreateOrConnectWithoutTransactionMasterInput
     create?: NexusGenInputs['CurrencyCreateWithoutTransactionMasterInput'] | null; // CurrencyCreateWithoutTransactionMasterInput
   }
-  CurrencyCreateOrConnectWithoutConvertionPairInput: { // input type
-    create: NexusGenInputs['CurrencyCreateWithoutConvertionPairInput']; // CurrencyCreateWithoutConvertionPairInput!
+  CurrencyCreateOrConnectWithoutConvertionPairFromInput: { // input type
+    create: NexusGenInputs['CurrencyCreateWithoutConvertionPairFromInput']; // CurrencyCreateWithoutConvertionPairFromInput!
+    where: NexusGenInputs['CurrencyWhereUniqueInput']; // CurrencyWhereUniqueInput!
+  }
+  CurrencyCreateOrConnectWithoutConvertionPairToInput: { // input type
+    create: NexusGenInputs['CurrencyCreateWithoutConvertionPairToInput']; // CurrencyCreateWithoutConvertionPairToInput!
     where: NexusGenInputs['CurrencyWhereUniqueInput']; // CurrencyWhereUniqueInput!
   }
   CurrencyCreateOrConnectWithoutMainWalletInput: { // input type
@@ -825,12 +899,53 @@ export interface NexusGenInputs {
     create: NexusGenInputs['CurrencyCreateWithoutTransactionMasterInput']; // CurrencyCreateWithoutTransactionMasterInput!
     where: NexusGenInputs['CurrencyWhereUniqueInput']; // CurrencyWhereUniqueInput!
   }
-  CurrencyCreateWithoutConvertionPairInput: { // input type
+  CurrencyCreateWithoutConvertionPairFromInput: { // input type
     admin_config_price?: number | null; // Float
     admin_config_price_price_step?: number | null; // Float
     admin_config_price_volume_step?: number | null; // Float
     admin_config_total_volume?: number | null; // Float
     admin_config_volume_cache_time?: NexusGenScalars['DateTime'] | null; // DateTime
+    ConvertionPairTo?: NexusGenInputs['ConvertionPairCreateNestedManyWithoutCurrencyToInput'] | null; // ConvertionPairCreateNestedManyWithoutCurrencyToInput
+    createdAt?: NexusGenScalars['DateTime'] | null; // DateTime
+    crypto_data?: NexusGenEnums['NullableJsonNullValueInput'] | null; // NullableJsonNullValueInput
+    crypto_service?: NexusGenEnums['Crypto_Service'] | null; // Crypto_Service
+    disclaimer_deposit?: string | null; // String
+    disclaimer_withdraw?: string | null; // String
+    icon?: string | null; // String
+    id?: string | null; // String
+    instruction_deposit?: string | null; // String
+    instruction_withdraw?: string | null; // String
+    is_enable?: boolean | null; // Boolean
+    is_enable_convert?: boolean | null; // Boolean
+    is_enable_convert_from?: boolean | null; // Boolean
+    is_enable_convert_to?: boolean | null; // Boolean
+    is_enable_deposit?: boolean | null; // Boolean
+    is_enable_withdraw?: boolean | null; // Boolean
+    is_enable_withdraw_cron?: boolean | null; // Boolean
+    MainWallet?: NexusGenInputs['MainWalletCreateNestedManyWithoutCurrencyInput'] | null; // MainWalletCreateNestedManyWithoutCurrencyInput
+    MainWalletTransaction?: NexusGenInputs['MainWalletTransactionCreateNestedManyWithoutCurrencyInput'] | null; // MainWalletTransactionCreateNestedManyWithoutCurrencyInput
+    MasterWallet?: NexusGenInputs['MasterWalletCreateNestedManyWithoutCurrencyInput'] | null; // MasterWalletCreateNestedManyWithoutCurrencyInput
+    max_daily_withdraw?: number | null; // Float
+    max_daily_withdraw_verified?: number | null; // Float
+    max_withdraw?: number | null; // Float
+    min_withdraw?: number | null; // Float
+    name: string; // String!
+    regex?: string | null; // String
+    required_confirmation?: number | null; // Int
+    symbol: string; // String!
+    TransactionMaster?: NexusGenInputs['TransactionMasterCreateNestedManyWithoutCurrencyInput'] | null; // TransactionMasterCreateNestedManyWithoutCurrencyInput
+    updatedAt?: NexusGenScalars['DateTime'] | null; // DateTime
+    withdraw_fee_flat?: number | null; // Float
+    withdraw_fee_pct?: number | null; // Float
+    withdraw_manual_threshold?: number | null; // Float
+  }
+  CurrencyCreateWithoutConvertionPairToInput: { // input type
+    admin_config_price?: number | null; // Float
+    admin_config_price_price_step?: number | null; // Float
+    admin_config_price_volume_step?: number | null; // Float
+    admin_config_total_volume?: number | null; // Float
+    admin_config_volume_cache_time?: NexusGenScalars['DateTime'] | null; // DateTime
+    ConvertionPairFrom?: NexusGenInputs['ConvertionPairCreateNestedManyWithoutCurrencyFromInput'] | null; // ConvertionPairCreateNestedManyWithoutCurrencyFromInput
     createdAt?: NexusGenScalars['DateTime'] | null; // DateTime
     crypto_data?: NexusGenEnums['NullableJsonNullValueInput'] | null; // NullableJsonNullValueInput
     crypto_service?: NexusGenEnums['Crypto_Service'] | null; // Crypto_Service
@@ -870,7 +985,8 @@ export interface NexusGenInputs {
     admin_config_price_volume_step?: number | null; // Float
     admin_config_total_volume?: number | null; // Float
     admin_config_volume_cache_time?: NexusGenScalars['DateTime'] | null; // DateTime
-    ConvertionPair?: NexusGenInputs['ConvertionPairCreateNestedManyWithoutCurrencyInput'] | null; // ConvertionPairCreateNestedManyWithoutCurrencyInput
+    ConvertionPairFrom?: NexusGenInputs['ConvertionPairCreateNestedManyWithoutCurrencyFromInput'] | null; // ConvertionPairCreateNestedManyWithoutCurrencyFromInput
+    ConvertionPairTo?: NexusGenInputs['ConvertionPairCreateNestedManyWithoutCurrencyToInput'] | null; // ConvertionPairCreateNestedManyWithoutCurrencyToInput
     createdAt?: NexusGenScalars['DateTime'] | null; // DateTime
     crypto_data?: NexusGenEnums['NullableJsonNullValueInput'] | null; // NullableJsonNullValueInput
     crypto_service?: NexusGenEnums['Crypto_Service'] | null; // Crypto_Service
@@ -909,7 +1025,8 @@ export interface NexusGenInputs {
     admin_config_price_volume_step?: number | null; // Float
     admin_config_total_volume?: number | null; // Float
     admin_config_volume_cache_time?: NexusGenScalars['DateTime'] | null; // DateTime
-    ConvertionPair?: NexusGenInputs['ConvertionPairCreateNestedManyWithoutCurrencyInput'] | null; // ConvertionPairCreateNestedManyWithoutCurrencyInput
+    ConvertionPairFrom?: NexusGenInputs['ConvertionPairCreateNestedManyWithoutCurrencyFromInput'] | null; // ConvertionPairCreateNestedManyWithoutCurrencyFromInput
+    ConvertionPairTo?: NexusGenInputs['ConvertionPairCreateNestedManyWithoutCurrencyToInput'] | null; // ConvertionPairCreateNestedManyWithoutCurrencyToInput
     createdAt?: NexusGenScalars['DateTime'] | null; // DateTime
     crypto_data?: NexusGenEnums['NullableJsonNullValueInput'] | null; // NullableJsonNullValueInput
     crypto_service?: NexusGenEnums['Crypto_Service'] | null; // Crypto_Service
@@ -948,7 +1065,8 @@ export interface NexusGenInputs {
     admin_config_price_volume_step?: number | null; // Float
     admin_config_total_volume?: number | null; // Float
     admin_config_volume_cache_time?: NexusGenScalars['DateTime'] | null; // DateTime
-    ConvertionPair?: NexusGenInputs['ConvertionPairCreateNestedManyWithoutCurrencyInput'] | null; // ConvertionPairCreateNestedManyWithoutCurrencyInput
+    ConvertionPairFrom?: NexusGenInputs['ConvertionPairCreateNestedManyWithoutCurrencyFromInput'] | null; // ConvertionPairCreateNestedManyWithoutCurrencyFromInput
+    ConvertionPairTo?: NexusGenInputs['ConvertionPairCreateNestedManyWithoutCurrencyToInput'] | null; // ConvertionPairCreateNestedManyWithoutCurrencyToInput
     createdAt?: NexusGenScalars['DateTime'] | null; // DateTime
     crypto_data?: NexusGenEnums['NullableJsonNullValueInput'] | null; // NullableJsonNullValueInput
     crypto_service?: NexusGenEnums['Crypto_Service'] | null; // Crypto_Service
@@ -987,7 +1105,8 @@ export interface NexusGenInputs {
     admin_config_price_volume_step?: NexusGenInputs['NullableFloatFieldUpdateOperationsInput'] | null; // NullableFloatFieldUpdateOperationsInput
     admin_config_total_volume?: NexusGenInputs['NullableFloatFieldUpdateOperationsInput'] | null; // NullableFloatFieldUpdateOperationsInput
     admin_config_volume_cache_time?: NexusGenInputs['NullableDateTimeFieldUpdateOperationsInput'] | null; // NullableDateTimeFieldUpdateOperationsInput
-    ConvertionPair?: NexusGenInputs['ConvertionPairUpdateManyWithoutCurrencyInput'] | null; // ConvertionPairUpdateManyWithoutCurrencyInput
+    ConvertionPairFrom?: NexusGenInputs['ConvertionPairUpdateManyWithoutCurrencyFromInput'] | null; // ConvertionPairUpdateManyWithoutCurrencyFromInput
+    ConvertionPairTo?: NexusGenInputs['ConvertionPairUpdateManyWithoutCurrencyToInput'] | null; // ConvertionPairUpdateManyWithoutCurrencyToInput
     createdAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
     crypto_data?: NexusGenEnums['NullableJsonNullValueInput'] | null; // NullableJsonNullValueInput
     crypto_service?: NexusGenInputs['NullableEnumCrypto_ServiceFieldUpdateOperationsInput'] | null; // NullableEnumCrypto_ServiceFieldUpdateOperationsInput
@@ -1021,12 +1140,19 @@ export interface NexusGenInputs {
     withdraw_fee_pct?: NexusGenInputs['NullableFloatFieldUpdateOperationsInput'] | null; // NullableFloatFieldUpdateOperationsInput
     withdraw_manual_threshold?: NexusGenInputs['NullableFloatFieldUpdateOperationsInput'] | null; // NullableFloatFieldUpdateOperationsInput
   }
-  CurrencyUpdateOneRequiredWithoutConvertionPairInput: { // input type
+  CurrencyUpdateOneRequiredWithoutConvertionPairFromInput: { // input type
     connect?: NexusGenInputs['CurrencyWhereUniqueInput'] | null; // CurrencyWhereUniqueInput
-    connectOrCreate?: NexusGenInputs['CurrencyCreateOrConnectWithoutConvertionPairInput'] | null; // CurrencyCreateOrConnectWithoutConvertionPairInput
-    create?: NexusGenInputs['CurrencyCreateWithoutConvertionPairInput'] | null; // CurrencyCreateWithoutConvertionPairInput
-    update?: NexusGenInputs['CurrencyUpdateWithoutConvertionPairInput'] | null; // CurrencyUpdateWithoutConvertionPairInput
-    upsert?: NexusGenInputs['CurrencyUpsertWithoutConvertionPairInput'] | null; // CurrencyUpsertWithoutConvertionPairInput
+    connectOrCreate?: NexusGenInputs['CurrencyCreateOrConnectWithoutConvertionPairFromInput'] | null; // CurrencyCreateOrConnectWithoutConvertionPairFromInput
+    create?: NexusGenInputs['CurrencyCreateWithoutConvertionPairFromInput'] | null; // CurrencyCreateWithoutConvertionPairFromInput
+    update?: NexusGenInputs['CurrencyUpdateWithoutConvertionPairFromInput'] | null; // CurrencyUpdateWithoutConvertionPairFromInput
+    upsert?: NexusGenInputs['CurrencyUpsertWithoutConvertionPairFromInput'] | null; // CurrencyUpsertWithoutConvertionPairFromInput
+  }
+  CurrencyUpdateOneRequiredWithoutConvertionPairToInput: { // input type
+    connect?: NexusGenInputs['CurrencyWhereUniqueInput'] | null; // CurrencyWhereUniqueInput
+    connectOrCreate?: NexusGenInputs['CurrencyCreateOrConnectWithoutConvertionPairToInput'] | null; // CurrencyCreateOrConnectWithoutConvertionPairToInput
+    create?: NexusGenInputs['CurrencyCreateWithoutConvertionPairToInput'] | null; // CurrencyCreateWithoutConvertionPairToInput
+    update?: NexusGenInputs['CurrencyUpdateWithoutConvertionPairToInput'] | null; // CurrencyUpdateWithoutConvertionPairToInput
+    upsert?: NexusGenInputs['CurrencyUpsertWithoutConvertionPairToInput'] | null; // CurrencyUpsertWithoutConvertionPairToInput
   }
   CurrencyUpdateOneRequiredWithoutMainWalletInput: { // input type
     connect?: NexusGenInputs['CurrencyWhereUniqueInput'] | null; // CurrencyWhereUniqueInput
@@ -1049,12 +1175,53 @@ export interface NexusGenInputs {
     update?: NexusGenInputs['CurrencyUpdateWithoutTransactionMasterInput'] | null; // CurrencyUpdateWithoutTransactionMasterInput
     upsert?: NexusGenInputs['CurrencyUpsertWithoutTransactionMasterInput'] | null; // CurrencyUpsertWithoutTransactionMasterInput
   }
-  CurrencyUpdateWithoutConvertionPairInput: { // input type
+  CurrencyUpdateWithoutConvertionPairFromInput: { // input type
     admin_config_price?: NexusGenInputs['NullableFloatFieldUpdateOperationsInput'] | null; // NullableFloatFieldUpdateOperationsInput
     admin_config_price_price_step?: NexusGenInputs['NullableFloatFieldUpdateOperationsInput'] | null; // NullableFloatFieldUpdateOperationsInput
     admin_config_price_volume_step?: NexusGenInputs['NullableFloatFieldUpdateOperationsInput'] | null; // NullableFloatFieldUpdateOperationsInput
     admin_config_total_volume?: NexusGenInputs['NullableFloatFieldUpdateOperationsInput'] | null; // NullableFloatFieldUpdateOperationsInput
     admin_config_volume_cache_time?: NexusGenInputs['NullableDateTimeFieldUpdateOperationsInput'] | null; // NullableDateTimeFieldUpdateOperationsInput
+    ConvertionPairTo?: NexusGenInputs['ConvertionPairUpdateManyWithoutCurrencyToInput'] | null; // ConvertionPairUpdateManyWithoutCurrencyToInput
+    createdAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
+    crypto_data?: NexusGenEnums['NullableJsonNullValueInput'] | null; // NullableJsonNullValueInput
+    crypto_service?: NexusGenInputs['NullableEnumCrypto_ServiceFieldUpdateOperationsInput'] | null; // NullableEnumCrypto_ServiceFieldUpdateOperationsInput
+    disclaimer_deposit?: NexusGenInputs['NullableStringFieldUpdateOperationsInput'] | null; // NullableStringFieldUpdateOperationsInput
+    disclaimer_withdraw?: NexusGenInputs['NullableStringFieldUpdateOperationsInput'] | null; // NullableStringFieldUpdateOperationsInput
+    icon?: NexusGenInputs['NullableStringFieldUpdateOperationsInput'] | null; // NullableStringFieldUpdateOperationsInput
+    id?: NexusGenInputs['StringFieldUpdateOperationsInput'] | null; // StringFieldUpdateOperationsInput
+    instruction_deposit?: NexusGenInputs['NullableStringFieldUpdateOperationsInput'] | null; // NullableStringFieldUpdateOperationsInput
+    instruction_withdraw?: NexusGenInputs['NullableStringFieldUpdateOperationsInput'] | null; // NullableStringFieldUpdateOperationsInput
+    is_enable?: NexusGenInputs['BoolFieldUpdateOperationsInput'] | null; // BoolFieldUpdateOperationsInput
+    is_enable_convert?: NexusGenInputs['BoolFieldUpdateOperationsInput'] | null; // BoolFieldUpdateOperationsInput
+    is_enable_convert_from?: NexusGenInputs['BoolFieldUpdateOperationsInput'] | null; // BoolFieldUpdateOperationsInput
+    is_enable_convert_to?: NexusGenInputs['BoolFieldUpdateOperationsInput'] | null; // BoolFieldUpdateOperationsInput
+    is_enable_deposit?: NexusGenInputs['BoolFieldUpdateOperationsInput'] | null; // BoolFieldUpdateOperationsInput
+    is_enable_withdraw?: NexusGenInputs['BoolFieldUpdateOperationsInput'] | null; // BoolFieldUpdateOperationsInput
+    is_enable_withdraw_cron?: NexusGenInputs['BoolFieldUpdateOperationsInput'] | null; // BoolFieldUpdateOperationsInput
+    MainWallet?: NexusGenInputs['MainWalletUpdateManyWithoutCurrencyInput'] | null; // MainWalletUpdateManyWithoutCurrencyInput
+    MainWalletTransaction?: NexusGenInputs['MainWalletTransactionUpdateManyWithoutCurrencyInput'] | null; // MainWalletTransactionUpdateManyWithoutCurrencyInput
+    MasterWallet?: NexusGenInputs['MasterWalletUpdateManyWithoutCurrencyInput'] | null; // MasterWalletUpdateManyWithoutCurrencyInput
+    max_daily_withdraw?: NexusGenInputs['NullableFloatFieldUpdateOperationsInput'] | null; // NullableFloatFieldUpdateOperationsInput
+    max_daily_withdraw_verified?: NexusGenInputs['NullableFloatFieldUpdateOperationsInput'] | null; // NullableFloatFieldUpdateOperationsInput
+    max_withdraw?: NexusGenInputs['NullableFloatFieldUpdateOperationsInput'] | null; // NullableFloatFieldUpdateOperationsInput
+    min_withdraw?: NexusGenInputs['NullableFloatFieldUpdateOperationsInput'] | null; // NullableFloatFieldUpdateOperationsInput
+    name?: NexusGenInputs['StringFieldUpdateOperationsInput'] | null; // StringFieldUpdateOperationsInput
+    regex?: NexusGenInputs['NullableStringFieldUpdateOperationsInput'] | null; // NullableStringFieldUpdateOperationsInput
+    required_confirmation?: NexusGenInputs['IntFieldUpdateOperationsInput'] | null; // IntFieldUpdateOperationsInput
+    symbol?: NexusGenInputs['StringFieldUpdateOperationsInput'] | null; // StringFieldUpdateOperationsInput
+    TransactionMaster?: NexusGenInputs['TransactionMasterUpdateManyWithoutCurrencyInput'] | null; // TransactionMasterUpdateManyWithoutCurrencyInput
+    updatedAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
+    withdraw_fee_flat?: NexusGenInputs['NullableFloatFieldUpdateOperationsInput'] | null; // NullableFloatFieldUpdateOperationsInput
+    withdraw_fee_pct?: NexusGenInputs['NullableFloatFieldUpdateOperationsInput'] | null; // NullableFloatFieldUpdateOperationsInput
+    withdraw_manual_threshold?: NexusGenInputs['NullableFloatFieldUpdateOperationsInput'] | null; // NullableFloatFieldUpdateOperationsInput
+  }
+  CurrencyUpdateWithoutConvertionPairToInput: { // input type
+    admin_config_price?: NexusGenInputs['NullableFloatFieldUpdateOperationsInput'] | null; // NullableFloatFieldUpdateOperationsInput
+    admin_config_price_price_step?: NexusGenInputs['NullableFloatFieldUpdateOperationsInput'] | null; // NullableFloatFieldUpdateOperationsInput
+    admin_config_price_volume_step?: NexusGenInputs['NullableFloatFieldUpdateOperationsInput'] | null; // NullableFloatFieldUpdateOperationsInput
+    admin_config_total_volume?: NexusGenInputs['NullableFloatFieldUpdateOperationsInput'] | null; // NullableFloatFieldUpdateOperationsInput
+    admin_config_volume_cache_time?: NexusGenInputs['NullableDateTimeFieldUpdateOperationsInput'] | null; // NullableDateTimeFieldUpdateOperationsInput
+    ConvertionPairFrom?: NexusGenInputs['ConvertionPairUpdateManyWithoutCurrencyFromInput'] | null; // ConvertionPairUpdateManyWithoutCurrencyFromInput
     createdAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
     crypto_data?: NexusGenEnums['NullableJsonNullValueInput'] | null; // NullableJsonNullValueInput
     crypto_service?: NexusGenInputs['NullableEnumCrypto_ServiceFieldUpdateOperationsInput'] | null; // NullableEnumCrypto_ServiceFieldUpdateOperationsInput
@@ -1094,7 +1261,8 @@ export interface NexusGenInputs {
     admin_config_price_volume_step?: NexusGenInputs['NullableFloatFieldUpdateOperationsInput'] | null; // NullableFloatFieldUpdateOperationsInput
     admin_config_total_volume?: NexusGenInputs['NullableFloatFieldUpdateOperationsInput'] | null; // NullableFloatFieldUpdateOperationsInput
     admin_config_volume_cache_time?: NexusGenInputs['NullableDateTimeFieldUpdateOperationsInput'] | null; // NullableDateTimeFieldUpdateOperationsInput
-    ConvertionPair?: NexusGenInputs['ConvertionPairUpdateManyWithoutCurrencyInput'] | null; // ConvertionPairUpdateManyWithoutCurrencyInput
+    ConvertionPairFrom?: NexusGenInputs['ConvertionPairUpdateManyWithoutCurrencyFromInput'] | null; // ConvertionPairUpdateManyWithoutCurrencyFromInput
+    ConvertionPairTo?: NexusGenInputs['ConvertionPairUpdateManyWithoutCurrencyToInput'] | null; // ConvertionPairUpdateManyWithoutCurrencyToInput
     createdAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
     crypto_data?: NexusGenEnums['NullableJsonNullValueInput'] | null; // NullableJsonNullValueInput
     crypto_service?: NexusGenInputs['NullableEnumCrypto_ServiceFieldUpdateOperationsInput'] | null; // NullableEnumCrypto_ServiceFieldUpdateOperationsInput
@@ -1133,7 +1301,8 @@ export interface NexusGenInputs {
     admin_config_price_volume_step?: NexusGenInputs['NullableFloatFieldUpdateOperationsInput'] | null; // NullableFloatFieldUpdateOperationsInput
     admin_config_total_volume?: NexusGenInputs['NullableFloatFieldUpdateOperationsInput'] | null; // NullableFloatFieldUpdateOperationsInput
     admin_config_volume_cache_time?: NexusGenInputs['NullableDateTimeFieldUpdateOperationsInput'] | null; // NullableDateTimeFieldUpdateOperationsInput
-    ConvertionPair?: NexusGenInputs['ConvertionPairUpdateManyWithoutCurrencyInput'] | null; // ConvertionPairUpdateManyWithoutCurrencyInput
+    ConvertionPairFrom?: NexusGenInputs['ConvertionPairUpdateManyWithoutCurrencyFromInput'] | null; // ConvertionPairUpdateManyWithoutCurrencyFromInput
+    ConvertionPairTo?: NexusGenInputs['ConvertionPairUpdateManyWithoutCurrencyToInput'] | null; // ConvertionPairUpdateManyWithoutCurrencyToInput
     createdAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
     crypto_data?: NexusGenEnums['NullableJsonNullValueInput'] | null; // NullableJsonNullValueInput
     crypto_service?: NexusGenInputs['NullableEnumCrypto_ServiceFieldUpdateOperationsInput'] | null; // NullableEnumCrypto_ServiceFieldUpdateOperationsInput
@@ -1172,7 +1341,8 @@ export interface NexusGenInputs {
     admin_config_price_volume_step?: NexusGenInputs['NullableFloatFieldUpdateOperationsInput'] | null; // NullableFloatFieldUpdateOperationsInput
     admin_config_total_volume?: NexusGenInputs['NullableFloatFieldUpdateOperationsInput'] | null; // NullableFloatFieldUpdateOperationsInput
     admin_config_volume_cache_time?: NexusGenInputs['NullableDateTimeFieldUpdateOperationsInput'] | null; // NullableDateTimeFieldUpdateOperationsInput
-    ConvertionPair?: NexusGenInputs['ConvertionPairUpdateManyWithoutCurrencyInput'] | null; // ConvertionPairUpdateManyWithoutCurrencyInput
+    ConvertionPairFrom?: NexusGenInputs['ConvertionPairUpdateManyWithoutCurrencyFromInput'] | null; // ConvertionPairUpdateManyWithoutCurrencyFromInput
+    ConvertionPairTo?: NexusGenInputs['ConvertionPairUpdateManyWithoutCurrencyToInput'] | null; // ConvertionPairUpdateManyWithoutCurrencyToInput
     createdAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
     crypto_data?: NexusGenEnums['NullableJsonNullValueInput'] | null; // NullableJsonNullValueInput
     crypto_service?: NexusGenInputs['NullableEnumCrypto_ServiceFieldUpdateOperationsInput'] | null; // NullableEnumCrypto_ServiceFieldUpdateOperationsInput
@@ -1205,9 +1375,13 @@ export interface NexusGenInputs {
     withdraw_fee_pct?: NexusGenInputs['NullableFloatFieldUpdateOperationsInput'] | null; // NullableFloatFieldUpdateOperationsInput
     withdraw_manual_threshold?: NexusGenInputs['NullableFloatFieldUpdateOperationsInput'] | null; // NullableFloatFieldUpdateOperationsInput
   }
-  CurrencyUpsertWithoutConvertionPairInput: { // input type
-    create: NexusGenInputs['CurrencyCreateWithoutConvertionPairInput']; // CurrencyCreateWithoutConvertionPairInput!
-    update: NexusGenInputs['CurrencyUpdateWithoutConvertionPairInput']; // CurrencyUpdateWithoutConvertionPairInput!
+  CurrencyUpsertWithoutConvertionPairFromInput: { // input type
+    create: NexusGenInputs['CurrencyCreateWithoutConvertionPairFromInput']; // CurrencyCreateWithoutConvertionPairFromInput!
+    update: NexusGenInputs['CurrencyUpdateWithoutConvertionPairFromInput']; // CurrencyUpdateWithoutConvertionPairFromInput!
+  }
+  CurrencyUpsertWithoutConvertionPairToInput: { // input type
+    create: NexusGenInputs['CurrencyCreateWithoutConvertionPairToInput']; // CurrencyCreateWithoutConvertionPairToInput!
+    update: NexusGenInputs['CurrencyUpdateWithoutConvertionPairToInput']; // CurrencyUpdateWithoutConvertionPairToInput!
   }
   CurrencyUpsertWithoutMainWalletInput: { // input type
     create: NexusGenInputs['CurrencyCreateWithoutMainWalletInput']; // CurrencyCreateWithoutMainWalletInput!
@@ -1344,15 +1518,6 @@ export interface NexusGenInputs {
   DeviceWhereUniqueInput: { // input type
     id?: string | null; // String
   }
-  EnumAccountTypeFieldUpdateOperationsInput: { // input type
-    set?: NexusGenEnums['AccountType'] | null; // AccountType
-  }
-  EnumAccountTypeFilter: { // input type
-    equals?: NexusGenEnums['AccountType'] | null; // AccountType
-    in?: NexusGenEnums['AccountType'][] | null; // [AccountType!]
-    not?: NexusGenInputs['NestedEnumAccountTypeFilter'] | null; // NestedEnumAccountTypeFilter
-    notIn?: NexusGenEnums['AccountType'][] | null; // [AccountType!]
-  }
   EnumApprovedStatusNullableFilter: { // input type
     equals?: NexusGenEnums['ApprovedStatus'] | null; // ApprovedStatus
     in?: NexusGenEnums['ApprovedStatus'][] | null; // [ApprovedStatus!]
@@ -1376,15 +1541,6 @@ export interface NexusGenInputs {
     in?: NexusGenEnums['DestinationType'][] | null; // [DestinationType!]
     not?: NexusGenInputs['NestedEnumDestinationTypeFilter'] | null; // NestedEnumDestinationTypeFilter
     notIn?: NexusGenEnums['DestinationType'][] | null; // [DestinationType!]
-  }
-  EnumExchangeWalletEventTypeFieldUpdateOperationsInput: { // input type
-    set?: NexusGenEnums['ExchangeWalletEventType'] | null; // ExchangeWalletEventType
-  }
-  EnumExchangeWalletEventTypeFilter: { // input type
-    equals?: NexusGenEnums['ExchangeWalletEventType'] | null; // ExchangeWalletEventType
-    in?: NexusGenEnums['ExchangeWalletEventType'][] | null; // [ExchangeWalletEventType!]
-    not?: NexusGenInputs['NestedEnumExchangeWalletEventTypeFilter'] | null; // NestedEnumExchangeWalletEventTypeFilter
-    notIn?: NexusGenEnums['ExchangeWalletEventType'][] | null; // [ExchangeWalletEventType!]
   }
   EnumInternalTransactionStatusFieldUpdateOperationsInput: { // input type
     set?: NexusGenEnums['InternalTransactionStatus'] | null; // InternalTransactionStatus
@@ -1517,231 +1673,6 @@ export interface NexusGenInputs {
     in?: NexusGenEnums['WalletChangeEventType'][] | null; // [WalletChangeEventType!]
     not?: NexusGenInputs['NestedEnumWalletChangeEventTypeFilter'] | null; // NestedEnumWalletChangeEventTypeFilter
     notIn?: NexusGenEnums['WalletChangeEventType'][] | null; // [WalletChangeEventType!]
-  }
-  ExchangeWalletChangeCreateManyExchangeWalletInput: { // input type
-    amount: number; // Float!
-    createdAt?: NexusGenScalars['DateTime'] | null; // DateTime
-    event_id: string; // String!
-    event_type: NexusGenEnums['ExchangeWalletEventType']; // ExchangeWalletEventType!
-    id?: string | null; // String
-    updatedAt?: NexusGenScalars['DateTime'] | null; // DateTime
-  }
-  ExchangeWalletChangeCreateManyExchangeWalletInputEnvelope: { // input type
-    data?: NexusGenInputs['ExchangeWalletChangeCreateManyExchangeWalletInput'][] | null; // [ExchangeWalletChangeCreateManyExchangeWalletInput!]
-    skipDuplicates?: boolean | null; // Boolean
-  }
-  ExchangeWalletChangeCreateNestedManyWithoutExchangeWalletInput: { // input type
-    connect?: NexusGenInputs['ExchangeWalletChangeWhereUniqueInput'][] | null; // [ExchangeWalletChangeWhereUniqueInput!]
-    connectOrCreate?: NexusGenInputs['ExchangeWalletChangeCreateOrConnectWithoutExchangeWalletInput'][] | null; // [ExchangeWalletChangeCreateOrConnectWithoutExchangeWalletInput!]
-    create?: NexusGenInputs['ExchangeWalletChangeCreateWithoutExchangeWalletInput'][] | null; // [ExchangeWalletChangeCreateWithoutExchangeWalletInput!]
-    createMany?: NexusGenInputs['ExchangeWalletChangeCreateManyExchangeWalletInputEnvelope'] | null; // ExchangeWalletChangeCreateManyExchangeWalletInputEnvelope
-  }
-  ExchangeWalletChangeCreateOrConnectWithoutExchangeWalletInput: { // input type
-    create: NexusGenInputs['ExchangeWalletChangeCreateWithoutExchangeWalletInput']; // ExchangeWalletChangeCreateWithoutExchangeWalletInput!
-    where: NexusGenInputs['ExchangeWalletChangeWhereUniqueInput']; // ExchangeWalletChangeWhereUniqueInput!
-  }
-  ExchangeWalletChangeCreateWithoutExchangeWalletInput: { // input type
-    amount: number; // Float!
-    createdAt?: NexusGenScalars['DateTime'] | null; // DateTime
-    event_id: string; // String!
-    event_type: NexusGenEnums['ExchangeWalletEventType']; // ExchangeWalletEventType!
-    id?: string | null; // String
-    updatedAt?: NexusGenScalars['DateTime'] | null; // DateTime
-  }
-  ExchangeWalletChangeScalarWhereInput: { // input type
-    amount?: NexusGenInputs['FloatFilter'] | null; // FloatFilter
-    AND?: NexusGenInputs['ExchangeWalletChangeScalarWhereInput'][] | null; // [ExchangeWalletChangeScalarWhereInput!]
-    createdAt?: NexusGenInputs['DateTimeFilter'] | null; // DateTimeFilter
-    event_id?: NexusGenInputs['StringFilter'] | null; // StringFilter
-    event_type?: NexusGenInputs['EnumExchangeWalletEventTypeFilter'] | null; // EnumExchangeWalletEventTypeFilter
-    exchange_wallet_id?: NexusGenInputs['StringFilter'] | null; // StringFilter
-    id?: NexusGenInputs['StringFilter'] | null; // StringFilter
-    NOT?: NexusGenInputs['ExchangeWalletChangeScalarWhereInput'][] | null; // [ExchangeWalletChangeScalarWhereInput!]
-    OR?: NexusGenInputs['ExchangeWalletChangeScalarWhereInput'][] | null; // [ExchangeWalletChangeScalarWhereInput!]
-    updatedAt?: NexusGenInputs['DateTimeFilter'] | null; // DateTimeFilter
-  }
-  ExchangeWalletChangeUpdateManyMutationInput: { // input type
-    amount?: NexusGenInputs['FloatFieldUpdateOperationsInput'] | null; // FloatFieldUpdateOperationsInput
-    createdAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
-    event_id?: NexusGenInputs['StringFieldUpdateOperationsInput'] | null; // StringFieldUpdateOperationsInput
-    event_type?: NexusGenInputs['EnumExchangeWalletEventTypeFieldUpdateOperationsInput'] | null; // EnumExchangeWalletEventTypeFieldUpdateOperationsInput
-    id?: NexusGenInputs['StringFieldUpdateOperationsInput'] | null; // StringFieldUpdateOperationsInput
-    updatedAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
-  }
-  ExchangeWalletChangeUpdateManyWithWhereWithoutExchangeWalletInput: { // input type
-    data: NexusGenInputs['ExchangeWalletChangeUpdateManyMutationInput']; // ExchangeWalletChangeUpdateManyMutationInput!
-    where: NexusGenInputs['ExchangeWalletChangeScalarWhereInput']; // ExchangeWalletChangeScalarWhereInput!
-  }
-  ExchangeWalletChangeUpdateManyWithoutExchangeWalletInput: { // input type
-    connect?: NexusGenInputs['ExchangeWalletChangeWhereUniqueInput'][] | null; // [ExchangeWalletChangeWhereUniqueInput!]
-    connectOrCreate?: NexusGenInputs['ExchangeWalletChangeCreateOrConnectWithoutExchangeWalletInput'][] | null; // [ExchangeWalletChangeCreateOrConnectWithoutExchangeWalletInput!]
-    create?: NexusGenInputs['ExchangeWalletChangeCreateWithoutExchangeWalletInput'][] | null; // [ExchangeWalletChangeCreateWithoutExchangeWalletInput!]
-    createMany?: NexusGenInputs['ExchangeWalletChangeCreateManyExchangeWalletInputEnvelope'] | null; // ExchangeWalletChangeCreateManyExchangeWalletInputEnvelope
-    delete?: NexusGenInputs['ExchangeWalletChangeWhereUniqueInput'][] | null; // [ExchangeWalletChangeWhereUniqueInput!]
-    deleteMany?: NexusGenInputs['ExchangeWalletChangeScalarWhereInput'][] | null; // [ExchangeWalletChangeScalarWhereInput!]
-    disconnect?: NexusGenInputs['ExchangeWalletChangeWhereUniqueInput'][] | null; // [ExchangeWalletChangeWhereUniqueInput!]
-    set?: NexusGenInputs['ExchangeWalletChangeWhereUniqueInput'][] | null; // [ExchangeWalletChangeWhereUniqueInput!]
-    update?: NexusGenInputs['ExchangeWalletChangeUpdateWithWhereUniqueWithoutExchangeWalletInput'][] | null; // [ExchangeWalletChangeUpdateWithWhereUniqueWithoutExchangeWalletInput!]
-    updateMany?: NexusGenInputs['ExchangeWalletChangeUpdateManyWithWhereWithoutExchangeWalletInput'][] | null; // [ExchangeWalletChangeUpdateManyWithWhereWithoutExchangeWalletInput!]
-    upsert?: NexusGenInputs['ExchangeWalletChangeUpsertWithWhereUniqueWithoutExchangeWalletInput'][] | null; // [ExchangeWalletChangeUpsertWithWhereUniqueWithoutExchangeWalletInput!]
-  }
-  ExchangeWalletChangeUpdateWithWhereUniqueWithoutExchangeWalletInput: { // input type
-    data: NexusGenInputs['ExchangeWalletChangeUpdateWithoutExchangeWalletInput']; // ExchangeWalletChangeUpdateWithoutExchangeWalletInput!
-    where: NexusGenInputs['ExchangeWalletChangeWhereUniqueInput']; // ExchangeWalletChangeWhereUniqueInput!
-  }
-  ExchangeWalletChangeUpdateWithoutExchangeWalletInput: { // input type
-    amount?: NexusGenInputs['FloatFieldUpdateOperationsInput'] | null; // FloatFieldUpdateOperationsInput
-    createdAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
-    event_id?: NexusGenInputs['StringFieldUpdateOperationsInput'] | null; // StringFieldUpdateOperationsInput
-    event_type?: NexusGenInputs['EnumExchangeWalletEventTypeFieldUpdateOperationsInput'] | null; // EnumExchangeWalletEventTypeFieldUpdateOperationsInput
-    id?: NexusGenInputs['StringFieldUpdateOperationsInput'] | null; // StringFieldUpdateOperationsInput
-    updatedAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
-  }
-  ExchangeWalletChangeUpsertWithWhereUniqueWithoutExchangeWalletInput: { // input type
-    create: NexusGenInputs['ExchangeWalletChangeCreateWithoutExchangeWalletInput']; // ExchangeWalletChangeCreateWithoutExchangeWalletInput!
-    update: NexusGenInputs['ExchangeWalletChangeUpdateWithoutExchangeWalletInput']; // ExchangeWalletChangeUpdateWithoutExchangeWalletInput!
-    where: NexusGenInputs['ExchangeWalletChangeWhereUniqueInput']; // ExchangeWalletChangeWhereUniqueInput!
-  }
-  ExchangeWalletChangeWhereUniqueInput: { // input type
-    id?: string | null; // String
-  }
-  ExchangeWalletCreateManyUserInput: { // input type
-    balance_cache_datetime?: NexusGenScalars['DateTime'] | null; // DateTime
-    base_balance?: number | null; // Float
-    createdAt?: NexusGenScalars['DateTime'] | null; // DateTime
-    id?: string | null; // String
-    is_frozen?: boolean | null; // Boolean
-    type: NexusGenEnums['AccountType']; // AccountType!
-    updatedAt?: NexusGenScalars['DateTime'] | null; // DateTime
-  }
-  ExchangeWalletCreateManyUserInputEnvelope: { // input type
-    data?: NexusGenInputs['ExchangeWalletCreateManyUserInput'][] | null; // [ExchangeWalletCreateManyUserInput!]
-    skipDuplicates?: boolean | null; // Boolean
-  }
-  ExchangeWalletCreateNestedManyWithoutUserInput: { // input type
-    connect?: NexusGenInputs['ExchangeWalletWhereUniqueInput'][] | null; // [ExchangeWalletWhereUniqueInput!]
-    connectOrCreate?: NexusGenInputs['ExchangeWalletCreateOrConnectWithoutUserInput'][] | null; // [ExchangeWalletCreateOrConnectWithoutUserInput!]
-    create?: NexusGenInputs['ExchangeWalletCreateWithoutUserInput'][] | null; // [ExchangeWalletCreateWithoutUserInput!]
-    createMany?: NexusGenInputs['ExchangeWalletCreateManyUserInputEnvelope'] | null; // ExchangeWalletCreateManyUserInputEnvelope
-  }
-  ExchangeWalletCreateNestedOneWithoutConvertionTransactionInput: { // input type
-    connect?: NexusGenInputs['ExchangeWalletWhereUniqueInput'] | null; // ExchangeWalletWhereUniqueInput
-    connectOrCreate?: NexusGenInputs['ExchangeWalletCreateOrConnectWithoutConvertionTransactionInput'] | null; // ExchangeWalletCreateOrConnectWithoutConvertionTransactionInput
-    create?: NexusGenInputs['ExchangeWalletCreateWithoutConvertionTransactionInput'] | null; // ExchangeWalletCreateWithoutConvertionTransactionInput
-  }
-  ExchangeWalletCreateOrConnectWithoutConvertionTransactionInput: { // input type
-    create: NexusGenInputs['ExchangeWalletCreateWithoutConvertionTransactionInput']; // ExchangeWalletCreateWithoutConvertionTransactionInput!
-    where: NexusGenInputs['ExchangeWalletWhereUniqueInput']; // ExchangeWalletWhereUniqueInput!
-  }
-  ExchangeWalletCreateOrConnectWithoutUserInput: { // input type
-    create: NexusGenInputs['ExchangeWalletCreateWithoutUserInput']; // ExchangeWalletCreateWithoutUserInput!
-    where: NexusGenInputs['ExchangeWalletWhereUniqueInput']; // ExchangeWalletWhereUniqueInput!
-  }
-  ExchangeWalletCreateWithoutConvertionTransactionInput: { // input type
-    balance_cache_datetime?: NexusGenScalars['DateTime'] | null; // DateTime
-    base_balance?: number | null; // Float
-    createdAt?: NexusGenScalars['DateTime'] | null; // DateTime
-    ExchangeWalletChange?: NexusGenInputs['ExchangeWalletChangeCreateNestedManyWithoutExchangeWalletInput'] | null; // ExchangeWalletChangeCreateNestedManyWithoutExchangeWalletInput
-    id?: string | null; // String
-    is_frozen?: boolean | null; // Boolean
-    type: NexusGenEnums['AccountType']; // AccountType!
-    updatedAt?: NexusGenScalars['DateTime'] | null; // DateTime
-    User: NexusGenInputs['UserCreateNestedOneWithoutExchangeWalletInput']; // UserCreateNestedOneWithoutExchangeWalletInput!
-  }
-  ExchangeWalletCreateWithoutUserInput: { // input type
-    balance_cache_datetime?: NexusGenScalars['DateTime'] | null; // DateTime
-    base_balance?: number | null; // Float
-    ConvertionTransaction?: NexusGenInputs['ConvertionTransactionCreateNestedManyWithoutExchangeWalletInput'] | null; // ConvertionTransactionCreateNestedManyWithoutExchangeWalletInput
-    createdAt?: NexusGenScalars['DateTime'] | null; // DateTime
-    ExchangeWalletChange?: NexusGenInputs['ExchangeWalletChangeCreateNestedManyWithoutExchangeWalletInput'] | null; // ExchangeWalletChangeCreateNestedManyWithoutExchangeWalletInput
-    id?: string | null; // String
-    is_frozen?: boolean | null; // Boolean
-    type: NexusGenEnums['AccountType']; // AccountType!
-    updatedAt?: NexusGenScalars['DateTime'] | null; // DateTime
-  }
-  ExchangeWalletScalarWhereInput: { // input type
-    AND?: NexusGenInputs['ExchangeWalletScalarWhereInput'][] | null; // [ExchangeWalletScalarWhereInput!]
-    balance_cache_datetime?: NexusGenInputs['DateTimeFilter'] | null; // DateTimeFilter
-    base_balance?: NexusGenInputs['FloatFilter'] | null; // FloatFilter
-    createdAt?: NexusGenInputs['DateTimeFilter'] | null; // DateTimeFilter
-    id?: NexusGenInputs['StringFilter'] | null; // StringFilter
-    is_frozen?: NexusGenInputs['BoolFilter'] | null; // BoolFilter
-    NOT?: NexusGenInputs['ExchangeWalletScalarWhereInput'][] | null; // [ExchangeWalletScalarWhereInput!]
-    OR?: NexusGenInputs['ExchangeWalletScalarWhereInput'][] | null; // [ExchangeWalletScalarWhereInput!]
-    type?: NexusGenInputs['EnumAccountTypeFilter'] | null; // EnumAccountTypeFilter
-    updatedAt?: NexusGenInputs['DateTimeFilter'] | null; // DateTimeFilter
-    user_id?: NexusGenInputs['StringFilter'] | null; // StringFilter
-  }
-  ExchangeWalletUpdateManyMutationInput: { // input type
-    balance_cache_datetime?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
-    base_balance?: NexusGenInputs['FloatFieldUpdateOperationsInput'] | null; // FloatFieldUpdateOperationsInput
-    createdAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
-    id?: NexusGenInputs['StringFieldUpdateOperationsInput'] | null; // StringFieldUpdateOperationsInput
-    is_frozen?: NexusGenInputs['BoolFieldUpdateOperationsInput'] | null; // BoolFieldUpdateOperationsInput
-    type?: NexusGenInputs['EnumAccountTypeFieldUpdateOperationsInput'] | null; // EnumAccountTypeFieldUpdateOperationsInput
-    updatedAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
-  }
-  ExchangeWalletUpdateManyWithWhereWithoutUserInput: { // input type
-    data: NexusGenInputs['ExchangeWalletUpdateManyMutationInput']; // ExchangeWalletUpdateManyMutationInput!
-    where: NexusGenInputs['ExchangeWalletScalarWhereInput']; // ExchangeWalletScalarWhereInput!
-  }
-  ExchangeWalletUpdateManyWithoutUserInput: { // input type
-    connect?: NexusGenInputs['ExchangeWalletWhereUniqueInput'][] | null; // [ExchangeWalletWhereUniqueInput!]
-    connectOrCreate?: NexusGenInputs['ExchangeWalletCreateOrConnectWithoutUserInput'][] | null; // [ExchangeWalletCreateOrConnectWithoutUserInput!]
-    create?: NexusGenInputs['ExchangeWalletCreateWithoutUserInput'][] | null; // [ExchangeWalletCreateWithoutUserInput!]
-    createMany?: NexusGenInputs['ExchangeWalletCreateManyUserInputEnvelope'] | null; // ExchangeWalletCreateManyUserInputEnvelope
-    delete?: NexusGenInputs['ExchangeWalletWhereUniqueInput'][] | null; // [ExchangeWalletWhereUniqueInput!]
-    deleteMany?: NexusGenInputs['ExchangeWalletScalarWhereInput'][] | null; // [ExchangeWalletScalarWhereInput!]
-    disconnect?: NexusGenInputs['ExchangeWalletWhereUniqueInput'][] | null; // [ExchangeWalletWhereUniqueInput!]
-    set?: NexusGenInputs['ExchangeWalletWhereUniqueInput'][] | null; // [ExchangeWalletWhereUniqueInput!]
-    update?: NexusGenInputs['ExchangeWalletUpdateWithWhereUniqueWithoutUserInput'][] | null; // [ExchangeWalletUpdateWithWhereUniqueWithoutUserInput!]
-    updateMany?: NexusGenInputs['ExchangeWalletUpdateManyWithWhereWithoutUserInput'][] | null; // [ExchangeWalletUpdateManyWithWhereWithoutUserInput!]
-    upsert?: NexusGenInputs['ExchangeWalletUpsertWithWhereUniqueWithoutUserInput'][] | null; // [ExchangeWalletUpsertWithWhereUniqueWithoutUserInput!]
-  }
-  ExchangeWalletUpdateOneRequiredWithoutConvertionTransactionInput: { // input type
-    connect?: NexusGenInputs['ExchangeWalletWhereUniqueInput'] | null; // ExchangeWalletWhereUniqueInput
-    connectOrCreate?: NexusGenInputs['ExchangeWalletCreateOrConnectWithoutConvertionTransactionInput'] | null; // ExchangeWalletCreateOrConnectWithoutConvertionTransactionInput
-    create?: NexusGenInputs['ExchangeWalletCreateWithoutConvertionTransactionInput'] | null; // ExchangeWalletCreateWithoutConvertionTransactionInput
-    update?: NexusGenInputs['ExchangeWalletUpdateWithoutConvertionTransactionInput'] | null; // ExchangeWalletUpdateWithoutConvertionTransactionInput
-    upsert?: NexusGenInputs['ExchangeWalletUpsertWithoutConvertionTransactionInput'] | null; // ExchangeWalletUpsertWithoutConvertionTransactionInput
-  }
-  ExchangeWalletUpdateWithWhereUniqueWithoutUserInput: { // input type
-    data: NexusGenInputs['ExchangeWalletUpdateWithoutUserInput']; // ExchangeWalletUpdateWithoutUserInput!
-    where: NexusGenInputs['ExchangeWalletWhereUniqueInput']; // ExchangeWalletWhereUniqueInput!
-  }
-  ExchangeWalletUpdateWithoutConvertionTransactionInput: { // input type
-    balance_cache_datetime?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
-    base_balance?: NexusGenInputs['FloatFieldUpdateOperationsInput'] | null; // FloatFieldUpdateOperationsInput
-    createdAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
-    ExchangeWalletChange?: NexusGenInputs['ExchangeWalletChangeUpdateManyWithoutExchangeWalletInput'] | null; // ExchangeWalletChangeUpdateManyWithoutExchangeWalletInput
-    id?: NexusGenInputs['StringFieldUpdateOperationsInput'] | null; // StringFieldUpdateOperationsInput
-    is_frozen?: NexusGenInputs['BoolFieldUpdateOperationsInput'] | null; // BoolFieldUpdateOperationsInput
-    type?: NexusGenInputs['EnumAccountTypeFieldUpdateOperationsInput'] | null; // EnumAccountTypeFieldUpdateOperationsInput
-    updatedAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
-    User?: NexusGenInputs['UserUpdateOneRequiredWithoutExchangeWalletInput'] | null; // UserUpdateOneRequiredWithoutExchangeWalletInput
-  }
-  ExchangeWalletUpdateWithoutUserInput: { // input type
-    balance_cache_datetime?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
-    base_balance?: NexusGenInputs['FloatFieldUpdateOperationsInput'] | null; // FloatFieldUpdateOperationsInput
-    ConvertionTransaction?: NexusGenInputs['ConvertionTransactionUpdateManyWithoutExchangeWalletInput'] | null; // ConvertionTransactionUpdateManyWithoutExchangeWalletInput
-    createdAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
-    ExchangeWalletChange?: NexusGenInputs['ExchangeWalletChangeUpdateManyWithoutExchangeWalletInput'] | null; // ExchangeWalletChangeUpdateManyWithoutExchangeWalletInput
-    id?: NexusGenInputs['StringFieldUpdateOperationsInput'] | null; // StringFieldUpdateOperationsInput
-    is_frozen?: NexusGenInputs['BoolFieldUpdateOperationsInput'] | null; // BoolFieldUpdateOperationsInput
-    type?: NexusGenInputs['EnumAccountTypeFieldUpdateOperationsInput'] | null; // EnumAccountTypeFieldUpdateOperationsInput
-    updatedAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
-  }
-  ExchangeWalletUpsertWithWhereUniqueWithoutUserInput: { // input type
-    create: NexusGenInputs['ExchangeWalletCreateWithoutUserInput']; // ExchangeWalletCreateWithoutUserInput!
-    update: NexusGenInputs['ExchangeWalletUpdateWithoutUserInput']; // ExchangeWalletUpdateWithoutUserInput!
-    where: NexusGenInputs['ExchangeWalletWhereUniqueInput']; // ExchangeWalletWhereUniqueInput!
-  }
-  ExchangeWalletUpsertWithoutConvertionTransactionInput: { // input type
-    create: NexusGenInputs['ExchangeWalletCreateWithoutConvertionTransactionInput']; // ExchangeWalletCreateWithoutConvertionTransactionInput!
-    update: NexusGenInputs['ExchangeWalletUpdateWithoutConvertionTransactionInput']; // ExchangeWalletUpdateWithoutConvertionTransactionInput!
-  }
-  ExchangeWalletWhereUniqueInput: { // input type
-    id?: string | null; // String
   }
   FloatFieldUpdateOperationsInput: { // input type
     decrement?: number | null; // Float
@@ -1898,174 +1829,6 @@ export interface NexusGenInputs {
     string_contains?: string | null; // String
     string_ends_with?: string | null; // String
     string_starts_with?: string | null; // String
-  }
-  LeaderBoardCreateManyUserInput: { // input type
-    cache_time: NexusGenScalars['DateTime']; // DateTime!
-    commission?: number | null; // Float
-    createdAt?: NexusGenScalars['DateTime'] | null; // DateTime
-    exchange_wallets?: NexusGenEnums['NullableJsonNullValueInput'] | null; // NullableJsonNullValueInput
-    f1_count?: number | null; // Int
-    f1_volume?: number | null; // Float
-    id?: string | null; // String
-    lose_amount?: number | null; // Float
-    lose_count?: number | null; // Int
-    main_wallets?: NexusGenEnums['NullableJsonNullValueInput'] | null; // NullableJsonNullValueInput
-    net_profit?: number | null; // Float
-    order_count?: number | null; // Int
-    ref_count?: number | null; // Int
-    ref_network_volume?: number | null; // Float
-    sensored_username: string; // String!
-    trade_amount?: number | null; // Float
-    transfer?: NexusGenEnums['NullableJsonNullValueInput'] | null; // NullableJsonNullValueInput
-    tx_by_wallet?: NexusGenEnums['NullableJsonNullValueInput'] | null; // NullableJsonNullValueInput
-    updatedAt?: NexusGenScalars['DateTime'] | null; // DateTime
-    win_amount?: number | null; // Float
-    win_count?: number | null; // Int
-    win_rate?: number | null; // Float
-  }
-  LeaderBoardCreateManyUserInputEnvelope: { // input type
-    data?: NexusGenInputs['LeaderBoardCreateManyUserInput'][] | null; // [LeaderBoardCreateManyUserInput!]
-    skipDuplicates?: boolean | null; // Boolean
-  }
-  LeaderBoardCreateNestedManyWithoutUserInput: { // input type
-    connect?: NexusGenInputs['LeaderBoardWhereUniqueInput'][] | null; // [LeaderBoardWhereUniqueInput!]
-    connectOrCreate?: NexusGenInputs['LeaderBoardCreateOrConnectWithoutUserInput'][] | null; // [LeaderBoardCreateOrConnectWithoutUserInput!]
-    create?: NexusGenInputs['LeaderBoardCreateWithoutUserInput'][] | null; // [LeaderBoardCreateWithoutUserInput!]
-    createMany?: NexusGenInputs['LeaderBoardCreateManyUserInputEnvelope'] | null; // LeaderBoardCreateManyUserInputEnvelope
-  }
-  LeaderBoardCreateOrConnectWithoutUserInput: { // input type
-    create: NexusGenInputs['LeaderBoardCreateWithoutUserInput']; // LeaderBoardCreateWithoutUserInput!
-    where: NexusGenInputs['LeaderBoardWhereUniqueInput']; // LeaderBoardWhereUniqueInput!
-  }
-  LeaderBoardCreateWithoutUserInput: { // input type
-    cache_time: NexusGenScalars['DateTime']; // DateTime!
-    commission?: number | null; // Float
-    createdAt?: NexusGenScalars['DateTime'] | null; // DateTime
-    exchange_wallets?: NexusGenEnums['NullableJsonNullValueInput'] | null; // NullableJsonNullValueInput
-    f1_count?: number | null; // Int
-    f1_volume?: number | null; // Float
-    id?: string | null; // String
-    lose_amount?: number | null; // Float
-    lose_count?: number | null; // Int
-    main_wallets?: NexusGenEnums['NullableJsonNullValueInput'] | null; // NullableJsonNullValueInput
-    net_profit?: number | null; // Float
-    order_count?: number | null; // Int
-    ref_count?: number | null; // Int
-    ref_network_volume?: number | null; // Float
-    sensored_username: string; // String!
-    trade_amount?: number | null; // Float
-    transfer?: NexusGenEnums['NullableJsonNullValueInput'] | null; // NullableJsonNullValueInput
-    tx_by_wallet?: NexusGenEnums['NullableJsonNullValueInput'] | null; // NullableJsonNullValueInput
-    updatedAt?: NexusGenScalars['DateTime'] | null; // DateTime
-    win_amount?: number | null; // Float
-    win_count?: number | null; // Int
-    win_rate?: number | null; // Float
-  }
-  LeaderBoardScalarWhereInput: { // input type
-    AND?: NexusGenInputs['LeaderBoardScalarWhereInput'][] | null; // [LeaderBoardScalarWhereInput!]
-    cache_time?: NexusGenInputs['DateTimeFilter'] | null; // DateTimeFilter
-    commission?: NexusGenInputs['FloatFilter'] | null; // FloatFilter
-    createdAt?: NexusGenInputs['DateTimeFilter'] | null; // DateTimeFilter
-    exchange_wallets?: NexusGenInputs['JsonNullableFilter'] | null; // JsonNullableFilter
-    f1_count?: NexusGenInputs['IntFilter'] | null; // IntFilter
-    f1_volume?: NexusGenInputs['FloatFilter'] | null; // FloatFilter
-    id?: NexusGenInputs['StringFilter'] | null; // StringFilter
-    lose_amount?: NexusGenInputs['FloatFilter'] | null; // FloatFilter
-    lose_count?: NexusGenInputs['IntFilter'] | null; // IntFilter
-    main_wallets?: NexusGenInputs['JsonNullableFilter'] | null; // JsonNullableFilter
-    net_profit?: NexusGenInputs['FloatFilter'] | null; // FloatFilter
-    NOT?: NexusGenInputs['LeaderBoardScalarWhereInput'][] | null; // [LeaderBoardScalarWhereInput!]
-    OR?: NexusGenInputs['LeaderBoardScalarWhereInput'][] | null; // [LeaderBoardScalarWhereInput!]
-    order_count?: NexusGenInputs['IntFilter'] | null; // IntFilter
-    ref_count?: NexusGenInputs['IntFilter'] | null; // IntFilter
-    ref_network_volume?: NexusGenInputs['FloatFilter'] | null; // FloatFilter
-    sensored_username?: NexusGenInputs['StringFilter'] | null; // StringFilter
-    trade_amount?: NexusGenInputs['FloatFilter'] | null; // FloatFilter
-    transfer?: NexusGenInputs['JsonNullableFilter'] | null; // JsonNullableFilter
-    tx_by_wallet?: NexusGenInputs['JsonNullableFilter'] | null; // JsonNullableFilter
-    updatedAt?: NexusGenInputs['DateTimeFilter'] | null; // DateTimeFilter
-    user_id?: NexusGenInputs['StringFilter'] | null; // StringFilter
-    win_amount?: NexusGenInputs['FloatFilter'] | null; // FloatFilter
-    win_count?: NexusGenInputs['IntFilter'] | null; // IntFilter
-    win_rate?: NexusGenInputs['FloatFilter'] | null; // FloatFilter
-  }
-  LeaderBoardUpdateManyMutationInput: { // input type
-    cache_time?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
-    commission?: NexusGenInputs['FloatFieldUpdateOperationsInput'] | null; // FloatFieldUpdateOperationsInput
-    createdAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
-    exchange_wallets?: NexusGenEnums['NullableJsonNullValueInput'] | null; // NullableJsonNullValueInput
-    f1_count?: NexusGenInputs['IntFieldUpdateOperationsInput'] | null; // IntFieldUpdateOperationsInput
-    f1_volume?: NexusGenInputs['FloatFieldUpdateOperationsInput'] | null; // FloatFieldUpdateOperationsInput
-    id?: NexusGenInputs['StringFieldUpdateOperationsInput'] | null; // StringFieldUpdateOperationsInput
-    lose_amount?: NexusGenInputs['FloatFieldUpdateOperationsInput'] | null; // FloatFieldUpdateOperationsInput
-    lose_count?: NexusGenInputs['IntFieldUpdateOperationsInput'] | null; // IntFieldUpdateOperationsInput
-    main_wallets?: NexusGenEnums['NullableJsonNullValueInput'] | null; // NullableJsonNullValueInput
-    net_profit?: NexusGenInputs['FloatFieldUpdateOperationsInput'] | null; // FloatFieldUpdateOperationsInput
-    order_count?: NexusGenInputs['IntFieldUpdateOperationsInput'] | null; // IntFieldUpdateOperationsInput
-    ref_count?: NexusGenInputs['IntFieldUpdateOperationsInput'] | null; // IntFieldUpdateOperationsInput
-    ref_network_volume?: NexusGenInputs['FloatFieldUpdateOperationsInput'] | null; // FloatFieldUpdateOperationsInput
-    sensored_username?: NexusGenInputs['StringFieldUpdateOperationsInput'] | null; // StringFieldUpdateOperationsInput
-    trade_amount?: NexusGenInputs['FloatFieldUpdateOperationsInput'] | null; // FloatFieldUpdateOperationsInput
-    transfer?: NexusGenEnums['NullableJsonNullValueInput'] | null; // NullableJsonNullValueInput
-    tx_by_wallet?: NexusGenEnums['NullableJsonNullValueInput'] | null; // NullableJsonNullValueInput
-    updatedAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
-    win_amount?: NexusGenInputs['FloatFieldUpdateOperationsInput'] | null; // FloatFieldUpdateOperationsInput
-    win_count?: NexusGenInputs['IntFieldUpdateOperationsInput'] | null; // IntFieldUpdateOperationsInput
-    win_rate?: NexusGenInputs['FloatFieldUpdateOperationsInput'] | null; // FloatFieldUpdateOperationsInput
-  }
-  LeaderBoardUpdateManyWithWhereWithoutUserInput: { // input type
-    data: NexusGenInputs['LeaderBoardUpdateManyMutationInput']; // LeaderBoardUpdateManyMutationInput!
-    where: NexusGenInputs['LeaderBoardScalarWhereInput']; // LeaderBoardScalarWhereInput!
-  }
-  LeaderBoardUpdateManyWithoutUserInput: { // input type
-    connect?: NexusGenInputs['LeaderBoardWhereUniqueInput'][] | null; // [LeaderBoardWhereUniqueInput!]
-    connectOrCreate?: NexusGenInputs['LeaderBoardCreateOrConnectWithoutUserInput'][] | null; // [LeaderBoardCreateOrConnectWithoutUserInput!]
-    create?: NexusGenInputs['LeaderBoardCreateWithoutUserInput'][] | null; // [LeaderBoardCreateWithoutUserInput!]
-    createMany?: NexusGenInputs['LeaderBoardCreateManyUserInputEnvelope'] | null; // LeaderBoardCreateManyUserInputEnvelope
-    delete?: NexusGenInputs['LeaderBoardWhereUniqueInput'][] | null; // [LeaderBoardWhereUniqueInput!]
-    deleteMany?: NexusGenInputs['LeaderBoardScalarWhereInput'][] | null; // [LeaderBoardScalarWhereInput!]
-    disconnect?: NexusGenInputs['LeaderBoardWhereUniqueInput'][] | null; // [LeaderBoardWhereUniqueInput!]
-    set?: NexusGenInputs['LeaderBoardWhereUniqueInput'][] | null; // [LeaderBoardWhereUniqueInput!]
-    update?: NexusGenInputs['LeaderBoardUpdateWithWhereUniqueWithoutUserInput'][] | null; // [LeaderBoardUpdateWithWhereUniqueWithoutUserInput!]
-    updateMany?: NexusGenInputs['LeaderBoardUpdateManyWithWhereWithoutUserInput'][] | null; // [LeaderBoardUpdateManyWithWhereWithoutUserInput!]
-    upsert?: NexusGenInputs['LeaderBoardUpsertWithWhereUniqueWithoutUserInput'][] | null; // [LeaderBoardUpsertWithWhereUniqueWithoutUserInput!]
-  }
-  LeaderBoardUpdateWithWhereUniqueWithoutUserInput: { // input type
-    data: NexusGenInputs['LeaderBoardUpdateWithoutUserInput']; // LeaderBoardUpdateWithoutUserInput!
-    where: NexusGenInputs['LeaderBoardWhereUniqueInput']; // LeaderBoardWhereUniqueInput!
-  }
-  LeaderBoardUpdateWithoutUserInput: { // input type
-    cache_time?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
-    commission?: NexusGenInputs['FloatFieldUpdateOperationsInput'] | null; // FloatFieldUpdateOperationsInput
-    createdAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
-    exchange_wallets?: NexusGenEnums['NullableJsonNullValueInput'] | null; // NullableJsonNullValueInput
-    f1_count?: NexusGenInputs['IntFieldUpdateOperationsInput'] | null; // IntFieldUpdateOperationsInput
-    f1_volume?: NexusGenInputs['FloatFieldUpdateOperationsInput'] | null; // FloatFieldUpdateOperationsInput
-    id?: NexusGenInputs['StringFieldUpdateOperationsInput'] | null; // StringFieldUpdateOperationsInput
-    lose_amount?: NexusGenInputs['FloatFieldUpdateOperationsInput'] | null; // FloatFieldUpdateOperationsInput
-    lose_count?: NexusGenInputs['IntFieldUpdateOperationsInput'] | null; // IntFieldUpdateOperationsInput
-    main_wallets?: NexusGenEnums['NullableJsonNullValueInput'] | null; // NullableJsonNullValueInput
-    net_profit?: NexusGenInputs['FloatFieldUpdateOperationsInput'] | null; // FloatFieldUpdateOperationsInput
-    order_count?: NexusGenInputs['IntFieldUpdateOperationsInput'] | null; // IntFieldUpdateOperationsInput
-    ref_count?: NexusGenInputs['IntFieldUpdateOperationsInput'] | null; // IntFieldUpdateOperationsInput
-    ref_network_volume?: NexusGenInputs['FloatFieldUpdateOperationsInput'] | null; // FloatFieldUpdateOperationsInput
-    sensored_username?: NexusGenInputs['StringFieldUpdateOperationsInput'] | null; // StringFieldUpdateOperationsInput
-    trade_amount?: NexusGenInputs['FloatFieldUpdateOperationsInput'] | null; // FloatFieldUpdateOperationsInput
-    transfer?: NexusGenEnums['NullableJsonNullValueInput'] | null; // NullableJsonNullValueInput
-    tx_by_wallet?: NexusGenEnums['NullableJsonNullValueInput'] | null; // NullableJsonNullValueInput
-    updatedAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
-    win_amount?: NexusGenInputs['FloatFieldUpdateOperationsInput'] | null; // FloatFieldUpdateOperationsInput
-    win_count?: NexusGenInputs['IntFieldUpdateOperationsInput'] | null; // IntFieldUpdateOperationsInput
-    win_rate?: NexusGenInputs['FloatFieldUpdateOperationsInput'] | null; // FloatFieldUpdateOperationsInput
-  }
-  LeaderBoardUpsertWithWhereUniqueWithoutUserInput: { // input type
-    create: NexusGenInputs['LeaderBoardCreateWithoutUserInput']; // LeaderBoardCreateWithoutUserInput!
-    update: NexusGenInputs['LeaderBoardUpdateWithoutUserInput']; // LeaderBoardUpdateWithoutUserInput!
-    where: NexusGenInputs['LeaderBoardWhereUniqueInput']; // LeaderBoardWhereUniqueInput!
-  }
-  LeaderBoardWhereUniqueInput: { // input type
-    id?: string | null; // String
-    user_id?: string | null; // String
   }
   MainWalletAddressCreateNestedOneWithoutMainWalletInput: { // input type
     connect?: NexusGenInputs['MainWalletAddressWhereUniqueInput'] | null; // MainWalletAddressWhereUniqueInput
@@ -2280,18 +2043,27 @@ export interface NexusGenInputs {
     create?: NexusGenInputs['MainWalletCreateWithoutUserInput'][] | null; // [MainWalletCreateWithoutUserInput!]
     createMany?: NexusGenInputs['MainWalletCreateManyUserInputEnvelope'] | null; // MainWalletCreateManyUserInputEnvelope
   }
-  MainWalletCreateNestedOneWithoutConvertionTransactionInput: { // input type
+  MainWalletCreateNestedOneWithoutConvertionTransactionFromInput: { // input type
     connect?: NexusGenInputs['MainWalletWhereUniqueInput'] | null; // MainWalletWhereUniqueInput
-    connectOrCreate?: NexusGenInputs['MainWalletCreateOrConnectWithoutConvertionTransactionInput'] | null; // MainWalletCreateOrConnectWithoutConvertionTransactionInput
-    create?: NexusGenInputs['MainWalletCreateWithoutConvertionTransactionInput'] | null; // MainWalletCreateWithoutConvertionTransactionInput
+    connectOrCreate?: NexusGenInputs['MainWalletCreateOrConnectWithoutConvertionTransactionFromInput'] | null; // MainWalletCreateOrConnectWithoutConvertionTransactionFromInput
+    create?: NexusGenInputs['MainWalletCreateWithoutConvertionTransactionFromInput'] | null; // MainWalletCreateWithoutConvertionTransactionFromInput
+  }
+  MainWalletCreateNestedOneWithoutConvertionTransactionToInput: { // input type
+    connect?: NexusGenInputs['MainWalletWhereUniqueInput'] | null; // MainWalletWhereUniqueInput
+    connectOrCreate?: NexusGenInputs['MainWalletCreateOrConnectWithoutConvertionTransactionToInput'] | null; // MainWalletCreateOrConnectWithoutConvertionTransactionToInput
+    create?: NexusGenInputs['MainWalletCreateWithoutConvertionTransactionToInput'] | null; // MainWalletCreateWithoutConvertionTransactionToInput
   }
   MainWalletCreateNestedOneWithoutMainWalletAddressInput: { // input type
     connect?: NexusGenInputs['MainWalletWhereUniqueInput'] | null; // MainWalletWhereUniqueInput
     connectOrCreate?: NexusGenInputs['MainWalletCreateOrConnectWithoutMainWalletAddressInput'] | null; // MainWalletCreateOrConnectWithoutMainWalletAddressInput
     create?: NexusGenInputs['MainWalletCreateWithoutMainWalletAddressInput'] | null; // MainWalletCreateWithoutMainWalletAddressInput
   }
-  MainWalletCreateOrConnectWithoutConvertionTransactionInput: { // input type
-    create: NexusGenInputs['MainWalletCreateWithoutConvertionTransactionInput']; // MainWalletCreateWithoutConvertionTransactionInput!
+  MainWalletCreateOrConnectWithoutConvertionTransactionFromInput: { // input type
+    create: NexusGenInputs['MainWalletCreateWithoutConvertionTransactionFromInput']; // MainWalletCreateWithoutConvertionTransactionFromInput!
+    where: NexusGenInputs['MainWalletWhereUniqueInput']; // MainWalletWhereUniqueInput!
+  }
+  MainWalletCreateOrConnectWithoutConvertionTransactionToInput: { // input type
+    create: NexusGenInputs['MainWalletCreateWithoutConvertionTransactionToInput']; // MainWalletCreateWithoutConvertionTransactionToInput!
     where: NexusGenInputs['MainWalletWhereUniqueInput']; // MainWalletWhereUniqueInput!
   }
   MainWalletCreateOrConnectWithoutCurrencyInput: { // input type
@@ -2306,9 +2078,23 @@ export interface NexusGenInputs {
     create: NexusGenInputs['MainWalletCreateWithoutUserInput']; // MainWalletCreateWithoutUserInput!
     where: NexusGenInputs['MainWalletWhereUniqueInput']; // MainWalletWhereUniqueInput!
   }
-  MainWalletCreateWithoutConvertionTransactionInput: { // input type
+  MainWalletCreateWithoutConvertionTransactionFromInput: { // input type
     balance_cache_datetime?: NexusGenScalars['DateTime'] | null; // DateTime
     base_balance?: number | null; // Float
+    ConvertionTransactionTo?: NexusGenInputs['ConvertionTransactionCreateNestedManyWithoutMainWalletToInput'] | null; // ConvertionTransactionCreateNestedManyWithoutMainWalletToInput
+    createdAt?: NexusGenScalars['DateTime'] | null; // DateTime
+    Currency: NexusGenInputs['CurrencyCreateNestedOneWithoutMainWalletInput']; // CurrencyCreateNestedOneWithoutMainWalletInput!
+    id?: string | null; // String
+    is_frozen?: boolean | null; // Boolean
+    MainWalletAddress?: NexusGenInputs['MainWalletAddressCreateNestedOneWithoutMainWalletInput'] | null; // MainWalletAddressCreateNestedOneWithoutMainWalletInput
+    MainWalletChange?: NexusGenInputs['MainWalletChangeCreateNestedManyWithoutMainWalletInput'] | null; // MainWalletChangeCreateNestedManyWithoutMainWalletInput
+    updatedAt?: NexusGenScalars['DateTime'] | null; // DateTime
+    User: NexusGenInputs['UserCreateNestedOneWithoutMainWalletInput']; // UserCreateNestedOneWithoutMainWalletInput!
+  }
+  MainWalletCreateWithoutConvertionTransactionToInput: { // input type
+    balance_cache_datetime?: NexusGenScalars['DateTime'] | null; // DateTime
+    base_balance?: number | null; // Float
+    ConvertionTransactionFrom?: NexusGenInputs['ConvertionTransactionCreateNestedManyWithoutMainWalletFromInput'] | null; // ConvertionTransactionCreateNestedManyWithoutMainWalletFromInput
     createdAt?: NexusGenScalars['DateTime'] | null; // DateTime
     Currency: NexusGenInputs['CurrencyCreateNestedOneWithoutMainWalletInput']; // CurrencyCreateNestedOneWithoutMainWalletInput!
     id?: string | null; // String
@@ -2321,7 +2107,8 @@ export interface NexusGenInputs {
   MainWalletCreateWithoutCurrencyInput: { // input type
     balance_cache_datetime?: NexusGenScalars['DateTime'] | null; // DateTime
     base_balance?: number | null; // Float
-    ConvertionTransaction?: NexusGenInputs['ConvertionTransactionCreateNestedManyWithoutMainWalletInput'] | null; // ConvertionTransactionCreateNestedManyWithoutMainWalletInput
+    ConvertionTransactionFrom?: NexusGenInputs['ConvertionTransactionCreateNestedManyWithoutMainWalletFromInput'] | null; // ConvertionTransactionCreateNestedManyWithoutMainWalletFromInput
+    ConvertionTransactionTo?: NexusGenInputs['ConvertionTransactionCreateNestedManyWithoutMainWalletToInput'] | null; // ConvertionTransactionCreateNestedManyWithoutMainWalletToInput
     createdAt?: NexusGenScalars['DateTime'] | null; // DateTime
     id?: string | null; // String
     is_frozen?: boolean | null; // Boolean
@@ -2333,7 +2120,8 @@ export interface NexusGenInputs {
   MainWalletCreateWithoutMainWalletAddressInput: { // input type
     balance_cache_datetime?: NexusGenScalars['DateTime'] | null; // DateTime
     base_balance?: number | null; // Float
-    ConvertionTransaction?: NexusGenInputs['ConvertionTransactionCreateNestedManyWithoutMainWalletInput'] | null; // ConvertionTransactionCreateNestedManyWithoutMainWalletInput
+    ConvertionTransactionFrom?: NexusGenInputs['ConvertionTransactionCreateNestedManyWithoutMainWalletFromInput'] | null; // ConvertionTransactionCreateNestedManyWithoutMainWalletFromInput
+    ConvertionTransactionTo?: NexusGenInputs['ConvertionTransactionCreateNestedManyWithoutMainWalletToInput'] | null; // ConvertionTransactionCreateNestedManyWithoutMainWalletToInput
     createdAt?: NexusGenScalars['DateTime'] | null; // DateTime
     Currency: NexusGenInputs['CurrencyCreateNestedOneWithoutMainWalletInput']; // CurrencyCreateNestedOneWithoutMainWalletInput!
     id?: string | null; // String
@@ -2345,7 +2133,8 @@ export interface NexusGenInputs {
   MainWalletCreateWithoutUserInput: { // input type
     balance_cache_datetime?: NexusGenScalars['DateTime'] | null; // DateTime
     base_balance?: number | null; // Float
-    ConvertionTransaction?: NexusGenInputs['ConvertionTransactionCreateNestedManyWithoutMainWalletInput'] | null; // ConvertionTransactionCreateNestedManyWithoutMainWalletInput
+    ConvertionTransactionFrom?: NexusGenInputs['ConvertionTransactionCreateNestedManyWithoutMainWalletFromInput'] | null; // ConvertionTransactionCreateNestedManyWithoutMainWalletFromInput
+    ConvertionTransactionTo?: NexusGenInputs['ConvertionTransactionCreateNestedManyWithoutMainWalletToInput'] | null; // ConvertionTransactionCreateNestedManyWithoutMainWalletToInput
     createdAt?: NexusGenScalars['DateTime'] | null; // DateTime
     Currency: NexusGenInputs['CurrencyCreateNestedOneWithoutMainWalletInput']; // CurrencyCreateNestedOneWithoutMainWalletInput!
     id?: string | null; // String
@@ -2754,12 +2543,19 @@ export interface NexusGenInputs {
     updateMany?: NexusGenInputs['MainWalletUpdateManyWithWhereWithoutUserInput'][] | null; // [MainWalletUpdateManyWithWhereWithoutUserInput!]
     upsert?: NexusGenInputs['MainWalletUpsertWithWhereUniqueWithoutUserInput'][] | null; // [MainWalletUpsertWithWhereUniqueWithoutUserInput!]
   }
-  MainWalletUpdateOneRequiredWithoutConvertionTransactionInput: { // input type
+  MainWalletUpdateOneRequiredWithoutConvertionTransactionFromInput: { // input type
     connect?: NexusGenInputs['MainWalletWhereUniqueInput'] | null; // MainWalletWhereUniqueInput
-    connectOrCreate?: NexusGenInputs['MainWalletCreateOrConnectWithoutConvertionTransactionInput'] | null; // MainWalletCreateOrConnectWithoutConvertionTransactionInput
-    create?: NexusGenInputs['MainWalletCreateWithoutConvertionTransactionInput'] | null; // MainWalletCreateWithoutConvertionTransactionInput
-    update?: NexusGenInputs['MainWalletUpdateWithoutConvertionTransactionInput'] | null; // MainWalletUpdateWithoutConvertionTransactionInput
-    upsert?: NexusGenInputs['MainWalletUpsertWithoutConvertionTransactionInput'] | null; // MainWalletUpsertWithoutConvertionTransactionInput
+    connectOrCreate?: NexusGenInputs['MainWalletCreateOrConnectWithoutConvertionTransactionFromInput'] | null; // MainWalletCreateOrConnectWithoutConvertionTransactionFromInput
+    create?: NexusGenInputs['MainWalletCreateWithoutConvertionTransactionFromInput'] | null; // MainWalletCreateWithoutConvertionTransactionFromInput
+    update?: NexusGenInputs['MainWalletUpdateWithoutConvertionTransactionFromInput'] | null; // MainWalletUpdateWithoutConvertionTransactionFromInput
+    upsert?: NexusGenInputs['MainWalletUpsertWithoutConvertionTransactionFromInput'] | null; // MainWalletUpsertWithoutConvertionTransactionFromInput
+  }
+  MainWalletUpdateOneRequiredWithoutConvertionTransactionToInput: { // input type
+    connect?: NexusGenInputs['MainWalletWhereUniqueInput'] | null; // MainWalletWhereUniqueInput
+    connectOrCreate?: NexusGenInputs['MainWalletCreateOrConnectWithoutConvertionTransactionToInput'] | null; // MainWalletCreateOrConnectWithoutConvertionTransactionToInput
+    create?: NexusGenInputs['MainWalletCreateWithoutConvertionTransactionToInput'] | null; // MainWalletCreateWithoutConvertionTransactionToInput
+    update?: NexusGenInputs['MainWalletUpdateWithoutConvertionTransactionToInput'] | null; // MainWalletUpdateWithoutConvertionTransactionToInput
+    upsert?: NexusGenInputs['MainWalletUpsertWithoutConvertionTransactionToInput'] | null; // MainWalletUpsertWithoutConvertionTransactionToInput
   }
   MainWalletUpdateOneRequiredWithoutMainWalletAddressInput: { // input type
     connect?: NexusGenInputs['MainWalletWhereUniqueInput'] | null; // MainWalletWhereUniqueInput
@@ -2776,9 +2572,23 @@ export interface NexusGenInputs {
     data: NexusGenInputs['MainWalletUpdateWithoutUserInput']; // MainWalletUpdateWithoutUserInput!
     where: NexusGenInputs['MainWalletWhereUniqueInput']; // MainWalletWhereUniqueInput!
   }
-  MainWalletUpdateWithoutConvertionTransactionInput: { // input type
+  MainWalletUpdateWithoutConvertionTransactionFromInput: { // input type
     balance_cache_datetime?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
     base_balance?: NexusGenInputs['FloatFieldUpdateOperationsInput'] | null; // FloatFieldUpdateOperationsInput
+    ConvertionTransactionTo?: NexusGenInputs['ConvertionTransactionUpdateManyWithoutMainWalletToInput'] | null; // ConvertionTransactionUpdateManyWithoutMainWalletToInput
+    createdAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
+    Currency?: NexusGenInputs['CurrencyUpdateOneRequiredWithoutMainWalletInput'] | null; // CurrencyUpdateOneRequiredWithoutMainWalletInput
+    id?: NexusGenInputs['StringFieldUpdateOperationsInput'] | null; // StringFieldUpdateOperationsInput
+    is_frozen?: NexusGenInputs['BoolFieldUpdateOperationsInput'] | null; // BoolFieldUpdateOperationsInput
+    MainWalletAddress?: NexusGenInputs['MainWalletAddressUpdateOneWithoutMainWalletInput'] | null; // MainWalletAddressUpdateOneWithoutMainWalletInput
+    MainWalletChange?: NexusGenInputs['MainWalletChangeUpdateManyWithoutMainWalletInput'] | null; // MainWalletChangeUpdateManyWithoutMainWalletInput
+    updatedAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
+    User?: NexusGenInputs['UserUpdateOneRequiredWithoutMainWalletInput'] | null; // UserUpdateOneRequiredWithoutMainWalletInput
+  }
+  MainWalletUpdateWithoutConvertionTransactionToInput: { // input type
+    balance_cache_datetime?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
+    base_balance?: NexusGenInputs['FloatFieldUpdateOperationsInput'] | null; // FloatFieldUpdateOperationsInput
+    ConvertionTransactionFrom?: NexusGenInputs['ConvertionTransactionUpdateManyWithoutMainWalletFromInput'] | null; // ConvertionTransactionUpdateManyWithoutMainWalletFromInput
     createdAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
     Currency?: NexusGenInputs['CurrencyUpdateOneRequiredWithoutMainWalletInput'] | null; // CurrencyUpdateOneRequiredWithoutMainWalletInput
     id?: NexusGenInputs['StringFieldUpdateOperationsInput'] | null; // StringFieldUpdateOperationsInput
@@ -2791,7 +2601,8 @@ export interface NexusGenInputs {
   MainWalletUpdateWithoutCurrencyInput: { // input type
     balance_cache_datetime?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
     base_balance?: NexusGenInputs['FloatFieldUpdateOperationsInput'] | null; // FloatFieldUpdateOperationsInput
-    ConvertionTransaction?: NexusGenInputs['ConvertionTransactionUpdateManyWithoutMainWalletInput'] | null; // ConvertionTransactionUpdateManyWithoutMainWalletInput
+    ConvertionTransactionFrom?: NexusGenInputs['ConvertionTransactionUpdateManyWithoutMainWalletFromInput'] | null; // ConvertionTransactionUpdateManyWithoutMainWalletFromInput
+    ConvertionTransactionTo?: NexusGenInputs['ConvertionTransactionUpdateManyWithoutMainWalletToInput'] | null; // ConvertionTransactionUpdateManyWithoutMainWalletToInput
     createdAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
     id?: NexusGenInputs['StringFieldUpdateOperationsInput'] | null; // StringFieldUpdateOperationsInput
     is_frozen?: NexusGenInputs['BoolFieldUpdateOperationsInput'] | null; // BoolFieldUpdateOperationsInput
@@ -2803,7 +2614,8 @@ export interface NexusGenInputs {
   MainWalletUpdateWithoutMainWalletAddressInput: { // input type
     balance_cache_datetime?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
     base_balance?: NexusGenInputs['FloatFieldUpdateOperationsInput'] | null; // FloatFieldUpdateOperationsInput
-    ConvertionTransaction?: NexusGenInputs['ConvertionTransactionUpdateManyWithoutMainWalletInput'] | null; // ConvertionTransactionUpdateManyWithoutMainWalletInput
+    ConvertionTransactionFrom?: NexusGenInputs['ConvertionTransactionUpdateManyWithoutMainWalletFromInput'] | null; // ConvertionTransactionUpdateManyWithoutMainWalletFromInput
+    ConvertionTransactionTo?: NexusGenInputs['ConvertionTransactionUpdateManyWithoutMainWalletToInput'] | null; // ConvertionTransactionUpdateManyWithoutMainWalletToInput
     createdAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
     Currency?: NexusGenInputs['CurrencyUpdateOneRequiredWithoutMainWalletInput'] | null; // CurrencyUpdateOneRequiredWithoutMainWalletInput
     id?: NexusGenInputs['StringFieldUpdateOperationsInput'] | null; // StringFieldUpdateOperationsInput
@@ -2815,7 +2627,8 @@ export interface NexusGenInputs {
   MainWalletUpdateWithoutUserInput: { // input type
     balance_cache_datetime?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
     base_balance?: NexusGenInputs['FloatFieldUpdateOperationsInput'] | null; // FloatFieldUpdateOperationsInput
-    ConvertionTransaction?: NexusGenInputs['ConvertionTransactionUpdateManyWithoutMainWalletInput'] | null; // ConvertionTransactionUpdateManyWithoutMainWalletInput
+    ConvertionTransactionFrom?: NexusGenInputs['ConvertionTransactionUpdateManyWithoutMainWalletFromInput'] | null; // ConvertionTransactionUpdateManyWithoutMainWalletFromInput
+    ConvertionTransactionTo?: NexusGenInputs['ConvertionTransactionUpdateManyWithoutMainWalletToInput'] | null; // ConvertionTransactionUpdateManyWithoutMainWalletToInput
     createdAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
     Currency?: NexusGenInputs['CurrencyUpdateOneRequiredWithoutMainWalletInput'] | null; // CurrencyUpdateOneRequiredWithoutMainWalletInput
     id?: NexusGenInputs['StringFieldUpdateOperationsInput'] | null; // StringFieldUpdateOperationsInput
@@ -2834,9 +2647,13 @@ export interface NexusGenInputs {
     update: NexusGenInputs['MainWalletUpdateWithoutUserInput']; // MainWalletUpdateWithoutUserInput!
     where: NexusGenInputs['MainWalletWhereUniqueInput']; // MainWalletWhereUniqueInput!
   }
-  MainWalletUpsertWithoutConvertionTransactionInput: { // input type
-    create: NexusGenInputs['MainWalletCreateWithoutConvertionTransactionInput']; // MainWalletCreateWithoutConvertionTransactionInput!
-    update: NexusGenInputs['MainWalletUpdateWithoutConvertionTransactionInput']; // MainWalletUpdateWithoutConvertionTransactionInput!
+  MainWalletUpsertWithoutConvertionTransactionFromInput: { // input type
+    create: NexusGenInputs['MainWalletCreateWithoutConvertionTransactionFromInput']; // MainWalletCreateWithoutConvertionTransactionFromInput!
+    update: NexusGenInputs['MainWalletUpdateWithoutConvertionTransactionFromInput']; // MainWalletUpdateWithoutConvertionTransactionFromInput!
+  }
+  MainWalletUpsertWithoutConvertionTransactionToInput: { // input type
+    create: NexusGenInputs['MainWalletCreateWithoutConvertionTransactionToInput']; // MainWalletCreateWithoutConvertionTransactionToInput!
+    update: NexusGenInputs['MainWalletUpdateWithoutConvertionTransactionToInput']; // MainWalletUpdateWithoutConvertionTransactionToInput!
   }
   MainWalletUpsertWithoutMainWalletAddressInput: { // input type
     create: NexusGenInputs['MainWalletCreateWithoutMainWalletAddressInput']; // MainWalletCreateWithoutMainWalletAddressInput!
@@ -3057,12 +2874,6 @@ export interface NexusGenInputs {
     not?: NexusGenInputs['NestedDateTimeNullableFilter'] | null; // NestedDateTimeNullableFilter
     notIn?: NexusGenScalars['DateTime'][] | null; // [DateTime!]
   }
-  NestedEnumAccountTypeFilter: { // input type
-    equals?: NexusGenEnums['AccountType'] | null; // AccountType
-    in?: NexusGenEnums['AccountType'][] | null; // [AccountType!]
-    not?: NexusGenInputs['NestedEnumAccountTypeFilter'] | null; // NestedEnumAccountTypeFilter
-    notIn?: NexusGenEnums['AccountType'][] | null; // [AccountType!]
-  }
   NestedEnumApprovedStatusNullableFilter: { // input type
     equals?: NexusGenEnums['ApprovedStatus'] | null; // ApprovedStatus
     in?: NexusGenEnums['ApprovedStatus'][] | null; // [ApprovedStatus!]
@@ -3080,12 +2891,6 @@ export interface NexusGenInputs {
     in?: NexusGenEnums['DestinationType'][] | null; // [DestinationType!]
     not?: NexusGenInputs['NestedEnumDestinationTypeFilter'] | null; // NestedEnumDestinationTypeFilter
     notIn?: NexusGenEnums['DestinationType'][] | null; // [DestinationType!]
-  }
-  NestedEnumExchangeWalletEventTypeFilter: { // input type
-    equals?: NexusGenEnums['ExchangeWalletEventType'] | null; // ExchangeWalletEventType
-    in?: NexusGenEnums['ExchangeWalletEventType'][] | null; // [ExchangeWalletEventType!]
-    not?: NexusGenInputs['NestedEnumExchangeWalletEventTypeFilter'] | null; // NestedEnumExchangeWalletEventTypeFilter
-    notIn?: NexusGenEnums['ExchangeWalletEventType'][] | null; // [ExchangeWalletEventType!]
   }
   NestedEnumInternalTransactionStatusFilter: { // input type
     equals?: NexusGenEnums['InternalTransactionStatus'] | null; // InternalTransactionStatus
@@ -4745,138 +4550,6 @@ export interface NexusGenInputs {
   TicketWhereUniqueInput: { // input type
     id?: string | null; // String
   }
-  TournamentCreateNestedOneWithoutTournamentTransactionInput: { // input type
-    connect?: NexusGenInputs['TournamentWhereUniqueInput'] | null; // TournamentWhereUniqueInput
-    connectOrCreate?: NexusGenInputs['TournamentCreateOrConnectWithoutTournamentTransactionInput'] | null; // TournamentCreateOrConnectWithoutTournamentTransactionInput
-    create?: NexusGenInputs['TournamentCreateWithoutTournamentTransactionInput'] | null; // TournamentCreateWithoutTournamentTransactionInput
-  }
-  TournamentCreateOrConnectWithoutTournamentTransactionInput: { // input type
-    create: NexusGenInputs['TournamentCreateWithoutTournamentTransactionInput']; // TournamentCreateWithoutTournamentTransactionInput!
-    where: NexusGenInputs['TournamentWhereUniqueInput']; // TournamentWhereUniqueInput!
-  }
-  TournamentCreateWithoutTournamentTransactionInput: { // input type
-    channel: string; // String!
-    createdAt?: NexusGenScalars['DateTime'] | null; // DateTime
-    end_date: NexusGenScalars['DateTime']; // DateTime!
-    extra_data?: NexusGenEnums['NullableJsonNullValueInput'] | null; // NullableJsonNullValueInput
-    id?: string | null; // String
-    isActive?: boolean | null; // Boolean
-    name: string; // String!
-    start_date: NexusGenScalars['DateTime']; // DateTime!
-    updatedAt?: NexusGenScalars['DateTime'] | null; // DateTime
-  }
-  TournamentTransactionCreateManyUserInput: { // input type
-    createdAt?: NexusGenScalars['DateTime'] | null; // DateTime
-    extra_data?: NexusGenEnums['NullableJsonNullValueInput'] | null; // NullableJsonNullValueInput
-    id?: string | null; // String
-    tournament_id: string; // String!
-    updatedAt?: NexusGenScalars['DateTime'] | null; // DateTime
-    value?: number | null; // Float
-  }
-  TournamentTransactionCreateManyUserInputEnvelope: { // input type
-    data?: NexusGenInputs['TournamentTransactionCreateManyUserInput'][] | null; // [TournamentTransactionCreateManyUserInput!]
-    skipDuplicates?: boolean | null; // Boolean
-  }
-  TournamentTransactionCreateNestedManyWithoutUserInput: { // input type
-    connect?: NexusGenInputs['TournamentTransactionWhereUniqueInput'][] | null; // [TournamentTransactionWhereUniqueInput!]
-    connectOrCreate?: NexusGenInputs['TournamentTransactionCreateOrConnectWithoutUserInput'][] | null; // [TournamentTransactionCreateOrConnectWithoutUserInput!]
-    create?: NexusGenInputs['TournamentTransactionCreateWithoutUserInput'][] | null; // [TournamentTransactionCreateWithoutUserInput!]
-    createMany?: NexusGenInputs['TournamentTransactionCreateManyUserInputEnvelope'] | null; // TournamentTransactionCreateManyUserInputEnvelope
-  }
-  TournamentTransactionCreateOrConnectWithoutUserInput: { // input type
-    create: NexusGenInputs['TournamentTransactionCreateWithoutUserInput']; // TournamentTransactionCreateWithoutUserInput!
-    where: NexusGenInputs['TournamentTransactionWhereUniqueInput']; // TournamentTransactionWhereUniqueInput!
-  }
-  TournamentTransactionCreateWithoutUserInput: { // input type
-    createdAt?: NexusGenScalars['DateTime'] | null; // DateTime
-    extra_data?: NexusGenEnums['NullableJsonNullValueInput'] | null; // NullableJsonNullValueInput
-    id?: string | null; // String
-    Tournament: NexusGenInputs['TournamentCreateNestedOneWithoutTournamentTransactionInput']; // TournamentCreateNestedOneWithoutTournamentTransactionInput!
-    updatedAt?: NexusGenScalars['DateTime'] | null; // DateTime
-    value?: number | null; // Float
-  }
-  TournamentTransactionScalarWhereInput: { // input type
-    AND?: NexusGenInputs['TournamentTransactionScalarWhereInput'][] | null; // [TournamentTransactionScalarWhereInput!]
-    createdAt?: NexusGenInputs['DateTimeFilter'] | null; // DateTimeFilter
-    extra_data?: NexusGenInputs['JsonNullableFilter'] | null; // JsonNullableFilter
-    id?: NexusGenInputs['StringFilter'] | null; // StringFilter
-    NOT?: NexusGenInputs['TournamentTransactionScalarWhereInput'][] | null; // [TournamentTransactionScalarWhereInput!]
-    OR?: NexusGenInputs['TournamentTransactionScalarWhereInput'][] | null; // [TournamentTransactionScalarWhereInput!]
-    tournament_id?: NexusGenInputs['StringFilter'] | null; // StringFilter
-    updatedAt?: NexusGenInputs['DateTimeFilter'] | null; // DateTimeFilter
-    user_id?: NexusGenInputs['StringFilter'] | null; // StringFilter
-    value?: NexusGenInputs['FloatFilter'] | null; // FloatFilter
-  }
-  TournamentTransactionUpdateManyMutationInput: { // input type
-    createdAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
-    extra_data?: NexusGenEnums['NullableJsonNullValueInput'] | null; // NullableJsonNullValueInput
-    id?: NexusGenInputs['StringFieldUpdateOperationsInput'] | null; // StringFieldUpdateOperationsInput
-    updatedAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
-    value?: NexusGenInputs['FloatFieldUpdateOperationsInput'] | null; // FloatFieldUpdateOperationsInput
-  }
-  TournamentTransactionUpdateManyWithWhereWithoutUserInput: { // input type
-    data: NexusGenInputs['TournamentTransactionUpdateManyMutationInput']; // TournamentTransactionUpdateManyMutationInput!
-    where: NexusGenInputs['TournamentTransactionScalarWhereInput']; // TournamentTransactionScalarWhereInput!
-  }
-  TournamentTransactionUpdateManyWithoutUserInput: { // input type
-    connect?: NexusGenInputs['TournamentTransactionWhereUniqueInput'][] | null; // [TournamentTransactionWhereUniqueInput!]
-    connectOrCreate?: NexusGenInputs['TournamentTransactionCreateOrConnectWithoutUserInput'][] | null; // [TournamentTransactionCreateOrConnectWithoutUserInput!]
-    create?: NexusGenInputs['TournamentTransactionCreateWithoutUserInput'][] | null; // [TournamentTransactionCreateWithoutUserInput!]
-    createMany?: NexusGenInputs['TournamentTransactionCreateManyUserInputEnvelope'] | null; // TournamentTransactionCreateManyUserInputEnvelope
-    delete?: NexusGenInputs['TournamentTransactionWhereUniqueInput'][] | null; // [TournamentTransactionWhereUniqueInput!]
-    deleteMany?: NexusGenInputs['TournamentTransactionScalarWhereInput'][] | null; // [TournamentTransactionScalarWhereInput!]
-    disconnect?: NexusGenInputs['TournamentTransactionWhereUniqueInput'][] | null; // [TournamentTransactionWhereUniqueInput!]
-    set?: NexusGenInputs['TournamentTransactionWhereUniqueInput'][] | null; // [TournamentTransactionWhereUniqueInput!]
-    update?: NexusGenInputs['TournamentTransactionUpdateWithWhereUniqueWithoutUserInput'][] | null; // [TournamentTransactionUpdateWithWhereUniqueWithoutUserInput!]
-    updateMany?: NexusGenInputs['TournamentTransactionUpdateManyWithWhereWithoutUserInput'][] | null; // [TournamentTransactionUpdateManyWithWhereWithoutUserInput!]
-    upsert?: NexusGenInputs['TournamentTransactionUpsertWithWhereUniqueWithoutUserInput'][] | null; // [TournamentTransactionUpsertWithWhereUniqueWithoutUserInput!]
-  }
-  TournamentTransactionUpdateWithWhereUniqueWithoutUserInput: { // input type
-    data: NexusGenInputs['TournamentTransactionUpdateWithoutUserInput']; // TournamentTransactionUpdateWithoutUserInput!
-    where: NexusGenInputs['TournamentTransactionWhereUniqueInput']; // TournamentTransactionWhereUniqueInput!
-  }
-  TournamentTransactionUpdateWithoutUserInput: { // input type
-    createdAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
-    extra_data?: NexusGenEnums['NullableJsonNullValueInput'] | null; // NullableJsonNullValueInput
-    id?: NexusGenInputs['StringFieldUpdateOperationsInput'] | null; // StringFieldUpdateOperationsInput
-    Tournament?: NexusGenInputs['TournamentUpdateOneRequiredWithoutTournamentTransactionInput'] | null; // TournamentUpdateOneRequiredWithoutTournamentTransactionInput
-    updatedAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
-    value?: NexusGenInputs['FloatFieldUpdateOperationsInput'] | null; // FloatFieldUpdateOperationsInput
-  }
-  TournamentTransactionUpsertWithWhereUniqueWithoutUserInput: { // input type
-    create: NexusGenInputs['TournamentTransactionCreateWithoutUserInput']; // TournamentTransactionCreateWithoutUserInput!
-    update: NexusGenInputs['TournamentTransactionUpdateWithoutUserInput']; // TournamentTransactionUpdateWithoutUserInput!
-    where: NexusGenInputs['TournamentTransactionWhereUniqueInput']; // TournamentTransactionWhereUniqueInput!
-  }
-  TournamentTransactionWhereUniqueInput: { // input type
-    id?: string | null; // String
-  }
-  TournamentUpdateOneRequiredWithoutTournamentTransactionInput: { // input type
-    connect?: NexusGenInputs['TournamentWhereUniqueInput'] | null; // TournamentWhereUniqueInput
-    connectOrCreate?: NexusGenInputs['TournamentCreateOrConnectWithoutTournamentTransactionInput'] | null; // TournamentCreateOrConnectWithoutTournamentTransactionInput
-    create?: NexusGenInputs['TournamentCreateWithoutTournamentTransactionInput'] | null; // TournamentCreateWithoutTournamentTransactionInput
-    update?: NexusGenInputs['TournamentUpdateWithoutTournamentTransactionInput'] | null; // TournamentUpdateWithoutTournamentTransactionInput
-    upsert?: NexusGenInputs['TournamentUpsertWithoutTournamentTransactionInput'] | null; // TournamentUpsertWithoutTournamentTransactionInput
-  }
-  TournamentUpdateWithoutTournamentTransactionInput: { // input type
-    channel?: NexusGenInputs['StringFieldUpdateOperationsInput'] | null; // StringFieldUpdateOperationsInput
-    createdAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
-    end_date?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
-    extra_data?: NexusGenEnums['NullableJsonNullValueInput'] | null; // NullableJsonNullValueInput
-    id?: NexusGenInputs['StringFieldUpdateOperationsInput'] | null; // StringFieldUpdateOperationsInput
-    isActive?: NexusGenInputs['BoolFieldUpdateOperationsInput'] | null; // BoolFieldUpdateOperationsInput
-    name?: NexusGenInputs['StringFieldUpdateOperationsInput'] | null; // StringFieldUpdateOperationsInput
-    start_date?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
-    updatedAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
-  }
-  TournamentUpsertWithoutTournamentTransactionInput: { // input type
-    create: NexusGenInputs['TournamentCreateWithoutTournamentTransactionInput']; // TournamentCreateWithoutTournamentTransactionInput!
-    update: NexusGenInputs['TournamentUpdateWithoutTournamentTransactionInput']; // TournamentUpdateWithoutTournamentTransactionInput!
-  }
-  TournamentWhereUniqueInput: { // input type
-    id?: string | null; // String
-    name?: string | null; // String
-  }
   TransactionMasterCreateManyCurrencyInput: { // input type
     address?: string | null; // String
     amount: number; // Float!
@@ -5155,11 +4828,6 @@ export interface NexusGenInputs {
     connectOrCreate?: NexusGenInputs['UserCreateOrConnectWithoutConvertionTransactionInput'] | null; // UserCreateOrConnectWithoutConvertionTransactionInput
     create?: NexusGenInputs['UserCreateWithoutConvertionTransactionInput'] | null; // UserCreateWithoutConvertionTransactionInput
   }
-  UserCreateNestedOneWithoutExchangeWalletInput: { // input type
-    connect?: NexusGenInputs['UserWhereUniqueInput'] | null; // UserWhereUniqueInput
-    connectOrCreate?: NexusGenInputs['UserCreateOrConnectWithoutExchangeWalletInput'] | null; // UserCreateOrConnectWithoutExchangeWalletInput
-    create?: NexusGenInputs['UserCreateWithoutExchangeWalletInput'] | null; // UserCreateWithoutExchangeWalletInput
-  }
   UserCreateNestedOneWithoutMainWalletInput: { // input type
     connect?: NexusGenInputs['UserWhereUniqueInput'] | null; // UserWhereUniqueInput
     connectOrCreate?: NexusGenInputs['UserCreateOrConnectWithoutMainWalletInput'] | null; // UserCreateOrConnectWithoutMainWalletInput
@@ -5218,10 +4886,6 @@ export interface NexusGenInputs {
     create: NexusGenInputs['UserCreateWithoutConvertionTransactionInput']; // UserCreateWithoutConvertionTransactionInput!
     where: NexusGenInputs['UserWhereUniqueInput']; // UserWhereUniqueInput!
   }
-  UserCreateOrConnectWithoutExchangeWalletInput: { // input type
-    create: NexusGenInputs['UserCreateWithoutExchangeWalletInput']; // UserCreateWithoutExchangeWalletInput!
-    where: NexusGenInputs['UserWhereUniqueInput']; // UserWhereUniqueInput!
-  }
   UserCreateOrConnectWithoutMainWalletInput: { // input type
     create: NexusGenInputs['UserCreateWithoutMainWalletInput']; // UserCreateWithoutMainWalletInput!
     where: NexusGenInputs['UserWhereUniqueInput']; // UserWhereUniqueInput!
@@ -5268,12 +4932,10 @@ export interface NexusGenInputs {
     createdAt?: NexusGenScalars['DateTime'] | null; // DateTime
     Device?: NexusGenInputs['DeviceCreateNestedManyWithoutUserInput'] | null; // DeviceCreateNestedManyWithoutUserInput
     email: string; // String!
-    ExchangeWallet?: NexusGenInputs['ExchangeWalletCreateNestedManyWithoutUserInput'] | null; // ExchangeWalletCreateNestedManyWithoutUserInput
     id?: string | null; // String
     InternalTransaction?: NexusGenInputs['InternalTransactionCreateNestedManyWithoutUserInput'] | null; // InternalTransactionCreateNestedManyWithoutUserInput
     ip?: string | null; // String
     is_active?: boolean | null; // Boolean
-    LeaderBoard?: NexusGenInputs['LeaderBoardCreateNestedManyWithoutUserInput'] | null; // LeaderBoardCreateNestedManyWithoutUserInput
     MainWallet?: NexusGenInputs['MainWalletCreateNestedManyWithoutUserInput'] | null; // MainWalletCreateNestedManyWithoutUserInput
     MainWalletTransaction?: NexusGenInputs['MainWalletTransactionCreateNestedManyWithoutUserInput'] | null; // MainWalletTransactionCreateNestedManyWithoutUserInput
     ManualTransaction?: NexusGenInputs['ManualTransactionCreateNestedManyWithoutUserInput'] | null; // ManualTransactionCreateNestedManyWithoutUserInput
@@ -5292,7 +4954,6 @@ export interface NexusGenInputs {
     role?: NexusGenEnums['UserRole'] | null; // UserRole
     Sponsor?: NexusGenInputs['RefCreateNestedManyWithoutSponsorInput'] | null; // RefCreateNestedManyWithoutSponsorInput
     Ticket?: NexusGenInputs['TicketCreateNestedManyWithoutUserInput'] | null; // TicketCreateNestedManyWithoutUserInput
-    TournamentTransaction?: NexusGenInputs['TournamentTransactionCreateNestedManyWithoutUserInput'] | null; // TournamentTransactionCreateNestedManyWithoutUserInput
     TransactionApprover?: NexusGenInputs['MainWalletTransactionCreateNestedManyWithoutApproved_byInput'] | null; // MainWalletTransactionCreateNestedManyWithoutApproved_byInput
     TwoFactor?: NexusGenInputs['TwoFactorCreateNestedManyWithoutUserInput'] | null; // TwoFactorCreateNestedManyWithoutUserInput
     updatedAt?: NexusGenScalars['DateTime'] | null; // DateTime
@@ -5305,12 +4966,10 @@ export interface NexusGenInputs {
     createdAt?: NexusGenScalars['DateTime'] | null; // DateTime
     Device?: NexusGenInputs['DeviceCreateNestedManyWithoutUserInput'] | null; // DeviceCreateNestedManyWithoutUserInput
     email: string; // String!
-    ExchangeWallet?: NexusGenInputs['ExchangeWalletCreateNestedManyWithoutUserInput'] | null; // ExchangeWalletCreateNestedManyWithoutUserInput
     id?: string | null; // String
     InternalTransaction?: NexusGenInputs['InternalTransactionCreateNestedManyWithoutUserInput'] | null; // InternalTransactionCreateNestedManyWithoutUserInput
     ip?: string | null; // String
     is_active?: boolean | null; // Boolean
-    LeaderBoard?: NexusGenInputs['LeaderBoardCreateNestedManyWithoutUserInput'] | null; // LeaderBoardCreateNestedManyWithoutUserInput
     MainWallet?: NexusGenInputs['MainWalletCreateNestedManyWithoutUserInput'] | null; // MainWalletCreateNestedManyWithoutUserInput
     MainWalletTransaction?: NexusGenInputs['MainWalletTransactionCreateNestedManyWithoutUserInput'] | null; // MainWalletTransactionCreateNestedManyWithoutUserInput
     ManualTransaction?: NexusGenInputs['ManualTransactionCreateNestedManyWithoutUserInput'] | null; // ManualTransactionCreateNestedManyWithoutUserInput
@@ -5329,44 +4988,6 @@ export interface NexusGenInputs {
     role?: NexusGenEnums['UserRole'] | null; // UserRole
     Sponsor?: NexusGenInputs['RefCreateNestedManyWithoutSponsorInput'] | null; // RefCreateNestedManyWithoutSponsorInput
     Ticket?: NexusGenInputs['TicketCreateNestedManyWithoutUserInput'] | null; // TicketCreateNestedManyWithoutUserInput
-    TournamentTransaction?: NexusGenInputs['TournamentTransactionCreateNestedManyWithoutUserInput'] | null; // TournamentTransactionCreateNestedManyWithoutUserInput
-    TransactionApprover?: NexusGenInputs['MainWalletTransactionCreateNestedManyWithoutApproved_byInput'] | null; // MainWalletTransactionCreateNestedManyWithoutApproved_byInput
-    TwoFactor?: NexusGenInputs['TwoFactorCreateNestedManyWithoutUserInput'] | null; // TwoFactorCreateNestedManyWithoutUserInput
-    updatedAt?: NexusGenScalars['DateTime'] | null; // DateTime
-    username?: string | null; // String
-    UserProfile?: NexusGenInputs['UserProfileCreateNestedOneWithoutUserInput'] | null; // UserProfileCreateNestedOneWithoutUserInput
-  }
-  UserCreateWithoutExchangeWalletInput: { // input type
-    BuyPromotionCodeTransaction?: NexusGenInputs['BuyPromotionCodeTransactionCreateNestedManyWithoutUserInput'] | null; // BuyPromotionCodeTransactionCreateNestedManyWithoutUserInput
-    ConvertionTransaction?: NexusGenInputs['ConvertionTransactionCreateNestedManyWithoutUserInput'] | null; // ConvertionTransactionCreateNestedManyWithoutUserInput
-    country?: NexusGenInputs['CountryCreateNestedOneWithoutUsersInput'] | null; // CountryCreateNestedOneWithoutUsersInput
-    createdAt?: NexusGenScalars['DateTime'] | null; // DateTime
-    Device?: NexusGenInputs['DeviceCreateNestedManyWithoutUserInput'] | null; // DeviceCreateNestedManyWithoutUserInput
-    email: string; // String!
-    id?: string | null; // String
-    InternalTransaction?: NexusGenInputs['InternalTransactionCreateNestedManyWithoutUserInput'] | null; // InternalTransactionCreateNestedManyWithoutUserInput
-    ip?: string | null; // String
-    is_active?: boolean | null; // Boolean
-    LeaderBoard?: NexusGenInputs['LeaderBoardCreateNestedManyWithoutUserInput'] | null; // LeaderBoardCreateNestedManyWithoutUserInput
-    MainWallet?: NexusGenInputs['MainWalletCreateNestedManyWithoutUserInput'] | null; // MainWalletCreateNestedManyWithoutUserInput
-    MainWalletTransaction?: NexusGenInputs['MainWalletTransactionCreateNestedManyWithoutUserInput'] | null; // MainWalletTransactionCreateNestedManyWithoutUserInput
-    ManualTransaction?: NexusGenInputs['ManualTransactionCreateNestedManyWithoutUserInput'] | null; // ManualTransactionCreateNestedManyWithoutUserInput
-    name?: string | null; // String
-    Notification?: NexusGenInputs['NotificationCreateNestedManyWithoutUserInput'] | null; // NotificationCreateNestedManyWithoutUserInput
-    password: string; // String!
-    permissions?: NexusGenInputs['UserCreatepermissionsInput'] | null; // UserCreatepermissionsInput
-    phoneNumber?: string | null; // String
-    PromotionCodeTransaction?: NexusGenInputs['PromotionCodeTransactionCreateNestedManyWithoutUserInput'] | null; // PromotionCodeTransactionCreateNestedManyWithoutUserInput
-    PromotionTransaction?: NexusGenInputs['PromotionTransactionCreateNestedManyWithoutUserInput'] | null; // PromotionTransactionCreateNestedManyWithoutUserInput
-    Ref?: NexusGenInputs['RefCreateNestedOneWithoutUserInput'] | null; // RefCreateNestedOneWithoutUserInput
-    RefTransactionOfSponsor?: NexusGenInputs['RefTransactionCreateNestedManyWithoutSponsorInput'] | null; // RefTransactionCreateNestedManyWithoutSponsorInput
-    RefTransactionOfUser?: NexusGenInputs['RefTransactionCreateNestedManyWithoutUserInput'] | null; // RefTransactionCreateNestedManyWithoutUserInput
-    RefundTransaction?: NexusGenInputs['RefundTransactionCreateNestedManyWithoutUserInput'] | null; // RefundTransactionCreateNestedManyWithoutUserInput
-    Reply?: NexusGenInputs['ReplyCreateNestedManyWithoutUserInput'] | null; // ReplyCreateNestedManyWithoutUserInput
-    role?: NexusGenEnums['UserRole'] | null; // UserRole
-    Sponsor?: NexusGenInputs['RefCreateNestedManyWithoutSponsorInput'] | null; // RefCreateNestedManyWithoutSponsorInput
-    Ticket?: NexusGenInputs['TicketCreateNestedManyWithoutUserInput'] | null; // TicketCreateNestedManyWithoutUserInput
-    TournamentTransaction?: NexusGenInputs['TournamentTransactionCreateNestedManyWithoutUserInput'] | null; // TournamentTransactionCreateNestedManyWithoutUserInput
     TransactionApprover?: NexusGenInputs['MainWalletTransactionCreateNestedManyWithoutApproved_byInput'] | null; // MainWalletTransactionCreateNestedManyWithoutApproved_byInput
     TwoFactor?: NexusGenInputs['TwoFactorCreateNestedManyWithoutUserInput'] | null; // TwoFactorCreateNestedManyWithoutUserInput
     updatedAt?: NexusGenScalars['DateTime'] | null; // DateTime
@@ -5380,12 +5001,10 @@ export interface NexusGenInputs {
     createdAt?: NexusGenScalars['DateTime'] | null; // DateTime
     Device?: NexusGenInputs['DeviceCreateNestedManyWithoutUserInput'] | null; // DeviceCreateNestedManyWithoutUserInput
     email: string; // String!
-    ExchangeWallet?: NexusGenInputs['ExchangeWalletCreateNestedManyWithoutUserInput'] | null; // ExchangeWalletCreateNestedManyWithoutUserInput
     id?: string | null; // String
     InternalTransaction?: NexusGenInputs['InternalTransactionCreateNestedManyWithoutUserInput'] | null; // InternalTransactionCreateNestedManyWithoutUserInput
     ip?: string | null; // String
     is_active?: boolean | null; // Boolean
-    LeaderBoard?: NexusGenInputs['LeaderBoardCreateNestedManyWithoutUserInput'] | null; // LeaderBoardCreateNestedManyWithoutUserInput
     MainWalletTransaction?: NexusGenInputs['MainWalletTransactionCreateNestedManyWithoutUserInput'] | null; // MainWalletTransactionCreateNestedManyWithoutUserInput
     ManualTransaction?: NexusGenInputs['ManualTransactionCreateNestedManyWithoutUserInput'] | null; // ManualTransactionCreateNestedManyWithoutUserInput
     name?: string | null; // String
@@ -5403,7 +5022,6 @@ export interface NexusGenInputs {
     role?: NexusGenEnums['UserRole'] | null; // UserRole
     Sponsor?: NexusGenInputs['RefCreateNestedManyWithoutSponsorInput'] | null; // RefCreateNestedManyWithoutSponsorInput
     Ticket?: NexusGenInputs['TicketCreateNestedManyWithoutUserInput'] | null; // TicketCreateNestedManyWithoutUserInput
-    TournamentTransaction?: NexusGenInputs['TournamentTransactionCreateNestedManyWithoutUserInput'] | null; // TournamentTransactionCreateNestedManyWithoutUserInput
     TransactionApprover?: NexusGenInputs['MainWalletTransactionCreateNestedManyWithoutApproved_byInput'] | null; // MainWalletTransactionCreateNestedManyWithoutApproved_byInput
     TwoFactor?: NexusGenInputs['TwoFactorCreateNestedManyWithoutUserInput'] | null; // TwoFactorCreateNestedManyWithoutUserInput
     updatedAt?: NexusGenScalars['DateTime'] | null; // DateTime
@@ -5417,12 +5035,10 @@ export interface NexusGenInputs {
     createdAt?: NexusGenScalars['DateTime'] | null; // DateTime
     Device?: NexusGenInputs['DeviceCreateNestedManyWithoutUserInput'] | null; // DeviceCreateNestedManyWithoutUserInput
     email: string; // String!
-    ExchangeWallet?: NexusGenInputs['ExchangeWalletCreateNestedManyWithoutUserInput'] | null; // ExchangeWalletCreateNestedManyWithoutUserInput
     id?: string | null; // String
     InternalTransaction?: NexusGenInputs['InternalTransactionCreateNestedManyWithoutUserInput'] | null; // InternalTransactionCreateNestedManyWithoutUserInput
     ip?: string | null; // String
     is_active?: boolean | null; // Boolean
-    LeaderBoard?: NexusGenInputs['LeaderBoardCreateNestedManyWithoutUserInput'] | null; // LeaderBoardCreateNestedManyWithoutUserInput
     MainWallet?: NexusGenInputs['MainWalletCreateNestedManyWithoutUserInput'] | null; // MainWalletCreateNestedManyWithoutUserInput
     ManualTransaction?: NexusGenInputs['ManualTransactionCreateNestedManyWithoutUserInput'] | null; // ManualTransactionCreateNestedManyWithoutUserInput
     name?: string | null; // String
@@ -5440,7 +5056,6 @@ export interface NexusGenInputs {
     role?: NexusGenEnums['UserRole'] | null; // UserRole
     Sponsor?: NexusGenInputs['RefCreateNestedManyWithoutSponsorInput'] | null; // RefCreateNestedManyWithoutSponsorInput
     Ticket?: NexusGenInputs['TicketCreateNestedManyWithoutUserInput'] | null; // TicketCreateNestedManyWithoutUserInput
-    TournamentTransaction?: NexusGenInputs['TournamentTransactionCreateNestedManyWithoutUserInput'] | null; // TournamentTransactionCreateNestedManyWithoutUserInput
     TransactionApprover?: NexusGenInputs['MainWalletTransactionCreateNestedManyWithoutApproved_byInput'] | null; // MainWalletTransactionCreateNestedManyWithoutApproved_byInput
     TwoFactor?: NexusGenInputs['TwoFactorCreateNestedManyWithoutUserInput'] | null; // TwoFactorCreateNestedManyWithoutUserInput
     updatedAt?: NexusGenScalars['DateTime'] | null; // DateTime
@@ -5454,12 +5069,10 @@ export interface NexusGenInputs {
     createdAt?: NexusGenScalars['DateTime'] | null; // DateTime
     Device?: NexusGenInputs['DeviceCreateNestedManyWithoutUserInput'] | null; // DeviceCreateNestedManyWithoutUserInput
     email: string; // String!
-    ExchangeWallet?: NexusGenInputs['ExchangeWalletCreateNestedManyWithoutUserInput'] | null; // ExchangeWalletCreateNestedManyWithoutUserInput
     id?: string | null; // String
     InternalTransaction?: NexusGenInputs['InternalTransactionCreateNestedManyWithoutUserInput'] | null; // InternalTransactionCreateNestedManyWithoutUserInput
     ip?: string | null; // String
     is_active?: boolean | null; // Boolean
-    LeaderBoard?: NexusGenInputs['LeaderBoardCreateNestedManyWithoutUserInput'] | null; // LeaderBoardCreateNestedManyWithoutUserInput
     MainWallet?: NexusGenInputs['MainWalletCreateNestedManyWithoutUserInput'] | null; // MainWalletCreateNestedManyWithoutUserInput
     MainWalletTransaction?: NexusGenInputs['MainWalletTransactionCreateNestedManyWithoutUserInput'] | null; // MainWalletTransactionCreateNestedManyWithoutUserInput
     ManualTransaction?: NexusGenInputs['ManualTransactionCreateNestedManyWithoutUserInput'] | null; // ManualTransactionCreateNestedManyWithoutUserInput
@@ -5477,7 +5090,6 @@ export interface NexusGenInputs {
     role?: NexusGenEnums['UserRole'] | null; // UserRole
     Sponsor?: NexusGenInputs['RefCreateNestedManyWithoutSponsorInput'] | null; // RefCreateNestedManyWithoutSponsorInput
     Ticket?: NexusGenInputs['TicketCreateNestedManyWithoutUserInput'] | null; // TicketCreateNestedManyWithoutUserInput
-    TournamentTransaction?: NexusGenInputs['TournamentTransactionCreateNestedManyWithoutUserInput'] | null; // TournamentTransactionCreateNestedManyWithoutUserInput
     TransactionApprover?: NexusGenInputs['MainWalletTransactionCreateNestedManyWithoutApproved_byInput'] | null; // MainWalletTransactionCreateNestedManyWithoutApproved_byInput
     TwoFactor?: NexusGenInputs['TwoFactorCreateNestedManyWithoutUserInput'] | null; // TwoFactorCreateNestedManyWithoutUserInput
     updatedAt?: NexusGenScalars['DateTime'] | null; // DateTime
@@ -5491,12 +5103,10 @@ export interface NexusGenInputs {
     createdAt?: NexusGenScalars['DateTime'] | null; // DateTime
     Device?: NexusGenInputs['DeviceCreateNestedManyWithoutUserInput'] | null; // DeviceCreateNestedManyWithoutUserInput
     email: string; // String!
-    ExchangeWallet?: NexusGenInputs['ExchangeWalletCreateNestedManyWithoutUserInput'] | null; // ExchangeWalletCreateNestedManyWithoutUserInput
     id?: string | null; // String
     InternalTransaction?: NexusGenInputs['InternalTransactionCreateNestedManyWithoutUserInput'] | null; // InternalTransactionCreateNestedManyWithoutUserInput
     ip?: string | null; // String
     is_active?: boolean | null; // Boolean
-    LeaderBoard?: NexusGenInputs['LeaderBoardCreateNestedManyWithoutUserInput'] | null; // LeaderBoardCreateNestedManyWithoutUserInput
     MainWallet?: NexusGenInputs['MainWalletCreateNestedManyWithoutUserInput'] | null; // MainWalletCreateNestedManyWithoutUserInput
     MainWalletTransaction?: NexusGenInputs['MainWalletTransactionCreateNestedManyWithoutUserInput'] | null; // MainWalletTransactionCreateNestedManyWithoutUserInput
     ManualTransaction?: NexusGenInputs['ManualTransactionCreateNestedManyWithoutUserInput'] | null; // ManualTransactionCreateNestedManyWithoutUserInput
@@ -5514,7 +5124,6 @@ export interface NexusGenInputs {
     role?: NexusGenEnums['UserRole'] | null; // UserRole
     Sponsor?: NexusGenInputs['RefCreateNestedManyWithoutSponsorInput'] | null; // RefCreateNestedManyWithoutSponsorInput
     Ticket?: NexusGenInputs['TicketCreateNestedManyWithoutUserInput'] | null; // TicketCreateNestedManyWithoutUserInput
-    TournamentTransaction?: NexusGenInputs['TournamentTransactionCreateNestedManyWithoutUserInput'] | null; // TournamentTransactionCreateNestedManyWithoutUserInput
     TransactionApprover?: NexusGenInputs['MainWalletTransactionCreateNestedManyWithoutApproved_byInput'] | null; // MainWalletTransactionCreateNestedManyWithoutApproved_byInput
     TwoFactor?: NexusGenInputs['TwoFactorCreateNestedManyWithoutUserInput'] | null; // TwoFactorCreateNestedManyWithoutUserInput
     updatedAt?: NexusGenScalars['DateTime'] | null; // DateTime
@@ -5528,12 +5137,10 @@ export interface NexusGenInputs {
     createdAt?: NexusGenScalars['DateTime'] | null; // DateTime
     Device?: NexusGenInputs['DeviceCreateNestedManyWithoutUserInput'] | null; // DeviceCreateNestedManyWithoutUserInput
     email: string; // String!
-    ExchangeWallet?: NexusGenInputs['ExchangeWalletCreateNestedManyWithoutUserInput'] | null; // ExchangeWalletCreateNestedManyWithoutUserInput
     id?: string | null; // String
     InternalTransaction?: NexusGenInputs['InternalTransactionCreateNestedManyWithoutUserInput'] | null; // InternalTransactionCreateNestedManyWithoutUserInput
     ip?: string | null; // String
     is_active?: boolean | null; // Boolean
-    LeaderBoard?: NexusGenInputs['LeaderBoardCreateNestedManyWithoutUserInput'] | null; // LeaderBoardCreateNestedManyWithoutUserInput
     MainWallet?: NexusGenInputs['MainWalletCreateNestedManyWithoutUserInput'] | null; // MainWalletCreateNestedManyWithoutUserInput
     MainWalletTransaction?: NexusGenInputs['MainWalletTransactionCreateNestedManyWithoutUserInput'] | null; // MainWalletTransactionCreateNestedManyWithoutUserInput
     ManualTransaction?: NexusGenInputs['ManualTransactionCreateNestedManyWithoutUserInput'] | null; // ManualTransactionCreateNestedManyWithoutUserInput
@@ -5551,7 +5158,6 @@ export interface NexusGenInputs {
     role?: NexusGenEnums['UserRole'] | null; // UserRole
     Sponsor?: NexusGenInputs['RefCreateNestedManyWithoutSponsorInput'] | null; // RefCreateNestedManyWithoutSponsorInput
     Ticket?: NexusGenInputs['TicketCreateNestedManyWithoutUserInput'] | null; // TicketCreateNestedManyWithoutUserInput
-    TournamentTransaction?: NexusGenInputs['TournamentTransactionCreateNestedManyWithoutUserInput'] | null; // TournamentTransactionCreateNestedManyWithoutUserInput
     TransactionApprover?: NexusGenInputs['MainWalletTransactionCreateNestedManyWithoutApproved_byInput'] | null; // MainWalletTransactionCreateNestedManyWithoutApproved_byInput
     TwoFactor?: NexusGenInputs['TwoFactorCreateNestedManyWithoutUserInput'] | null; // TwoFactorCreateNestedManyWithoutUserInput
     updatedAt?: NexusGenScalars['DateTime'] | null; // DateTime
@@ -5565,12 +5171,10 @@ export interface NexusGenInputs {
     createdAt?: NexusGenScalars['DateTime'] | null; // DateTime
     Device?: NexusGenInputs['DeviceCreateNestedManyWithoutUserInput'] | null; // DeviceCreateNestedManyWithoutUserInput
     email: string; // String!
-    ExchangeWallet?: NexusGenInputs['ExchangeWalletCreateNestedManyWithoutUserInput'] | null; // ExchangeWalletCreateNestedManyWithoutUserInput
     id?: string | null; // String
     InternalTransaction?: NexusGenInputs['InternalTransactionCreateNestedManyWithoutUserInput'] | null; // InternalTransactionCreateNestedManyWithoutUserInput
     ip?: string | null; // String
     is_active?: boolean | null; // Boolean
-    LeaderBoard?: NexusGenInputs['LeaderBoardCreateNestedManyWithoutUserInput'] | null; // LeaderBoardCreateNestedManyWithoutUserInput
     MainWallet?: NexusGenInputs['MainWalletCreateNestedManyWithoutUserInput'] | null; // MainWalletCreateNestedManyWithoutUserInput
     MainWalletTransaction?: NexusGenInputs['MainWalletTransactionCreateNestedManyWithoutUserInput'] | null; // MainWalletTransactionCreateNestedManyWithoutUserInput
     ManualTransaction?: NexusGenInputs['ManualTransactionCreateNestedManyWithoutUserInput'] | null; // ManualTransactionCreateNestedManyWithoutUserInput
@@ -5588,7 +5192,6 @@ export interface NexusGenInputs {
     role?: NexusGenEnums['UserRole'] | null; // UserRole
     Sponsor?: NexusGenInputs['RefCreateNestedManyWithoutSponsorInput'] | null; // RefCreateNestedManyWithoutSponsorInput
     Ticket?: NexusGenInputs['TicketCreateNestedManyWithoutUserInput'] | null; // TicketCreateNestedManyWithoutUserInput
-    TournamentTransaction?: NexusGenInputs['TournamentTransactionCreateNestedManyWithoutUserInput'] | null; // TournamentTransactionCreateNestedManyWithoutUserInput
     TransactionApprover?: NexusGenInputs['MainWalletTransactionCreateNestedManyWithoutApproved_byInput'] | null; // MainWalletTransactionCreateNestedManyWithoutApproved_byInput
     TwoFactor?: NexusGenInputs['TwoFactorCreateNestedManyWithoutUserInput'] | null; // TwoFactorCreateNestedManyWithoutUserInput
     updatedAt?: NexusGenScalars['DateTime'] | null; // DateTime
@@ -5602,12 +5205,10 @@ export interface NexusGenInputs {
     createdAt?: NexusGenScalars['DateTime'] | null; // DateTime
     Device?: NexusGenInputs['DeviceCreateNestedManyWithoutUserInput'] | null; // DeviceCreateNestedManyWithoutUserInput
     email: string; // String!
-    ExchangeWallet?: NexusGenInputs['ExchangeWalletCreateNestedManyWithoutUserInput'] | null; // ExchangeWalletCreateNestedManyWithoutUserInput
     id?: string | null; // String
     InternalTransaction?: NexusGenInputs['InternalTransactionCreateNestedManyWithoutUserInput'] | null; // InternalTransactionCreateNestedManyWithoutUserInput
     ip?: string | null; // String
     is_active?: boolean | null; // Boolean
-    LeaderBoard?: NexusGenInputs['LeaderBoardCreateNestedManyWithoutUserInput'] | null; // LeaderBoardCreateNestedManyWithoutUserInput
     MainWallet?: NexusGenInputs['MainWalletCreateNestedManyWithoutUserInput'] | null; // MainWalletCreateNestedManyWithoutUserInput
     MainWalletTransaction?: NexusGenInputs['MainWalletTransactionCreateNestedManyWithoutUserInput'] | null; // MainWalletTransactionCreateNestedManyWithoutUserInput
     ManualTransaction?: NexusGenInputs['ManualTransactionCreateNestedManyWithoutUserInput'] | null; // ManualTransactionCreateNestedManyWithoutUserInput
@@ -5625,7 +5226,6 @@ export interface NexusGenInputs {
     role?: NexusGenEnums['UserRole'] | null; // UserRole
     Sponsor?: NexusGenInputs['RefCreateNestedManyWithoutSponsorInput'] | null; // RefCreateNestedManyWithoutSponsorInput
     Ticket?: NexusGenInputs['TicketCreateNestedManyWithoutUserInput'] | null; // TicketCreateNestedManyWithoutUserInput
-    TournamentTransaction?: NexusGenInputs['TournamentTransactionCreateNestedManyWithoutUserInput'] | null; // TournamentTransactionCreateNestedManyWithoutUserInput
     TransactionApprover?: NexusGenInputs['MainWalletTransactionCreateNestedManyWithoutApproved_byInput'] | null; // MainWalletTransactionCreateNestedManyWithoutApproved_byInput
     TwoFactor?: NexusGenInputs['TwoFactorCreateNestedManyWithoutUserInput'] | null; // TwoFactorCreateNestedManyWithoutUserInput
     updatedAt?: NexusGenScalars['DateTime'] | null; // DateTime
@@ -5639,12 +5239,10 @@ export interface NexusGenInputs {
     createdAt?: NexusGenScalars['DateTime'] | null; // DateTime
     Device?: NexusGenInputs['DeviceCreateNestedManyWithoutUserInput'] | null; // DeviceCreateNestedManyWithoutUserInput
     email: string; // String!
-    ExchangeWallet?: NexusGenInputs['ExchangeWalletCreateNestedManyWithoutUserInput'] | null; // ExchangeWalletCreateNestedManyWithoutUserInput
     id?: string | null; // String
     InternalTransaction?: NexusGenInputs['InternalTransactionCreateNestedManyWithoutUserInput'] | null; // InternalTransactionCreateNestedManyWithoutUserInput
     ip?: string | null; // String
     is_active?: boolean | null; // Boolean
-    LeaderBoard?: NexusGenInputs['LeaderBoardCreateNestedManyWithoutUserInput'] | null; // LeaderBoardCreateNestedManyWithoutUserInput
     MainWallet?: NexusGenInputs['MainWalletCreateNestedManyWithoutUserInput'] | null; // MainWalletCreateNestedManyWithoutUserInput
     MainWalletTransaction?: NexusGenInputs['MainWalletTransactionCreateNestedManyWithoutUserInput'] | null; // MainWalletTransactionCreateNestedManyWithoutUserInput
     ManualTransaction?: NexusGenInputs['ManualTransactionCreateNestedManyWithoutUserInput'] | null; // ManualTransactionCreateNestedManyWithoutUserInput
@@ -5662,7 +5260,6 @@ export interface NexusGenInputs {
     Reply?: NexusGenInputs['ReplyCreateNestedManyWithoutUserInput'] | null; // ReplyCreateNestedManyWithoutUserInput
     role?: NexusGenEnums['UserRole'] | null; // UserRole
     Ticket?: NexusGenInputs['TicketCreateNestedManyWithoutUserInput'] | null; // TicketCreateNestedManyWithoutUserInput
-    TournamentTransaction?: NexusGenInputs['TournamentTransactionCreateNestedManyWithoutUserInput'] | null; // TournamentTransactionCreateNestedManyWithoutUserInput
     TransactionApprover?: NexusGenInputs['MainWalletTransactionCreateNestedManyWithoutApproved_byInput'] | null; // MainWalletTransactionCreateNestedManyWithoutApproved_byInput
     TwoFactor?: NexusGenInputs['TwoFactorCreateNestedManyWithoutUserInput'] | null; // TwoFactorCreateNestedManyWithoutUserInput
     updatedAt?: NexusGenScalars['DateTime'] | null; // DateTime
@@ -5676,12 +5273,10 @@ export interface NexusGenInputs {
     createdAt?: NexusGenScalars['DateTime'] | null; // DateTime
     Device?: NexusGenInputs['DeviceCreateNestedManyWithoutUserInput'] | null; // DeviceCreateNestedManyWithoutUserInput
     email: string; // String!
-    ExchangeWallet?: NexusGenInputs['ExchangeWalletCreateNestedManyWithoutUserInput'] | null; // ExchangeWalletCreateNestedManyWithoutUserInput
     id?: string | null; // String
     InternalTransaction?: NexusGenInputs['InternalTransactionCreateNestedManyWithoutUserInput'] | null; // InternalTransactionCreateNestedManyWithoutUserInput
     ip?: string | null; // String
     is_active?: boolean | null; // Boolean
-    LeaderBoard?: NexusGenInputs['LeaderBoardCreateNestedManyWithoutUserInput'] | null; // LeaderBoardCreateNestedManyWithoutUserInput
     MainWallet?: NexusGenInputs['MainWalletCreateNestedManyWithoutUserInput'] | null; // MainWalletCreateNestedManyWithoutUserInput
     MainWalletTransaction?: NexusGenInputs['MainWalletTransactionCreateNestedManyWithoutUserInput'] | null; // MainWalletTransactionCreateNestedManyWithoutUserInput
     ManualTransaction?: NexusGenInputs['ManualTransactionCreateNestedManyWithoutUserInput'] | null; // ManualTransactionCreateNestedManyWithoutUserInput
@@ -5699,7 +5294,6 @@ export interface NexusGenInputs {
     Reply?: NexusGenInputs['ReplyCreateNestedManyWithoutUserInput'] | null; // ReplyCreateNestedManyWithoutUserInput
     role?: NexusGenEnums['UserRole'] | null; // UserRole
     Sponsor?: NexusGenInputs['RefCreateNestedManyWithoutSponsorInput'] | null; // RefCreateNestedManyWithoutSponsorInput
-    TournamentTransaction?: NexusGenInputs['TournamentTransactionCreateNestedManyWithoutUserInput'] | null; // TournamentTransactionCreateNestedManyWithoutUserInput
     TransactionApprover?: NexusGenInputs['MainWalletTransactionCreateNestedManyWithoutApproved_byInput'] | null; // MainWalletTransactionCreateNestedManyWithoutApproved_byInput
     TwoFactor?: NexusGenInputs['TwoFactorCreateNestedManyWithoutUserInput'] | null; // TwoFactorCreateNestedManyWithoutUserInput
     updatedAt?: NexusGenScalars['DateTime'] | null; // DateTime
@@ -5713,12 +5307,10 @@ export interface NexusGenInputs {
     createdAt?: NexusGenScalars['DateTime'] | null; // DateTime
     Device?: NexusGenInputs['DeviceCreateNestedManyWithoutUserInput'] | null; // DeviceCreateNestedManyWithoutUserInput
     email: string; // String!
-    ExchangeWallet?: NexusGenInputs['ExchangeWalletCreateNestedManyWithoutUserInput'] | null; // ExchangeWalletCreateNestedManyWithoutUserInput
     id?: string | null; // String
     InternalTransaction?: NexusGenInputs['InternalTransactionCreateNestedManyWithoutUserInput'] | null; // InternalTransactionCreateNestedManyWithoutUserInput
     ip?: string | null; // String
     is_active?: boolean | null; // Boolean
-    LeaderBoard?: NexusGenInputs['LeaderBoardCreateNestedManyWithoutUserInput'] | null; // LeaderBoardCreateNestedManyWithoutUserInput
     MainWallet?: NexusGenInputs['MainWalletCreateNestedManyWithoutUserInput'] | null; // MainWalletCreateNestedManyWithoutUserInput
     MainWalletTransaction?: NexusGenInputs['MainWalletTransactionCreateNestedManyWithoutUserInput'] | null; // MainWalletTransactionCreateNestedManyWithoutUserInput
     ManualTransaction?: NexusGenInputs['ManualTransactionCreateNestedManyWithoutUserInput'] | null; // ManualTransactionCreateNestedManyWithoutUserInput
@@ -5737,7 +5329,6 @@ export interface NexusGenInputs {
     role?: NexusGenEnums['UserRole'] | null; // UserRole
     Sponsor?: NexusGenInputs['RefCreateNestedManyWithoutSponsorInput'] | null; // RefCreateNestedManyWithoutSponsorInput
     Ticket?: NexusGenInputs['TicketCreateNestedManyWithoutUserInput'] | null; // TicketCreateNestedManyWithoutUserInput
-    TournamentTransaction?: NexusGenInputs['TournamentTransactionCreateNestedManyWithoutUserInput'] | null; // TournamentTransactionCreateNestedManyWithoutUserInput
     TwoFactor?: NexusGenInputs['TwoFactorCreateNestedManyWithoutUserInput'] | null; // TwoFactorCreateNestedManyWithoutUserInput
     updatedAt?: NexusGenScalars['DateTime'] | null; // DateTime
     username?: string | null; // String
@@ -5825,13 +5416,6 @@ export interface NexusGenInputs {
     update?: NexusGenInputs['UserUpdateWithoutConvertionTransactionInput'] | null; // UserUpdateWithoutConvertionTransactionInput
     upsert?: NexusGenInputs['UserUpsertWithoutConvertionTransactionInput'] | null; // UserUpsertWithoutConvertionTransactionInput
   }
-  UserUpdateOneRequiredWithoutExchangeWalletInput: { // input type
-    connect?: NexusGenInputs['UserWhereUniqueInput'] | null; // UserWhereUniqueInput
-    connectOrCreate?: NexusGenInputs['UserCreateOrConnectWithoutExchangeWalletInput'] | null; // UserCreateOrConnectWithoutExchangeWalletInput
-    create?: NexusGenInputs['UserCreateWithoutExchangeWalletInput'] | null; // UserCreateWithoutExchangeWalletInput
-    update?: NexusGenInputs['UserUpdateWithoutExchangeWalletInput'] | null; // UserUpdateWithoutExchangeWalletInput
-    upsert?: NexusGenInputs['UserUpsertWithoutExchangeWalletInput'] | null; // UserUpsertWithoutExchangeWalletInput
-  }
   UserUpdateOneRequiredWithoutMainWalletInput: { // input type
     connect?: NexusGenInputs['UserWhereUniqueInput'] | null; // UserWhereUniqueInput
     connectOrCreate?: NexusGenInputs['UserCreateOrConnectWithoutMainWalletInput'] | null; // UserCreateOrConnectWithoutMainWalletInput
@@ -5914,12 +5498,10 @@ export interface NexusGenInputs {
     createdAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
     Device?: NexusGenInputs['DeviceUpdateManyWithoutUserInput'] | null; // DeviceUpdateManyWithoutUserInput
     email?: NexusGenInputs['StringFieldUpdateOperationsInput'] | null; // StringFieldUpdateOperationsInput
-    ExchangeWallet?: NexusGenInputs['ExchangeWalletUpdateManyWithoutUserInput'] | null; // ExchangeWalletUpdateManyWithoutUserInput
     id?: NexusGenInputs['StringFieldUpdateOperationsInput'] | null; // StringFieldUpdateOperationsInput
     InternalTransaction?: NexusGenInputs['InternalTransactionUpdateManyWithoutUserInput'] | null; // InternalTransactionUpdateManyWithoutUserInput
     ip?: NexusGenInputs['NullableStringFieldUpdateOperationsInput'] | null; // NullableStringFieldUpdateOperationsInput
     is_active?: NexusGenInputs['BoolFieldUpdateOperationsInput'] | null; // BoolFieldUpdateOperationsInput
-    LeaderBoard?: NexusGenInputs['LeaderBoardUpdateManyWithoutUserInput'] | null; // LeaderBoardUpdateManyWithoutUserInput
     MainWallet?: NexusGenInputs['MainWalletUpdateManyWithoutUserInput'] | null; // MainWalletUpdateManyWithoutUserInput
     MainWalletTransaction?: NexusGenInputs['MainWalletTransactionUpdateManyWithoutUserInput'] | null; // MainWalletTransactionUpdateManyWithoutUserInput
     ManualTransaction?: NexusGenInputs['ManualTransactionUpdateManyWithoutUserInput'] | null; // ManualTransactionUpdateManyWithoutUserInput
@@ -5938,7 +5520,6 @@ export interface NexusGenInputs {
     role?: NexusGenInputs['EnumUserRoleFieldUpdateOperationsInput'] | null; // EnumUserRoleFieldUpdateOperationsInput
     Sponsor?: NexusGenInputs['RefUpdateManyWithoutSponsorInput'] | null; // RefUpdateManyWithoutSponsorInput
     Ticket?: NexusGenInputs['TicketUpdateManyWithoutUserInput'] | null; // TicketUpdateManyWithoutUserInput
-    TournamentTransaction?: NexusGenInputs['TournamentTransactionUpdateManyWithoutUserInput'] | null; // TournamentTransactionUpdateManyWithoutUserInput
     TransactionApprover?: NexusGenInputs['MainWalletTransactionUpdateManyWithoutApproved_byInput'] | null; // MainWalletTransactionUpdateManyWithoutApproved_byInput
     TwoFactor?: NexusGenInputs['TwoFactorUpdateManyWithoutUserInput'] | null; // TwoFactorUpdateManyWithoutUserInput
     updatedAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
@@ -5951,12 +5532,10 @@ export interface NexusGenInputs {
     createdAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
     Device?: NexusGenInputs['DeviceUpdateManyWithoutUserInput'] | null; // DeviceUpdateManyWithoutUserInput
     email?: NexusGenInputs['StringFieldUpdateOperationsInput'] | null; // StringFieldUpdateOperationsInput
-    ExchangeWallet?: NexusGenInputs['ExchangeWalletUpdateManyWithoutUserInput'] | null; // ExchangeWalletUpdateManyWithoutUserInput
     id?: NexusGenInputs['StringFieldUpdateOperationsInput'] | null; // StringFieldUpdateOperationsInput
     InternalTransaction?: NexusGenInputs['InternalTransactionUpdateManyWithoutUserInput'] | null; // InternalTransactionUpdateManyWithoutUserInput
     ip?: NexusGenInputs['NullableStringFieldUpdateOperationsInput'] | null; // NullableStringFieldUpdateOperationsInput
     is_active?: NexusGenInputs['BoolFieldUpdateOperationsInput'] | null; // BoolFieldUpdateOperationsInput
-    LeaderBoard?: NexusGenInputs['LeaderBoardUpdateManyWithoutUserInput'] | null; // LeaderBoardUpdateManyWithoutUserInput
     MainWallet?: NexusGenInputs['MainWalletUpdateManyWithoutUserInput'] | null; // MainWalletUpdateManyWithoutUserInput
     MainWalletTransaction?: NexusGenInputs['MainWalletTransactionUpdateManyWithoutUserInput'] | null; // MainWalletTransactionUpdateManyWithoutUserInput
     ManualTransaction?: NexusGenInputs['ManualTransactionUpdateManyWithoutUserInput'] | null; // ManualTransactionUpdateManyWithoutUserInput
@@ -5975,44 +5554,6 @@ export interface NexusGenInputs {
     role?: NexusGenInputs['EnumUserRoleFieldUpdateOperationsInput'] | null; // EnumUserRoleFieldUpdateOperationsInput
     Sponsor?: NexusGenInputs['RefUpdateManyWithoutSponsorInput'] | null; // RefUpdateManyWithoutSponsorInput
     Ticket?: NexusGenInputs['TicketUpdateManyWithoutUserInput'] | null; // TicketUpdateManyWithoutUserInput
-    TournamentTransaction?: NexusGenInputs['TournamentTransactionUpdateManyWithoutUserInput'] | null; // TournamentTransactionUpdateManyWithoutUserInput
-    TransactionApprover?: NexusGenInputs['MainWalletTransactionUpdateManyWithoutApproved_byInput'] | null; // MainWalletTransactionUpdateManyWithoutApproved_byInput
-    TwoFactor?: NexusGenInputs['TwoFactorUpdateManyWithoutUserInput'] | null; // TwoFactorUpdateManyWithoutUserInput
-    updatedAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
-    username?: NexusGenInputs['NullableStringFieldUpdateOperationsInput'] | null; // NullableStringFieldUpdateOperationsInput
-    UserProfile?: NexusGenInputs['UserProfileUpdateOneWithoutUserInput'] | null; // UserProfileUpdateOneWithoutUserInput
-  }
-  UserUpdateWithoutExchangeWalletInput: { // input type
-    BuyPromotionCodeTransaction?: NexusGenInputs['BuyPromotionCodeTransactionUpdateManyWithoutUserInput'] | null; // BuyPromotionCodeTransactionUpdateManyWithoutUserInput
-    ConvertionTransaction?: NexusGenInputs['ConvertionTransactionUpdateManyWithoutUserInput'] | null; // ConvertionTransactionUpdateManyWithoutUserInput
-    country?: NexusGenInputs['CountryUpdateOneWithoutUsersInput'] | null; // CountryUpdateOneWithoutUsersInput
-    createdAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
-    Device?: NexusGenInputs['DeviceUpdateManyWithoutUserInput'] | null; // DeviceUpdateManyWithoutUserInput
-    email?: NexusGenInputs['StringFieldUpdateOperationsInput'] | null; // StringFieldUpdateOperationsInput
-    id?: NexusGenInputs['StringFieldUpdateOperationsInput'] | null; // StringFieldUpdateOperationsInput
-    InternalTransaction?: NexusGenInputs['InternalTransactionUpdateManyWithoutUserInput'] | null; // InternalTransactionUpdateManyWithoutUserInput
-    ip?: NexusGenInputs['NullableStringFieldUpdateOperationsInput'] | null; // NullableStringFieldUpdateOperationsInput
-    is_active?: NexusGenInputs['BoolFieldUpdateOperationsInput'] | null; // BoolFieldUpdateOperationsInput
-    LeaderBoard?: NexusGenInputs['LeaderBoardUpdateManyWithoutUserInput'] | null; // LeaderBoardUpdateManyWithoutUserInput
-    MainWallet?: NexusGenInputs['MainWalletUpdateManyWithoutUserInput'] | null; // MainWalletUpdateManyWithoutUserInput
-    MainWalletTransaction?: NexusGenInputs['MainWalletTransactionUpdateManyWithoutUserInput'] | null; // MainWalletTransactionUpdateManyWithoutUserInput
-    ManualTransaction?: NexusGenInputs['ManualTransactionUpdateManyWithoutUserInput'] | null; // ManualTransactionUpdateManyWithoutUserInput
-    name?: NexusGenInputs['NullableStringFieldUpdateOperationsInput'] | null; // NullableStringFieldUpdateOperationsInput
-    Notification?: NexusGenInputs['NotificationUpdateManyWithoutUserInput'] | null; // NotificationUpdateManyWithoutUserInput
-    password?: NexusGenInputs['StringFieldUpdateOperationsInput'] | null; // StringFieldUpdateOperationsInput
-    permissions?: NexusGenInputs['UserUpdatepermissionsInput'] | null; // UserUpdatepermissionsInput
-    phoneNumber?: NexusGenInputs['NullableStringFieldUpdateOperationsInput'] | null; // NullableStringFieldUpdateOperationsInput
-    PromotionCodeTransaction?: NexusGenInputs['PromotionCodeTransactionUpdateManyWithoutUserInput'] | null; // PromotionCodeTransactionUpdateManyWithoutUserInput
-    PromotionTransaction?: NexusGenInputs['PromotionTransactionUpdateManyWithoutUserInput'] | null; // PromotionTransactionUpdateManyWithoutUserInput
-    Ref?: NexusGenInputs['RefUpdateOneWithoutUserInput'] | null; // RefUpdateOneWithoutUserInput
-    RefTransactionOfSponsor?: NexusGenInputs['RefTransactionUpdateManyWithoutSponsorInput'] | null; // RefTransactionUpdateManyWithoutSponsorInput
-    RefTransactionOfUser?: NexusGenInputs['RefTransactionUpdateManyWithoutUserInput'] | null; // RefTransactionUpdateManyWithoutUserInput
-    RefundTransaction?: NexusGenInputs['RefundTransactionUpdateManyWithoutUserInput'] | null; // RefundTransactionUpdateManyWithoutUserInput
-    Reply?: NexusGenInputs['ReplyUpdateManyWithoutUserInput'] | null; // ReplyUpdateManyWithoutUserInput
-    role?: NexusGenInputs['EnumUserRoleFieldUpdateOperationsInput'] | null; // EnumUserRoleFieldUpdateOperationsInput
-    Sponsor?: NexusGenInputs['RefUpdateManyWithoutSponsorInput'] | null; // RefUpdateManyWithoutSponsorInput
-    Ticket?: NexusGenInputs['TicketUpdateManyWithoutUserInput'] | null; // TicketUpdateManyWithoutUserInput
-    TournamentTransaction?: NexusGenInputs['TournamentTransactionUpdateManyWithoutUserInput'] | null; // TournamentTransactionUpdateManyWithoutUserInput
     TransactionApprover?: NexusGenInputs['MainWalletTransactionUpdateManyWithoutApproved_byInput'] | null; // MainWalletTransactionUpdateManyWithoutApproved_byInput
     TwoFactor?: NexusGenInputs['TwoFactorUpdateManyWithoutUserInput'] | null; // TwoFactorUpdateManyWithoutUserInput
     updatedAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
@@ -6026,12 +5567,10 @@ export interface NexusGenInputs {
     createdAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
     Device?: NexusGenInputs['DeviceUpdateManyWithoutUserInput'] | null; // DeviceUpdateManyWithoutUserInput
     email?: NexusGenInputs['StringFieldUpdateOperationsInput'] | null; // StringFieldUpdateOperationsInput
-    ExchangeWallet?: NexusGenInputs['ExchangeWalletUpdateManyWithoutUserInput'] | null; // ExchangeWalletUpdateManyWithoutUserInput
     id?: NexusGenInputs['StringFieldUpdateOperationsInput'] | null; // StringFieldUpdateOperationsInput
     InternalTransaction?: NexusGenInputs['InternalTransactionUpdateManyWithoutUserInput'] | null; // InternalTransactionUpdateManyWithoutUserInput
     ip?: NexusGenInputs['NullableStringFieldUpdateOperationsInput'] | null; // NullableStringFieldUpdateOperationsInput
     is_active?: NexusGenInputs['BoolFieldUpdateOperationsInput'] | null; // BoolFieldUpdateOperationsInput
-    LeaderBoard?: NexusGenInputs['LeaderBoardUpdateManyWithoutUserInput'] | null; // LeaderBoardUpdateManyWithoutUserInput
     MainWalletTransaction?: NexusGenInputs['MainWalletTransactionUpdateManyWithoutUserInput'] | null; // MainWalletTransactionUpdateManyWithoutUserInput
     ManualTransaction?: NexusGenInputs['ManualTransactionUpdateManyWithoutUserInput'] | null; // ManualTransactionUpdateManyWithoutUserInput
     name?: NexusGenInputs['NullableStringFieldUpdateOperationsInput'] | null; // NullableStringFieldUpdateOperationsInput
@@ -6049,7 +5588,6 @@ export interface NexusGenInputs {
     role?: NexusGenInputs['EnumUserRoleFieldUpdateOperationsInput'] | null; // EnumUserRoleFieldUpdateOperationsInput
     Sponsor?: NexusGenInputs['RefUpdateManyWithoutSponsorInput'] | null; // RefUpdateManyWithoutSponsorInput
     Ticket?: NexusGenInputs['TicketUpdateManyWithoutUserInput'] | null; // TicketUpdateManyWithoutUserInput
-    TournamentTransaction?: NexusGenInputs['TournamentTransactionUpdateManyWithoutUserInput'] | null; // TournamentTransactionUpdateManyWithoutUserInput
     TransactionApprover?: NexusGenInputs['MainWalletTransactionUpdateManyWithoutApproved_byInput'] | null; // MainWalletTransactionUpdateManyWithoutApproved_byInput
     TwoFactor?: NexusGenInputs['TwoFactorUpdateManyWithoutUserInput'] | null; // TwoFactorUpdateManyWithoutUserInput
     updatedAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
@@ -6063,12 +5601,10 @@ export interface NexusGenInputs {
     createdAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
     Device?: NexusGenInputs['DeviceUpdateManyWithoutUserInput'] | null; // DeviceUpdateManyWithoutUserInput
     email?: NexusGenInputs['StringFieldUpdateOperationsInput'] | null; // StringFieldUpdateOperationsInput
-    ExchangeWallet?: NexusGenInputs['ExchangeWalletUpdateManyWithoutUserInput'] | null; // ExchangeWalletUpdateManyWithoutUserInput
     id?: NexusGenInputs['StringFieldUpdateOperationsInput'] | null; // StringFieldUpdateOperationsInput
     InternalTransaction?: NexusGenInputs['InternalTransactionUpdateManyWithoutUserInput'] | null; // InternalTransactionUpdateManyWithoutUserInput
     ip?: NexusGenInputs['NullableStringFieldUpdateOperationsInput'] | null; // NullableStringFieldUpdateOperationsInput
     is_active?: NexusGenInputs['BoolFieldUpdateOperationsInput'] | null; // BoolFieldUpdateOperationsInput
-    LeaderBoard?: NexusGenInputs['LeaderBoardUpdateManyWithoutUserInput'] | null; // LeaderBoardUpdateManyWithoutUserInput
     MainWallet?: NexusGenInputs['MainWalletUpdateManyWithoutUserInput'] | null; // MainWalletUpdateManyWithoutUserInput
     ManualTransaction?: NexusGenInputs['ManualTransactionUpdateManyWithoutUserInput'] | null; // ManualTransactionUpdateManyWithoutUserInput
     name?: NexusGenInputs['NullableStringFieldUpdateOperationsInput'] | null; // NullableStringFieldUpdateOperationsInput
@@ -6086,7 +5622,6 @@ export interface NexusGenInputs {
     role?: NexusGenInputs['EnumUserRoleFieldUpdateOperationsInput'] | null; // EnumUserRoleFieldUpdateOperationsInput
     Sponsor?: NexusGenInputs['RefUpdateManyWithoutSponsorInput'] | null; // RefUpdateManyWithoutSponsorInput
     Ticket?: NexusGenInputs['TicketUpdateManyWithoutUserInput'] | null; // TicketUpdateManyWithoutUserInput
-    TournamentTransaction?: NexusGenInputs['TournamentTransactionUpdateManyWithoutUserInput'] | null; // TournamentTransactionUpdateManyWithoutUserInput
     TransactionApprover?: NexusGenInputs['MainWalletTransactionUpdateManyWithoutApproved_byInput'] | null; // MainWalletTransactionUpdateManyWithoutApproved_byInput
     TwoFactor?: NexusGenInputs['TwoFactorUpdateManyWithoutUserInput'] | null; // TwoFactorUpdateManyWithoutUserInput
     updatedAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
@@ -6100,12 +5635,10 @@ export interface NexusGenInputs {
     createdAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
     Device?: NexusGenInputs['DeviceUpdateManyWithoutUserInput'] | null; // DeviceUpdateManyWithoutUserInput
     email?: NexusGenInputs['StringFieldUpdateOperationsInput'] | null; // StringFieldUpdateOperationsInput
-    ExchangeWallet?: NexusGenInputs['ExchangeWalletUpdateManyWithoutUserInput'] | null; // ExchangeWalletUpdateManyWithoutUserInput
     id?: NexusGenInputs['StringFieldUpdateOperationsInput'] | null; // StringFieldUpdateOperationsInput
     InternalTransaction?: NexusGenInputs['InternalTransactionUpdateManyWithoutUserInput'] | null; // InternalTransactionUpdateManyWithoutUserInput
     ip?: NexusGenInputs['NullableStringFieldUpdateOperationsInput'] | null; // NullableStringFieldUpdateOperationsInput
     is_active?: NexusGenInputs['BoolFieldUpdateOperationsInput'] | null; // BoolFieldUpdateOperationsInput
-    LeaderBoard?: NexusGenInputs['LeaderBoardUpdateManyWithoutUserInput'] | null; // LeaderBoardUpdateManyWithoutUserInput
     MainWallet?: NexusGenInputs['MainWalletUpdateManyWithoutUserInput'] | null; // MainWalletUpdateManyWithoutUserInput
     MainWalletTransaction?: NexusGenInputs['MainWalletTransactionUpdateManyWithoutUserInput'] | null; // MainWalletTransactionUpdateManyWithoutUserInput
     ManualTransaction?: NexusGenInputs['ManualTransactionUpdateManyWithoutUserInput'] | null; // ManualTransactionUpdateManyWithoutUserInput
@@ -6123,7 +5656,6 @@ export interface NexusGenInputs {
     role?: NexusGenInputs['EnumUserRoleFieldUpdateOperationsInput'] | null; // EnumUserRoleFieldUpdateOperationsInput
     Sponsor?: NexusGenInputs['RefUpdateManyWithoutSponsorInput'] | null; // RefUpdateManyWithoutSponsorInput
     Ticket?: NexusGenInputs['TicketUpdateManyWithoutUserInput'] | null; // TicketUpdateManyWithoutUserInput
-    TournamentTransaction?: NexusGenInputs['TournamentTransactionUpdateManyWithoutUserInput'] | null; // TournamentTransactionUpdateManyWithoutUserInput
     TransactionApprover?: NexusGenInputs['MainWalletTransactionUpdateManyWithoutApproved_byInput'] | null; // MainWalletTransactionUpdateManyWithoutApproved_byInput
     TwoFactor?: NexusGenInputs['TwoFactorUpdateManyWithoutUserInput'] | null; // TwoFactorUpdateManyWithoutUserInput
     updatedAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
@@ -6137,12 +5669,10 @@ export interface NexusGenInputs {
     createdAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
     Device?: NexusGenInputs['DeviceUpdateManyWithoutUserInput'] | null; // DeviceUpdateManyWithoutUserInput
     email?: NexusGenInputs['StringFieldUpdateOperationsInput'] | null; // StringFieldUpdateOperationsInput
-    ExchangeWallet?: NexusGenInputs['ExchangeWalletUpdateManyWithoutUserInput'] | null; // ExchangeWalletUpdateManyWithoutUserInput
     id?: NexusGenInputs['StringFieldUpdateOperationsInput'] | null; // StringFieldUpdateOperationsInput
     InternalTransaction?: NexusGenInputs['InternalTransactionUpdateManyWithoutUserInput'] | null; // InternalTransactionUpdateManyWithoutUserInput
     ip?: NexusGenInputs['NullableStringFieldUpdateOperationsInput'] | null; // NullableStringFieldUpdateOperationsInput
     is_active?: NexusGenInputs['BoolFieldUpdateOperationsInput'] | null; // BoolFieldUpdateOperationsInput
-    LeaderBoard?: NexusGenInputs['LeaderBoardUpdateManyWithoutUserInput'] | null; // LeaderBoardUpdateManyWithoutUserInput
     MainWallet?: NexusGenInputs['MainWalletUpdateManyWithoutUserInput'] | null; // MainWalletUpdateManyWithoutUserInput
     MainWalletTransaction?: NexusGenInputs['MainWalletTransactionUpdateManyWithoutUserInput'] | null; // MainWalletTransactionUpdateManyWithoutUserInput
     ManualTransaction?: NexusGenInputs['ManualTransactionUpdateManyWithoutUserInput'] | null; // ManualTransactionUpdateManyWithoutUserInput
@@ -6160,7 +5690,6 @@ export interface NexusGenInputs {
     role?: NexusGenInputs['EnumUserRoleFieldUpdateOperationsInput'] | null; // EnumUserRoleFieldUpdateOperationsInput
     Sponsor?: NexusGenInputs['RefUpdateManyWithoutSponsorInput'] | null; // RefUpdateManyWithoutSponsorInput
     Ticket?: NexusGenInputs['TicketUpdateManyWithoutUserInput'] | null; // TicketUpdateManyWithoutUserInput
-    TournamentTransaction?: NexusGenInputs['TournamentTransactionUpdateManyWithoutUserInput'] | null; // TournamentTransactionUpdateManyWithoutUserInput
     TransactionApprover?: NexusGenInputs['MainWalletTransactionUpdateManyWithoutApproved_byInput'] | null; // MainWalletTransactionUpdateManyWithoutApproved_byInput
     TwoFactor?: NexusGenInputs['TwoFactorUpdateManyWithoutUserInput'] | null; // TwoFactorUpdateManyWithoutUserInput
     updatedAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
@@ -6174,12 +5703,10 @@ export interface NexusGenInputs {
     createdAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
     Device?: NexusGenInputs['DeviceUpdateManyWithoutUserInput'] | null; // DeviceUpdateManyWithoutUserInput
     email?: NexusGenInputs['StringFieldUpdateOperationsInput'] | null; // StringFieldUpdateOperationsInput
-    ExchangeWallet?: NexusGenInputs['ExchangeWalletUpdateManyWithoutUserInput'] | null; // ExchangeWalletUpdateManyWithoutUserInput
     id?: NexusGenInputs['StringFieldUpdateOperationsInput'] | null; // StringFieldUpdateOperationsInput
     InternalTransaction?: NexusGenInputs['InternalTransactionUpdateManyWithoutUserInput'] | null; // InternalTransactionUpdateManyWithoutUserInput
     ip?: NexusGenInputs['NullableStringFieldUpdateOperationsInput'] | null; // NullableStringFieldUpdateOperationsInput
     is_active?: NexusGenInputs['BoolFieldUpdateOperationsInput'] | null; // BoolFieldUpdateOperationsInput
-    LeaderBoard?: NexusGenInputs['LeaderBoardUpdateManyWithoutUserInput'] | null; // LeaderBoardUpdateManyWithoutUserInput
     MainWallet?: NexusGenInputs['MainWalletUpdateManyWithoutUserInput'] | null; // MainWalletUpdateManyWithoutUserInput
     MainWalletTransaction?: NexusGenInputs['MainWalletTransactionUpdateManyWithoutUserInput'] | null; // MainWalletTransactionUpdateManyWithoutUserInput
     ManualTransaction?: NexusGenInputs['ManualTransactionUpdateManyWithoutUserInput'] | null; // ManualTransactionUpdateManyWithoutUserInput
@@ -6197,7 +5724,6 @@ export interface NexusGenInputs {
     role?: NexusGenInputs['EnumUserRoleFieldUpdateOperationsInput'] | null; // EnumUserRoleFieldUpdateOperationsInput
     Sponsor?: NexusGenInputs['RefUpdateManyWithoutSponsorInput'] | null; // RefUpdateManyWithoutSponsorInput
     Ticket?: NexusGenInputs['TicketUpdateManyWithoutUserInput'] | null; // TicketUpdateManyWithoutUserInput
-    TournamentTransaction?: NexusGenInputs['TournamentTransactionUpdateManyWithoutUserInput'] | null; // TournamentTransactionUpdateManyWithoutUserInput
     TransactionApprover?: NexusGenInputs['MainWalletTransactionUpdateManyWithoutApproved_byInput'] | null; // MainWalletTransactionUpdateManyWithoutApproved_byInput
     TwoFactor?: NexusGenInputs['TwoFactorUpdateManyWithoutUserInput'] | null; // TwoFactorUpdateManyWithoutUserInput
     updatedAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
@@ -6211,12 +5737,10 @@ export interface NexusGenInputs {
     createdAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
     Device?: NexusGenInputs['DeviceUpdateManyWithoutUserInput'] | null; // DeviceUpdateManyWithoutUserInput
     email?: NexusGenInputs['StringFieldUpdateOperationsInput'] | null; // StringFieldUpdateOperationsInput
-    ExchangeWallet?: NexusGenInputs['ExchangeWalletUpdateManyWithoutUserInput'] | null; // ExchangeWalletUpdateManyWithoutUserInput
     id?: NexusGenInputs['StringFieldUpdateOperationsInput'] | null; // StringFieldUpdateOperationsInput
     InternalTransaction?: NexusGenInputs['InternalTransactionUpdateManyWithoutUserInput'] | null; // InternalTransactionUpdateManyWithoutUserInput
     ip?: NexusGenInputs['NullableStringFieldUpdateOperationsInput'] | null; // NullableStringFieldUpdateOperationsInput
     is_active?: NexusGenInputs['BoolFieldUpdateOperationsInput'] | null; // BoolFieldUpdateOperationsInput
-    LeaderBoard?: NexusGenInputs['LeaderBoardUpdateManyWithoutUserInput'] | null; // LeaderBoardUpdateManyWithoutUserInput
     MainWallet?: NexusGenInputs['MainWalletUpdateManyWithoutUserInput'] | null; // MainWalletUpdateManyWithoutUserInput
     MainWalletTransaction?: NexusGenInputs['MainWalletTransactionUpdateManyWithoutUserInput'] | null; // MainWalletTransactionUpdateManyWithoutUserInput
     ManualTransaction?: NexusGenInputs['ManualTransactionUpdateManyWithoutUserInput'] | null; // ManualTransactionUpdateManyWithoutUserInput
@@ -6234,7 +5758,6 @@ export interface NexusGenInputs {
     role?: NexusGenInputs['EnumUserRoleFieldUpdateOperationsInput'] | null; // EnumUserRoleFieldUpdateOperationsInput
     Sponsor?: NexusGenInputs['RefUpdateManyWithoutSponsorInput'] | null; // RefUpdateManyWithoutSponsorInput
     Ticket?: NexusGenInputs['TicketUpdateManyWithoutUserInput'] | null; // TicketUpdateManyWithoutUserInput
-    TournamentTransaction?: NexusGenInputs['TournamentTransactionUpdateManyWithoutUserInput'] | null; // TournamentTransactionUpdateManyWithoutUserInput
     TransactionApprover?: NexusGenInputs['MainWalletTransactionUpdateManyWithoutApproved_byInput'] | null; // MainWalletTransactionUpdateManyWithoutApproved_byInput
     TwoFactor?: NexusGenInputs['TwoFactorUpdateManyWithoutUserInput'] | null; // TwoFactorUpdateManyWithoutUserInput
     updatedAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
@@ -6248,12 +5771,10 @@ export interface NexusGenInputs {
     createdAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
     Device?: NexusGenInputs['DeviceUpdateManyWithoutUserInput'] | null; // DeviceUpdateManyWithoutUserInput
     email?: NexusGenInputs['StringFieldUpdateOperationsInput'] | null; // StringFieldUpdateOperationsInput
-    ExchangeWallet?: NexusGenInputs['ExchangeWalletUpdateManyWithoutUserInput'] | null; // ExchangeWalletUpdateManyWithoutUserInput
     id?: NexusGenInputs['StringFieldUpdateOperationsInput'] | null; // StringFieldUpdateOperationsInput
     InternalTransaction?: NexusGenInputs['InternalTransactionUpdateManyWithoutUserInput'] | null; // InternalTransactionUpdateManyWithoutUserInput
     ip?: NexusGenInputs['NullableStringFieldUpdateOperationsInput'] | null; // NullableStringFieldUpdateOperationsInput
     is_active?: NexusGenInputs['BoolFieldUpdateOperationsInput'] | null; // BoolFieldUpdateOperationsInput
-    LeaderBoard?: NexusGenInputs['LeaderBoardUpdateManyWithoutUserInput'] | null; // LeaderBoardUpdateManyWithoutUserInput
     MainWallet?: NexusGenInputs['MainWalletUpdateManyWithoutUserInput'] | null; // MainWalletUpdateManyWithoutUserInput
     MainWalletTransaction?: NexusGenInputs['MainWalletTransactionUpdateManyWithoutUserInput'] | null; // MainWalletTransactionUpdateManyWithoutUserInput
     ManualTransaction?: NexusGenInputs['ManualTransactionUpdateManyWithoutUserInput'] | null; // ManualTransactionUpdateManyWithoutUserInput
@@ -6271,7 +5792,6 @@ export interface NexusGenInputs {
     role?: NexusGenInputs['EnumUserRoleFieldUpdateOperationsInput'] | null; // EnumUserRoleFieldUpdateOperationsInput
     Sponsor?: NexusGenInputs['RefUpdateManyWithoutSponsorInput'] | null; // RefUpdateManyWithoutSponsorInput
     Ticket?: NexusGenInputs['TicketUpdateManyWithoutUserInput'] | null; // TicketUpdateManyWithoutUserInput
-    TournamentTransaction?: NexusGenInputs['TournamentTransactionUpdateManyWithoutUserInput'] | null; // TournamentTransactionUpdateManyWithoutUserInput
     TransactionApprover?: NexusGenInputs['MainWalletTransactionUpdateManyWithoutApproved_byInput'] | null; // MainWalletTransactionUpdateManyWithoutApproved_byInput
     TwoFactor?: NexusGenInputs['TwoFactorUpdateManyWithoutUserInput'] | null; // TwoFactorUpdateManyWithoutUserInput
     updatedAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
@@ -6285,12 +5805,10 @@ export interface NexusGenInputs {
     createdAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
     Device?: NexusGenInputs['DeviceUpdateManyWithoutUserInput'] | null; // DeviceUpdateManyWithoutUserInput
     email?: NexusGenInputs['StringFieldUpdateOperationsInput'] | null; // StringFieldUpdateOperationsInput
-    ExchangeWallet?: NexusGenInputs['ExchangeWalletUpdateManyWithoutUserInput'] | null; // ExchangeWalletUpdateManyWithoutUserInput
     id?: NexusGenInputs['StringFieldUpdateOperationsInput'] | null; // StringFieldUpdateOperationsInput
     InternalTransaction?: NexusGenInputs['InternalTransactionUpdateManyWithoutUserInput'] | null; // InternalTransactionUpdateManyWithoutUserInput
     ip?: NexusGenInputs['NullableStringFieldUpdateOperationsInput'] | null; // NullableStringFieldUpdateOperationsInput
     is_active?: NexusGenInputs['BoolFieldUpdateOperationsInput'] | null; // BoolFieldUpdateOperationsInput
-    LeaderBoard?: NexusGenInputs['LeaderBoardUpdateManyWithoutUserInput'] | null; // LeaderBoardUpdateManyWithoutUserInput
     MainWallet?: NexusGenInputs['MainWalletUpdateManyWithoutUserInput'] | null; // MainWalletUpdateManyWithoutUserInput
     MainWalletTransaction?: NexusGenInputs['MainWalletTransactionUpdateManyWithoutUserInput'] | null; // MainWalletTransactionUpdateManyWithoutUserInput
     ManualTransaction?: NexusGenInputs['ManualTransactionUpdateManyWithoutUserInput'] | null; // ManualTransactionUpdateManyWithoutUserInput
@@ -6308,7 +5826,6 @@ export interface NexusGenInputs {
     Reply?: NexusGenInputs['ReplyUpdateManyWithoutUserInput'] | null; // ReplyUpdateManyWithoutUserInput
     role?: NexusGenInputs['EnumUserRoleFieldUpdateOperationsInput'] | null; // EnumUserRoleFieldUpdateOperationsInput
     Ticket?: NexusGenInputs['TicketUpdateManyWithoutUserInput'] | null; // TicketUpdateManyWithoutUserInput
-    TournamentTransaction?: NexusGenInputs['TournamentTransactionUpdateManyWithoutUserInput'] | null; // TournamentTransactionUpdateManyWithoutUserInput
     TransactionApprover?: NexusGenInputs['MainWalletTransactionUpdateManyWithoutApproved_byInput'] | null; // MainWalletTransactionUpdateManyWithoutApproved_byInput
     TwoFactor?: NexusGenInputs['TwoFactorUpdateManyWithoutUserInput'] | null; // TwoFactorUpdateManyWithoutUserInput
     updatedAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
@@ -6322,12 +5839,10 @@ export interface NexusGenInputs {
     createdAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
     Device?: NexusGenInputs['DeviceUpdateManyWithoutUserInput'] | null; // DeviceUpdateManyWithoutUserInput
     email?: NexusGenInputs['StringFieldUpdateOperationsInput'] | null; // StringFieldUpdateOperationsInput
-    ExchangeWallet?: NexusGenInputs['ExchangeWalletUpdateManyWithoutUserInput'] | null; // ExchangeWalletUpdateManyWithoutUserInput
     id?: NexusGenInputs['StringFieldUpdateOperationsInput'] | null; // StringFieldUpdateOperationsInput
     InternalTransaction?: NexusGenInputs['InternalTransactionUpdateManyWithoutUserInput'] | null; // InternalTransactionUpdateManyWithoutUserInput
     ip?: NexusGenInputs['NullableStringFieldUpdateOperationsInput'] | null; // NullableStringFieldUpdateOperationsInput
     is_active?: NexusGenInputs['BoolFieldUpdateOperationsInput'] | null; // BoolFieldUpdateOperationsInput
-    LeaderBoard?: NexusGenInputs['LeaderBoardUpdateManyWithoutUserInput'] | null; // LeaderBoardUpdateManyWithoutUserInput
     MainWallet?: NexusGenInputs['MainWalletUpdateManyWithoutUserInput'] | null; // MainWalletUpdateManyWithoutUserInput
     MainWalletTransaction?: NexusGenInputs['MainWalletTransactionUpdateManyWithoutUserInput'] | null; // MainWalletTransactionUpdateManyWithoutUserInput
     ManualTransaction?: NexusGenInputs['ManualTransactionUpdateManyWithoutUserInput'] | null; // ManualTransactionUpdateManyWithoutUserInput
@@ -6345,7 +5860,6 @@ export interface NexusGenInputs {
     Reply?: NexusGenInputs['ReplyUpdateManyWithoutUserInput'] | null; // ReplyUpdateManyWithoutUserInput
     role?: NexusGenInputs['EnumUserRoleFieldUpdateOperationsInput'] | null; // EnumUserRoleFieldUpdateOperationsInput
     Sponsor?: NexusGenInputs['RefUpdateManyWithoutSponsorInput'] | null; // RefUpdateManyWithoutSponsorInput
-    TournamentTransaction?: NexusGenInputs['TournamentTransactionUpdateManyWithoutUserInput'] | null; // TournamentTransactionUpdateManyWithoutUserInput
     TransactionApprover?: NexusGenInputs['MainWalletTransactionUpdateManyWithoutApproved_byInput'] | null; // MainWalletTransactionUpdateManyWithoutApproved_byInput
     TwoFactor?: NexusGenInputs['TwoFactorUpdateManyWithoutUserInput'] | null; // TwoFactorUpdateManyWithoutUserInput
     updatedAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
@@ -6359,12 +5873,10 @@ export interface NexusGenInputs {
     createdAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
     Device?: NexusGenInputs['DeviceUpdateManyWithoutUserInput'] | null; // DeviceUpdateManyWithoutUserInput
     email?: NexusGenInputs['StringFieldUpdateOperationsInput'] | null; // StringFieldUpdateOperationsInput
-    ExchangeWallet?: NexusGenInputs['ExchangeWalletUpdateManyWithoutUserInput'] | null; // ExchangeWalletUpdateManyWithoutUserInput
     id?: NexusGenInputs['StringFieldUpdateOperationsInput'] | null; // StringFieldUpdateOperationsInput
     InternalTransaction?: NexusGenInputs['InternalTransactionUpdateManyWithoutUserInput'] | null; // InternalTransactionUpdateManyWithoutUserInput
     ip?: NexusGenInputs['NullableStringFieldUpdateOperationsInput'] | null; // NullableStringFieldUpdateOperationsInput
     is_active?: NexusGenInputs['BoolFieldUpdateOperationsInput'] | null; // BoolFieldUpdateOperationsInput
-    LeaderBoard?: NexusGenInputs['LeaderBoardUpdateManyWithoutUserInput'] | null; // LeaderBoardUpdateManyWithoutUserInput
     MainWallet?: NexusGenInputs['MainWalletUpdateManyWithoutUserInput'] | null; // MainWalletUpdateManyWithoutUserInput
     MainWalletTransaction?: NexusGenInputs['MainWalletTransactionUpdateManyWithoutUserInput'] | null; // MainWalletTransactionUpdateManyWithoutUserInput
     ManualTransaction?: NexusGenInputs['ManualTransactionUpdateManyWithoutUserInput'] | null; // ManualTransactionUpdateManyWithoutUserInput
@@ -6383,7 +5895,6 @@ export interface NexusGenInputs {
     role?: NexusGenInputs['EnumUserRoleFieldUpdateOperationsInput'] | null; // EnumUserRoleFieldUpdateOperationsInput
     Sponsor?: NexusGenInputs['RefUpdateManyWithoutSponsorInput'] | null; // RefUpdateManyWithoutSponsorInput
     Ticket?: NexusGenInputs['TicketUpdateManyWithoutUserInput'] | null; // TicketUpdateManyWithoutUserInput
-    TournamentTransaction?: NexusGenInputs['TournamentTransactionUpdateManyWithoutUserInput'] | null; // TournamentTransactionUpdateManyWithoutUserInput
     TwoFactor?: NexusGenInputs['TwoFactorUpdateManyWithoutUserInput'] | null; // TwoFactorUpdateManyWithoutUserInput
     updatedAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
     username?: NexusGenInputs['NullableStringFieldUpdateOperationsInput'] | null; // NullableStringFieldUpdateOperationsInput
@@ -6400,10 +5911,6 @@ export interface NexusGenInputs {
   UserUpsertWithoutConvertionTransactionInput: { // input type
     create: NexusGenInputs['UserCreateWithoutConvertionTransactionInput']; // UserCreateWithoutConvertionTransactionInput!
     update: NexusGenInputs['UserUpdateWithoutConvertionTransactionInput']; // UserUpdateWithoutConvertionTransactionInput!
-  }
-  UserUpsertWithoutExchangeWalletInput: { // input type
-    create: NexusGenInputs['UserCreateWithoutExchangeWalletInput']; // UserCreateWithoutExchangeWalletInput!
-    update: NexusGenInputs['UserUpdateWithoutExchangeWalletInput']; // UserUpdateWithoutExchangeWalletInput!
   }
   UserUpsertWithoutMainWalletInput: { // input type
     create: NexusGenInputs['UserCreateWithoutMainWalletInput']; // UserCreateWithoutMainWalletInput!
@@ -6453,12 +5960,10 @@ export interface NexusGenInputs {
 }
 
 export interface NexusGenEnums {
-  AccountType: "DEMO" | "MAIN" | "PROMOTION"
   ApprovedStatus: "APPROVED" | "REJECTED"
-  ConvertionDirection: "EXCHANGE_TO_MAIN" | "MAIN_TO_EXCHANGE"
+  ConvertionDirection: "EXCHANGE_TO_MAIN" | "MAIN_TO_EXCHANGE" | "MAIN_TO_MAIN"
   Crypto_Service: "BANK" | "BITCOIN" | "BSC" | "ETHEREUM" | "POLYGON" | "TRON"
   DestinationType: "EXCHANGE_WALLET" | "MAIN_WALLET"
-  ExchangeWalletEventType: "AGENCY_LICENCE" | "BUY_PROMOTION_CODE" | "CONVERT" | "COPY_TRADE_COMISSION" | "COPY_TRADE_COMISSION_BACK" | "INSURANCE_REFUND" | "INSURANCE_WIN" | "INTERNAL_TRANSACTION" | "INVESTING_REFUND" | "MANUAL" | "ORDER" | "ORDER_RESULT" | "PROMOTION" | "PROMOTION_CODE" | "PROMOTION_CODE_REFUND" | "REF" | "REFUND" | "RING_ORDER" | "RING_ORDER_RESULT" | "SERVICE_SUBSCRIPTION"
   InternalTransactionStatus: "FAILED" | "PENDING" | "SUCCEED"
   InternalTransactionType: "RECEIVE" | "SEND"
   JsonNullValueFilter: "AnyNull" | "DbNull" | "JsonNull"
@@ -6480,7 +5985,7 @@ export interface NexusGenEnums {
   TwoFactorStatus: "DISABLED" | "PENDING" | "VERIFIED"
   UserProfileStatus: "BANNED" | "FROZEN" | "NORMAL" | "SUSPENDED"
   UserRole: "ADMIN" | "STAFF" | "TRADER"
-  WalletChangeEventType: "CONVERT" | "MANUAL" | "TRANSACTION"
+  WalletChangeEventType: "CONVERT" | "DEPOSIT" | "MANUAL" | "TRANSACTION" | "WITHDRAW"
 }
 
 export interface NexusGenScalars {
@@ -6633,7 +6138,6 @@ export interface NexusGenObjects {
     amount: number; // Float!
     converted_amount?: number | null; // Float
     createdAt: NexusGenScalars['DateTime']; // DateTime!
-    direction: NexusGenEnums['ConvertionDirection']; // ConvertionDirection!
     fee?: number | null; // Float
     price: number; // Float!
     updatedAt: NexusGenScalars['DateTime']; // DateTime!
@@ -6722,27 +6226,6 @@ export interface NexusGenObjects {
     demo?: NexusGenRootTypes['ExchangeDetail'] | null; // ExchangeDetail
     main?: NexusGenRootTypes['ExchangeDetail'] | null; // ExchangeDetail
     promotion?: NexusGenRootTypes['ExchangeDetail'] | null; // ExchangeDetail
-  }
-  ExchangeWallet: { // root type
-    base_balance: number; // Float!
-    createdAt: NexusGenScalars['DateTime']; // DateTime!
-    id: string; // String!
-    is_frozen: boolean; // Boolean!
-    type: NexusGenEnums['AccountType']; // AccountType!
-    updatedAt: NexusGenScalars['DateTime']; // DateTime!
-  }
-  ExchangeWalletChange: { // root type
-    amount: number; // Float!
-    createdAt: NexusGenScalars['DateTime']; // DateTime!
-    event_id: string; // String!
-    event_type: NexusGenEnums['ExchangeWalletEventType']; // ExchangeWalletEventType!
-    exchange_wallet_id: string; // String!
-    id: string; // String!
-    updatedAt: NexusGenScalars['DateTime']; // DateTime!
-  }
-  ExchangeWalletChangePagination: { // root type
-    nodes?: Array<NexusGenRootTypes['ExchangeWalletChange'] | null> | null; // [ExchangeWalletChange]
-    total?: number | null; // Int
   }
   ExchangeWalletSumary: { // root type
     agency?: number | null; // Float
@@ -7048,7 +6531,6 @@ export interface NexusGenObjects {
   }
   UserSumary: { // root type
     convertion?: NexusGenRootTypes['ConvertionSumaries'] | null; // ConvertionSumaries
-    exchange?: NexusGenRootTypes['ExchangeSumary'] | null; // ExchangeSumary
     general?: NexusGenRootTypes['WalletGeneral'] | null; // WalletGeneral
   }
   WalletGeneral: { // root type
@@ -7223,10 +6705,9 @@ export interface NexusGenFieldTypes {
     amount: number; // Float!
     converted_amount: number | null; // Float
     createdAt: NexusGenScalars['DateTime']; // DateTime!
-    direction: NexusGenEnums['ConvertionDirection']; // ConvertionDirection!
-    ExchangeWallet: NexusGenRootTypes['ExchangeWallet']; // ExchangeWallet!
     fee: number | null; // Float
-    MainWallet: NexusGenRootTypes['MainWallet']; // MainWallet!
+    MainWalletFrom: NexusGenRootTypes['MainWallet']; // MainWallet!
+    MainWalletTo: NexusGenRootTypes['MainWallet']; // MainWallet!
     price: number; // Float!
     updatedAt: NexusGenScalars['DateTime']; // DateTime!
     user_id: string; // String!
@@ -7315,29 +6796,6 @@ export interface NexusGenFieldTypes {
     demo: NexusGenRootTypes['ExchangeDetail'] | null; // ExchangeDetail
     main: NexusGenRootTypes['ExchangeDetail'] | null; // ExchangeDetail
     promotion: NexusGenRootTypes['ExchangeDetail'] | null; // ExchangeDetail
-  }
-  ExchangeWallet: { // field return type
-    balance: number | null; // Float
-    base_balance: number; // Float!
-    createdAt: NexusGenScalars['DateTime']; // DateTime!
-    id: string; // String!
-    is_frozen: boolean; // Boolean!
-    type: NexusGenEnums['AccountType']; // AccountType!
-    updatedAt: NexusGenScalars['DateTime']; // DateTime!
-  }
-  ExchangeWalletChange: { // field return type
-    amount: number; // Float!
-    createdAt: NexusGenScalars['DateTime']; // DateTime!
-    event_id: string; // String!
-    event_type: NexusGenEnums['ExchangeWalletEventType']; // ExchangeWalletEventType!
-    exchange_wallet_id: string; // String!
-    ExchangeWallet: NexusGenRootTypes['ExchangeWallet']; // ExchangeWallet!
-    id: string; // String!
-    updatedAt: NexusGenScalars['DateTime']; // DateTime!
-  }
-  ExchangeWalletChangePagination: { // field return type
-    nodes: Array<NexusGenRootTypes['ExchangeWalletChange'] | null> | null; // [ExchangeWalletChange]
-    total: number | null; // Int
   }
   ExchangeWalletSumary: { // field return type
     agency: number | null; // Float
@@ -7454,11 +6912,11 @@ export interface NexusGenFieldTypes {
     createCurrency: NexusGenRootTypes['Currency'] | null; // Currency
     createRef: NexusGenRootTypes['Ref']; // Ref!
     createWalletRequest: NexusGenRootTypes['MainWallet'] | null; // MainWallet
+    depositWallet: boolean | null; // Boolean
     disableTwoFactor: NexusGenRootTypes['DisableTwoFactor'] | null; // DisableTwoFactor
     disableTwoFactorMobile: NexusGenRootTypes['DisableTwoFactor'] | null; // DisableTwoFactor
     enableTwoFactor: NexusGenRootTypes['TwoFactor'] | null; // TwoFactor
     enableTwoFactorMobile: NexusGenRootTypes['TwoFactor'] | null; // TwoFactor
-    exchangeWalletInternalTransfer: NexusGenRootTypes['WithdrawPayload'] | null; // WithdrawPayload
     forgotPassword: NexusGenRootTypes['CoinheIDAuthMessagePayload'] | null; // CoinheIDAuthMessagePayload
     generateTemporaryToken: NexusGenRootTypes['TemporaryToken'] | null; // TemporaryToken
     generateToken: NexusGenRootTypes['TokenLogin'] | null; // TokenLogin
@@ -7470,7 +6928,6 @@ export interface NexusGenFieldTypes {
     manualSet: boolean | null; // Boolean
     pushNotification: boolean | null; // Boolean
     readAllNotify: boolean | null; // Boolean
-    refillDemoWallet: NexusGenRootTypes['ExchangeWallet'] | null; // ExchangeWallet
     register: NexusGenRootTypes['AuthPayload'] | null; // AuthPayload
     registerDevice: boolean | null; // Boolean
     resendActivationEmail: boolean | null; // Boolean
@@ -7537,7 +6994,6 @@ export interface NexusGenFieldTypes {
     convertionSumary: NexusGenRootTypes['ConvertionSumaries'] | null; // ConvertionSumaries
     countries: Array<NexusGenRootTypes['Country'] | null> | null; // [Country]
     currencyConnection: NexusGenRootTypes['CurrencyConnection'] | null; // CurrencyConnection
-    exchangeWalletChange: NexusGenRootTypes['ExchangeWalletChangePagination'] | null; // ExchangeWalletChangePagination
     getConvetionPrice: number | null; // Float
     mainWalletChange: NexusGenRootTypes['MainWalletChangePagination'] | null; // MainWalletChangePagination
     mainWallettransactionAggregate: NexusGenRootTypes['MainWalletTransactionAggregate'] | null; // MainWalletTransactionAggregate
@@ -7556,7 +7012,6 @@ export interface NexusGenFieldTypes {
     user: NexusGenRootTypes['User'] | null; // User
     userCommissions: Array<NexusGenRootTypes['RefTransaction'] | null> | null; // [RefTransaction]
     userConvertions: Array<NexusGenRootTypes['ConvertionTransaction'] | null> | null; // [ConvertionTransaction]
-    userExchangeWallets: Array<NexusGenRootTypes['ExchangeWallet'] | null> | null; // [ExchangeWallet]
     userInternalTransaction: Array<NexusGenRootTypes['InternalTransaction'] | null> | null; // [InternalTransaction]
     userInternalTransactionAggregate: NexusGenRootTypes['InternalTransactionAggregate'] | null; // InternalTransactionAggregate
     userMainWalletTransactions: Array<NexusGenRootTypes['MainWalletTransaction'] | null> | null; // [MainWalletTransaction]
@@ -7751,7 +7206,6 @@ export interface NexusGenFieldTypes {
   }
   UserSumary: { // field return type
     convertion: NexusGenRootTypes['ConvertionSumaries'] | null; // ConvertionSumaries
-    exchange: NexusGenRootTypes['ExchangeSumary'] | null; // ExchangeSumary
     general: NexusGenRootTypes['WalletGeneral'] | null; // WalletGeneral
   }
   WalletGeneral: { // field return type
@@ -7918,10 +7372,9 @@ export interface NexusGenFieldTypeNames {
     amount: 'Float'
     converted_amount: 'Float'
     createdAt: 'DateTime'
-    direction: 'ConvertionDirection'
-    ExchangeWallet: 'ExchangeWallet'
     fee: 'Float'
-    MainWallet: 'MainWallet'
+    MainWalletFrom: 'MainWallet'
+    MainWalletTo: 'MainWallet'
     price: 'Float'
     updatedAt: 'DateTime'
     user_id: 'String'
@@ -8010,29 +7463,6 @@ export interface NexusGenFieldTypeNames {
     demo: 'ExchangeDetail'
     main: 'ExchangeDetail'
     promotion: 'ExchangeDetail'
-  }
-  ExchangeWallet: { // field return type name
-    balance: 'Float'
-    base_balance: 'Float'
-    createdAt: 'DateTime'
-    id: 'String'
-    is_frozen: 'Boolean'
-    type: 'AccountType'
-    updatedAt: 'DateTime'
-  }
-  ExchangeWalletChange: { // field return type name
-    amount: 'Float'
-    createdAt: 'DateTime'
-    event_id: 'String'
-    event_type: 'ExchangeWalletEventType'
-    exchange_wallet_id: 'String'
-    ExchangeWallet: 'ExchangeWallet'
-    id: 'String'
-    updatedAt: 'DateTime'
-  }
-  ExchangeWalletChangePagination: { // field return type name
-    nodes: 'ExchangeWalletChange'
-    total: 'Int'
   }
   ExchangeWalletSumary: { // field return type name
     agency: 'Float'
@@ -8149,11 +7579,11 @@ export interface NexusGenFieldTypeNames {
     createCurrency: 'Currency'
     createRef: 'Ref'
     createWalletRequest: 'MainWallet'
+    depositWallet: 'Boolean'
     disableTwoFactor: 'DisableTwoFactor'
     disableTwoFactorMobile: 'DisableTwoFactor'
     enableTwoFactor: 'TwoFactor'
     enableTwoFactorMobile: 'TwoFactor'
-    exchangeWalletInternalTransfer: 'WithdrawPayload'
     forgotPassword: 'CoinheIDAuthMessagePayload'
     generateTemporaryToken: 'TemporaryToken'
     generateToken: 'TokenLogin'
@@ -8165,7 +7595,6 @@ export interface NexusGenFieldTypeNames {
     manualSet: 'Boolean'
     pushNotification: 'Boolean'
     readAllNotify: 'Boolean'
-    refillDemoWallet: 'ExchangeWallet'
     register: 'AuthPayload'
     registerDevice: 'Boolean'
     resendActivationEmail: 'Boolean'
@@ -8232,7 +7661,6 @@ export interface NexusGenFieldTypeNames {
     convertionSumary: 'ConvertionSumaries'
     countries: 'Country'
     currencyConnection: 'CurrencyConnection'
-    exchangeWalletChange: 'ExchangeWalletChangePagination'
     getConvetionPrice: 'Float'
     mainWalletChange: 'MainWalletChangePagination'
     mainWallettransactionAggregate: 'MainWalletTransactionAggregate'
@@ -8251,7 +7679,6 @@ export interface NexusGenFieldTypeNames {
     user: 'User'
     userCommissions: 'RefTransaction'
     userConvertions: 'ConvertionTransaction'
-    userExchangeWallets: 'ExchangeWallet'
     userInternalTransaction: 'InternalTransaction'
     userInternalTransactionAggregate: 'InternalTransactionAggregate'
     userMainWalletTransactions: 'MainWalletTransaction'
@@ -8446,7 +7873,6 @@ export interface NexusGenFieldTypeNames {
   }
   UserSumary: { // field return type name
     convertion: 'ConvertionSumaries'
-    exchange: 'ExchangeSumary'
     general: 'WalletGeneral'
   }
   WalletGeneral: { // field return type name
@@ -8506,9 +7932,8 @@ export interface NexusGenArgTypes {
     }
     convertCurrency: { // args
       amount: number; // Float!
-      direction: NexusGenEnums['ConvertionDirection']; // ConvertionDirection!
-      exchange_wallet: string; // String!
-      main_wallet: string; // String!
+      currency_from: string; // String!
+      currency_to: string; // String!
     }
     createCurrency: { // args
       icon?: string | null; // String
@@ -8521,6 +7946,10 @@ export interface NexusGenArgTypes {
     }
     createWalletRequest: { // args
       currency_id: string; // String!
+    }
+    depositWallet: { // args
+      amount: number; // Float!
+      symbol: string; // String!
     }
     disableTwoFactor: { // args
       captchaToken?: string | null; // String
@@ -8539,11 +7968,6 @@ export interface NexusGenArgTypes {
     enableTwoFactorMobile: { // args
       temporaryToken: string; // String!
       token: string; // String!
-    }
-    exchangeWalletInternalTransfer: { // args
-      amount: number; // Float!
-      otpToken: string; // String!
-      receiver: string; // String!
     }
     forgotPassword: { // args
       email: string; // String!
@@ -8588,11 +8012,9 @@ export interface NexusGenArgTypes {
       type?: NexusGenEnums['NotificationCategory'] | null; // NotificationCategory
     }
     register: { // args
-      countryId?: string | null; // String
       email: string; // String!
       password: string; // String!
       password_confirmation: string; // String!
-      phoneNumber?: string | null; // String
       refCode?: string | null; // String
       username: string; // String!
     }
@@ -8739,19 +8161,9 @@ export interface NexusGenArgTypes {
       first?: number | null; // Int
       last?: number | null; // Int
     }
-    exchangeWalletChange: { // args
-      account_type?: NexusGenEnums['AccountType'] | null; // AccountType
-      event_type?: NexusGenEnums['ExchangeWalletEventType'] | null; // ExchangeWalletEventType
-      limit: number | null; // Int
-      orderBy?: string | null; // String
-      search?: string | null; // String
-      skip?: number | null; // Int
-      user_id: string; // String!
-      wallet_id?: string | null; // String
-    }
     getConvetionPrice: { // args
-      currencySymbol?: string | null; // String
-      direction?: NexusGenEnums['ConvertionDirection'] | null; // ConvertionDirection
+      currencySymbolFrom: string; // String!
+      currencySymbolTo: string; // String!
     }
     mainWalletChange: { // args
       currency_id?: string | null; // String

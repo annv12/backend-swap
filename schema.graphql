@@ -2,12 +2,6 @@
 ### Do not make changes to this file directly
 
 
-enum AccountType {
-  DEMO
-  MAIN
-  PROMOTION
-}
-
 type AdCheckAddress {
   mainWallet: MainWallet
   walletAddress: MainWalletAddress
@@ -313,38 +307,65 @@ type ConvertionDetail {
 enum ConvertionDirection {
   EXCHANGE_TO_MAIN
   MAIN_TO_EXCHANGE
+  MAIN_TO_MAIN
 }
 
-input ConvertionPairCreateManyCurrencyInput {
+input ConvertionPairCreateManyCurrencyFromInput {
   buy_fee_flat: Float
   buy_fee_pct: Float
   buy_max_amount: Float
   buy_min_amount: Float
   createdAt: DateTime
+  currency_to: String!
   id: String
   is_enable: Boolean
-  max_convert_in: Float
-  max_convert_out: Float
   name: String!
   sell_fee_flat: Float
   sell_fee_pct: Float
   sell_max_amount: Float
   sell_min_amount: Float
-  total_convert_in: Float
-  total_convert_out: Float
   updatedAt: DateTime
 }
 
-input ConvertionPairCreateManyCurrencyInputEnvelope {
-  data: [ConvertionPairCreateManyCurrencyInput!]
+input ConvertionPairCreateManyCurrencyFromInputEnvelope {
+  data: [ConvertionPairCreateManyCurrencyFromInput!]
   skipDuplicates: Boolean
 }
 
-input ConvertionPairCreateNestedManyWithoutCurrencyInput {
+input ConvertionPairCreateManyCurrencyToInput {
+  buy_fee_flat: Float
+  buy_fee_pct: Float
+  buy_max_amount: Float
+  buy_min_amount: Float
+  createdAt: DateTime
+  currency_from: String!
+  id: String
+  is_enable: Boolean
+  name: String!
+  sell_fee_flat: Float
+  sell_fee_pct: Float
+  sell_max_amount: Float
+  sell_min_amount: Float
+  updatedAt: DateTime
+}
+
+input ConvertionPairCreateManyCurrencyToInputEnvelope {
+  data: [ConvertionPairCreateManyCurrencyToInput!]
+  skipDuplicates: Boolean
+}
+
+input ConvertionPairCreateNestedManyWithoutCurrencyFromInput {
   connect: [ConvertionPairWhereUniqueInput!]
-  connectOrCreate: [ConvertionPairCreateOrConnectWithoutCurrencyInput!]
-  create: [ConvertionPairCreateWithoutCurrencyInput!]
-  createMany: ConvertionPairCreateManyCurrencyInputEnvelope
+  connectOrCreate: [ConvertionPairCreateOrConnectWithoutCurrencyFromInput!]
+  create: [ConvertionPairCreateWithoutCurrencyFromInput!]
+  createMany: ConvertionPairCreateManyCurrencyFromInputEnvelope
+}
+
+input ConvertionPairCreateNestedManyWithoutCurrencyToInput {
+  connect: [ConvertionPairWhereUniqueInput!]
+  connectOrCreate: [ConvertionPairCreateOrConnectWithoutCurrencyToInput!]
+  create: [ConvertionPairCreateWithoutCurrencyToInput!]
+  createMany: ConvertionPairCreateManyCurrencyToInputEnvelope
 }
 
 input ConvertionPairCreateNestedOneWithoutConvertionTransactionInput {
@@ -358,8 +379,13 @@ input ConvertionPairCreateOrConnectWithoutConvertionTransactionInput {
   where: ConvertionPairWhereUniqueInput!
 }
 
-input ConvertionPairCreateOrConnectWithoutCurrencyInput {
-  create: ConvertionPairCreateWithoutCurrencyInput!
+input ConvertionPairCreateOrConnectWithoutCurrencyFromInput {
+  create: ConvertionPairCreateWithoutCurrencyFromInput!
+  where: ConvertionPairWhereUniqueInput!
+}
+
+input ConvertionPairCreateOrConnectWithoutCurrencyToInput {
+  create: ConvertionPairCreateWithoutCurrencyToInput!
   where: ConvertionPairWhereUniqueInput!
 }
 
@@ -369,39 +395,51 @@ input ConvertionPairCreateWithoutConvertionTransactionInput {
   buy_max_amount: Float
   buy_min_amount: Float
   createdAt: DateTime
-  Currency: CurrencyCreateNestedOneWithoutConvertionPairInput!
+  CurrencyFrom: CurrencyCreateNestedOneWithoutConvertionPairFromInput!
+  CurrencyTo: CurrencyCreateNestedOneWithoutConvertionPairToInput!
   id: String
   is_enable: Boolean
-  max_convert_in: Float
-  max_convert_out: Float
   name: String!
   sell_fee_flat: Float
   sell_fee_pct: Float
   sell_max_amount: Float
   sell_min_amount: Float
-  total_convert_in: Float
-  total_convert_out: Float
   updatedAt: DateTime
 }
 
-input ConvertionPairCreateWithoutCurrencyInput {
+input ConvertionPairCreateWithoutCurrencyFromInput {
   buy_fee_flat: Float
   buy_fee_pct: Float
   buy_max_amount: Float
   buy_min_amount: Float
   ConvertionTransaction: ConvertionTransactionCreateNestedManyWithoutConvertionPairInput
   createdAt: DateTime
+  CurrencyTo: CurrencyCreateNestedOneWithoutConvertionPairToInput!
   id: String
   is_enable: Boolean
-  max_convert_in: Float
-  max_convert_out: Float
   name: String!
   sell_fee_flat: Float
   sell_fee_pct: Float
   sell_max_amount: Float
   sell_min_amount: Float
-  total_convert_in: Float
-  total_convert_out: Float
+  updatedAt: DateTime
+}
+
+input ConvertionPairCreateWithoutCurrencyToInput {
+  buy_fee_flat: Float
+  buy_fee_pct: Float
+  buy_max_amount: Float
+  buy_min_amount: Float
+  ConvertionTransaction: ConvertionTransactionCreateNestedManyWithoutConvertionPairInput
+  createdAt: DateTime
+  CurrencyFrom: CurrencyCreateNestedOneWithoutConvertionPairFromInput!
+  id: String
+  is_enable: Boolean
+  name: String!
+  sell_fee_flat: Float
+  sell_fee_pct: Float
+  sell_max_amount: Float
+  sell_min_amount: Float
   updatedAt: DateTime
 }
 
@@ -412,11 +450,10 @@ input ConvertionPairScalarWhereInput {
   buy_max_amount: FloatNullableFilter
   buy_min_amount: FloatNullableFilter
   createdAt: DateTimeFilter
-  currency_id: StringFilter
+  currency_from: StringFilter
+  currency_to: StringFilter
   id: StringFilter
   is_enable: BoolFilter
-  max_convert_in: FloatNullableFilter
-  max_convert_out: FloatNullableFilter
   name: StringFilter
   NOT: [ConvertionPairScalarWhereInput!]
   OR: [ConvertionPairScalarWhereInput!]
@@ -424,8 +461,6 @@ input ConvertionPairScalarWhereInput {
   sell_fee_pct: FloatNullableFilter
   sell_max_amount: FloatNullableFilter
   sell_min_amount: FloatNullableFilter
-  total_convert_in: FloatNullableFilter
-  total_convert_out: FloatNullableFilter
   updatedAt: DateTimeFilter
 }
 
@@ -436,18 +471,15 @@ input ConvertionPairUpdateInput {
   buy_min_amount: NullableFloatFieldUpdateOperationsInput
   ConvertionTransaction: ConvertionTransactionUpdateManyWithoutConvertionPairInput
   createdAt: DateTimeFieldUpdateOperationsInput
-  Currency: CurrencyUpdateOneRequiredWithoutConvertionPairInput
+  CurrencyFrom: CurrencyUpdateOneRequiredWithoutConvertionPairFromInput
+  CurrencyTo: CurrencyUpdateOneRequiredWithoutConvertionPairToInput
   id: StringFieldUpdateOperationsInput
   is_enable: BoolFieldUpdateOperationsInput
-  max_convert_in: NullableFloatFieldUpdateOperationsInput
-  max_convert_out: NullableFloatFieldUpdateOperationsInput
   name: StringFieldUpdateOperationsInput
   sell_fee_flat: NullableFloatFieldUpdateOperationsInput
   sell_fee_pct: NullableFloatFieldUpdateOperationsInput
   sell_max_amount: NullableFloatFieldUpdateOperationsInput
   sell_min_amount: NullableFloatFieldUpdateOperationsInput
-  total_convert_in: NullableFloatFieldUpdateOperationsInput
-  total_convert_out: NullableFloatFieldUpdateOperationsInput
   updatedAt: DateTimeFieldUpdateOperationsInput
 }
 
@@ -459,33 +491,48 @@ input ConvertionPairUpdateManyMutationInput {
   createdAt: DateTimeFieldUpdateOperationsInput
   id: StringFieldUpdateOperationsInput
   is_enable: BoolFieldUpdateOperationsInput
-  max_convert_in: NullableFloatFieldUpdateOperationsInput
-  max_convert_out: NullableFloatFieldUpdateOperationsInput
   name: StringFieldUpdateOperationsInput
   sell_fee_flat: NullableFloatFieldUpdateOperationsInput
   sell_fee_pct: NullableFloatFieldUpdateOperationsInput
   sell_max_amount: NullableFloatFieldUpdateOperationsInput
   sell_min_amount: NullableFloatFieldUpdateOperationsInput
-  total_convert_in: NullableFloatFieldUpdateOperationsInput
-  total_convert_out: NullableFloatFieldUpdateOperationsInput
   updatedAt: DateTimeFieldUpdateOperationsInput
 }
 
-input ConvertionPairUpdateManyWithoutCurrencyInput {
+input ConvertionPairUpdateManyWithoutCurrencyFromInput {
   connect: [ConvertionPairWhereUniqueInput!]
-  connectOrCreate: [ConvertionPairCreateOrConnectWithoutCurrencyInput!]
-  create: [ConvertionPairCreateWithoutCurrencyInput!]
-  createMany: ConvertionPairCreateManyCurrencyInputEnvelope
+  connectOrCreate: [ConvertionPairCreateOrConnectWithoutCurrencyFromInput!]
+  create: [ConvertionPairCreateWithoutCurrencyFromInput!]
+  createMany: ConvertionPairCreateManyCurrencyFromInputEnvelope
   delete: [ConvertionPairWhereUniqueInput!]
   deleteMany: [ConvertionPairScalarWhereInput!]
   disconnect: [ConvertionPairWhereUniqueInput!]
   set: [ConvertionPairWhereUniqueInput!]
-  update: [ConvertionPairUpdateWithWhereUniqueWithoutCurrencyInput!]
-  updateMany: [ConvertionPairUpdateManyWithWhereWithoutCurrencyInput!]
-  upsert: [ConvertionPairUpsertWithWhereUniqueWithoutCurrencyInput!]
+  update: [ConvertionPairUpdateWithWhereUniqueWithoutCurrencyFromInput!]
+  updateMany: [ConvertionPairUpdateManyWithWhereWithoutCurrencyFromInput!]
+  upsert: [ConvertionPairUpsertWithWhereUniqueWithoutCurrencyFromInput!]
 }
 
-input ConvertionPairUpdateManyWithWhereWithoutCurrencyInput {
+input ConvertionPairUpdateManyWithoutCurrencyToInput {
+  connect: [ConvertionPairWhereUniqueInput!]
+  connectOrCreate: [ConvertionPairCreateOrConnectWithoutCurrencyToInput!]
+  create: [ConvertionPairCreateWithoutCurrencyToInput!]
+  createMany: ConvertionPairCreateManyCurrencyToInputEnvelope
+  delete: [ConvertionPairWhereUniqueInput!]
+  deleteMany: [ConvertionPairScalarWhereInput!]
+  disconnect: [ConvertionPairWhereUniqueInput!]
+  set: [ConvertionPairWhereUniqueInput!]
+  update: [ConvertionPairUpdateWithWhereUniqueWithoutCurrencyToInput!]
+  updateMany: [ConvertionPairUpdateManyWithWhereWithoutCurrencyToInput!]
+  upsert: [ConvertionPairUpsertWithWhereUniqueWithoutCurrencyToInput!]
+}
+
+input ConvertionPairUpdateManyWithWhereWithoutCurrencyFromInput {
+  data: ConvertionPairUpdateManyMutationInput!
+  where: ConvertionPairScalarWhereInput!
+}
+
+input ConvertionPairUpdateManyWithWhereWithoutCurrencyToInput {
   data: ConvertionPairUpdateManyMutationInput!
   where: ConvertionPairScalarWhereInput!
 }
@@ -504,44 +551,61 @@ input ConvertionPairUpdateWithoutConvertionTransactionInput {
   buy_max_amount: NullableFloatFieldUpdateOperationsInput
   buy_min_amount: NullableFloatFieldUpdateOperationsInput
   createdAt: DateTimeFieldUpdateOperationsInput
-  Currency: CurrencyUpdateOneRequiredWithoutConvertionPairInput
+  CurrencyFrom: CurrencyUpdateOneRequiredWithoutConvertionPairFromInput
+  CurrencyTo: CurrencyUpdateOneRequiredWithoutConvertionPairToInput
   id: StringFieldUpdateOperationsInput
   is_enable: BoolFieldUpdateOperationsInput
-  max_convert_in: NullableFloatFieldUpdateOperationsInput
-  max_convert_out: NullableFloatFieldUpdateOperationsInput
   name: StringFieldUpdateOperationsInput
   sell_fee_flat: NullableFloatFieldUpdateOperationsInput
   sell_fee_pct: NullableFloatFieldUpdateOperationsInput
   sell_max_amount: NullableFloatFieldUpdateOperationsInput
   sell_min_amount: NullableFloatFieldUpdateOperationsInput
-  total_convert_in: NullableFloatFieldUpdateOperationsInput
-  total_convert_out: NullableFloatFieldUpdateOperationsInput
   updatedAt: DateTimeFieldUpdateOperationsInput
 }
 
-input ConvertionPairUpdateWithoutCurrencyInput {
+input ConvertionPairUpdateWithoutCurrencyFromInput {
   buy_fee_flat: NullableFloatFieldUpdateOperationsInput
   buy_fee_pct: NullableFloatFieldUpdateOperationsInput
   buy_max_amount: NullableFloatFieldUpdateOperationsInput
   buy_min_amount: NullableFloatFieldUpdateOperationsInput
   ConvertionTransaction: ConvertionTransactionUpdateManyWithoutConvertionPairInput
   createdAt: DateTimeFieldUpdateOperationsInput
+  CurrencyTo: CurrencyUpdateOneRequiredWithoutConvertionPairToInput
   id: StringFieldUpdateOperationsInput
   is_enable: BoolFieldUpdateOperationsInput
-  max_convert_in: NullableFloatFieldUpdateOperationsInput
-  max_convert_out: NullableFloatFieldUpdateOperationsInput
   name: StringFieldUpdateOperationsInput
   sell_fee_flat: NullableFloatFieldUpdateOperationsInput
   sell_fee_pct: NullableFloatFieldUpdateOperationsInput
   sell_max_amount: NullableFloatFieldUpdateOperationsInput
   sell_min_amount: NullableFloatFieldUpdateOperationsInput
-  total_convert_in: NullableFloatFieldUpdateOperationsInput
-  total_convert_out: NullableFloatFieldUpdateOperationsInput
   updatedAt: DateTimeFieldUpdateOperationsInput
 }
 
-input ConvertionPairUpdateWithWhereUniqueWithoutCurrencyInput {
-  data: ConvertionPairUpdateWithoutCurrencyInput!
+input ConvertionPairUpdateWithoutCurrencyToInput {
+  buy_fee_flat: NullableFloatFieldUpdateOperationsInput
+  buy_fee_pct: NullableFloatFieldUpdateOperationsInput
+  buy_max_amount: NullableFloatFieldUpdateOperationsInput
+  buy_min_amount: NullableFloatFieldUpdateOperationsInput
+  ConvertionTransaction: ConvertionTransactionUpdateManyWithoutConvertionPairInput
+  createdAt: DateTimeFieldUpdateOperationsInput
+  CurrencyFrom: CurrencyUpdateOneRequiredWithoutConvertionPairFromInput
+  id: StringFieldUpdateOperationsInput
+  is_enable: BoolFieldUpdateOperationsInput
+  name: StringFieldUpdateOperationsInput
+  sell_fee_flat: NullableFloatFieldUpdateOperationsInput
+  sell_fee_pct: NullableFloatFieldUpdateOperationsInput
+  sell_max_amount: NullableFloatFieldUpdateOperationsInput
+  sell_min_amount: NullableFloatFieldUpdateOperationsInput
+  updatedAt: DateTimeFieldUpdateOperationsInput
+}
+
+input ConvertionPairUpdateWithWhereUniqueWithoutCurrencyFromInput {
+  data: ConvertionPairUpdateWithoutCurrencyFromInput!
+  where: ConvertionPairWhereUniqueInput!
+}
+
+input ConvertionPairUpdateWithWhereUniqueWithoutCurrencyToInput {
+  data: ConvertionPairUpdateWithoutCurrencyToInput!
   where: ConvertionPairWhereUniqueInput!
 }
 
@@ -550,9 +614,15 @@ input ConvertionPairUpsertWithoutConvertionTransactionInput {
   update: ConvertionPairUpdateWithoutConvertionTransactionInput!
 }
 
-input ConvertionPairUpsertWithWhereUniqueWithoutCurrencyInput {
-  create: ConvertionPairCreateWithoutCurrencyInput!
-  update: ConvertionPairUpdateWithoutCurrencyInput!
+input ConvertionPairUpsertWithWhereUniqueWithoutCurrencyFromInput {
+  create: ConvertionPairCreateWithoutCurrencyFromInput!
+  update: ConvertionPairUpdateWithoutCurrencyFromInput!
+  where: ConvertionPairWhereUniqueInput!
+}
+
+input ConvertionPairUpsertWithWhereUniqueWithoutCurrencyToInput {
+  create: ConvertionPairCreateWithoutCurrencyToInput!
+  update: ConvertionPairUpdateWithoutCurrencyToInput!
   where: ConvertionPairWhereUniqueInput!
 }
 
@@ -574,10 +644,9 @@ type ConvertionTransaction {
   amount: Float!
   converted_amount: Float
   createdAt: DateTime!
-  direction: ConvertionDirection!
-  ExchangeWallet: ExchangeWallet!
   fee: Float
-  MainWallet: MainWallet!
+  MainWalletFrom: MainWallet!
+  MainWalletTo: MainWallet!
   price: Float!
   updatedAt: DateTime!
   user_id: String!
@@ -588,10 +657,10 @@ input ConvertionTransactionCreateManyConvertionPairInput {
   converted_amount: Float
   createdAt: DateTime
   direction: ConvertionDirection!
-  exchange_wallet_id: String!
   fee: Float
   id: String
-  main_wallet_id: String!
+  main_wallet_id_from: String!
+  main_wallet_id_to: String!
   price: Float!
   updatedAt: DateTime
   user_id: String!
@@ -602,7 +671,7 @@ input ConvertionTransactionCreateManyConvertionPairInputEnvelope {
   skipDuplicates: Boolean
 }
 
-input ConvertionTransactionCreateManyExchangeWalletInput {
+input ConvertionTransactionCreateManyMainWalletFromInput {
   amount: Float!
   converted_amount: Float
   convertion_pair_id: String!
@@ -610,33 +679,33 @@ input ConvertionTransactionCreateManyExchangeWalletInput {
   direction: ConvertionDirection!
   fee: Float
   id: String
-  main_wallet_id: String!
+  main_wallet_id_to: String!
   price: Float!
   updatedAt: DateTime
   user_id: String!
 }
 
-input ConvertionTransactionCreateManyExchangeWalletInputEnvelope {
-  data: [ConvertionTransactionCreateManyExchangeWalletInput!]
+input ConvertionTransactionCreateManyMainWalletFromInputEnvelope {
+  data: [ConvertionTransactionCreateManyMainWalletFromInput!]
   skipDuplicates: Boolean
 }
 
-input ConvertionTransactionCreateManyMainWalletInput {
+input ConvertionTransactionCreateManyMainWalletToInput {
   amount: Float!
   converted_amount: Float
   convertion_pair_id: String!
   createdAt: DateTime
   direction: ConvertionDirection!
-  exchange_wallet_id: String!
   fee: Float
   id: String
+  main_wallet_id_from: String!
   price: Float!
   updatedAt: DateTime
   user_id: String!
 }
 
-input ConvertionTransactionCreateManyMainWalletInputEnvelope {
-  data: [ConvertionTransactionCreateManyMainWalletInput!]
+input ConvertionTransactionCreateManyMainWalletToInputEnvelope {
+  data: [ConvertionTransactionCreateManyMainWalletToInput!]
   skipDuplicates: Boolean
 }
 
@@ -646,10 +715,10 @@ input ConvertionTransactionCreateManyUserInput {
   convertion_pair_id: String!
   createdAt: DateTime
   direction: ConvertionDirection!
-  exchange_wallet_id: String!
   fee: Float
   id: String
-  main_wallet_id: String!
+  main_wallet_id_from: String!
+  main_wallet_id_to: String!
   price: Float!
   updatedAt: DateTime
 }
@@ -666,18 +735,18 @@ input ConvertionTransactionCreateNestedManyWithoutConvertionPairInput {
   createMany: ConvertionTransactionCreateManyConvertionPairInputEnvelope
 }
 
-input ConvertionTransactionCreateNestedManyWithoutExchangeWalletInput {
+input ConvertionTransactionCreateNestedManyWithoutMainWalletFromInput {
   connect: [ConvertionTransactionWhereUniqueInput!]
-  connectOrCreate: [ConvertionTransactionCreateOrConnectWithoutExchangeWalletInput!]
-  create: [ConvertionTransactionCreateWithoutExchangeWalletInput!]
-  createMany: ConvertionTransactionCreateManyExchangeWalletInputEnvelope
+  connectOrCreate: [ConvertionTransactionCreateOrConnectWithoutMainWalletFromInput!]
+  create: [ConvertionTransactionCreateWithoutMainWalletFromInput!]
+  createMany: ConvertionTransactionCreateManyMainWalletFromInputEnvelope
 }
 
-input ConvertionTransactionCreateNestedManyWithoutMainWalletInput {
+input ConvertionTransactionCreateNestedManyWithoutMainWalletToInput {
   connect: [ConvertionTransactionWhereUniqueInput!]
-  connectOrCreate: [ConvertionTransactionCreateOrConnectWithoutMainWalletInput!]
-  create: [ConvertionTransactionCreateWithoutMainWalletInput!]
-  createMany: ConvertionTransactionCreateManyMainWalletInputEnvelope
+  connectOrCreate: [ConvertionTransactionCreateOrConnectWithoutMainWalletToInput!]
+  create: [ConvertionTransactionCreateWithoutMainWalletToInput!]
+  createMany: ConvertionTransactionCreateManyMainWalletToInputEnvelope
 }
 
 input ConvertionTransactionCreateNestedManyWithoutUserInput {
@@ -692,13 +761,13 @@ input ConvertionTransactionCreateOrConnectWithoutConvertionPairInput {
   where: ConvertionTransactionWhereUniqueInput!
 }
 
-input ConvertionTransactionCreateOrConnectWithoutExchangeWalletInput {
-  create: ConvertionTransactionCreateWithoutExchangeWalletInput!
+input ConvertionTransactionCreateOrConnectWithoutMainWalletFromInput {
+  create: ConvertionTransactionCreateWithoutMainWalletFromInput!
   where: ConvertionTransactionWhereUniqueInput!
 }
 
-input ConvertionTransactionCreateOrConnectWithoutMainWalletInput {
-  create: ConvertionTransactionCreateWithoutMainWalletInput!
+input ConvertionTransactionCreateOrConnectWithoutMainWalletToInput {
+  create: ConvertionTransactionCreateWithoutMainWalletToInput!
   where: ConvertionTransactionWhereUniqueInput!
 }
 
@@ -712,16 +781,16 @@ input ConvertionTransactionCreateWithoutConvertionPairInput {
   converted_amount: Float
   createdAt: DateTime
   direction: ConvertionDirection!
-  ExchangeWallet: ExchangeWalletCreateNestedOneWithoutConvertionTransactionInput!
   fee: Float
   id: String
-  MainWallet: MainWalletCreateNestedOneWithoutConvertionTransactionInput!
+  MainWalletFrom: MainWalletCreateNestedOneWithoutConvertionTransactionFromInput!
+  MainWalletTo: MainWalletCreateNestedOneWithoutConvertionTransactionToInput!
   price: Float!
   updatedAt: DateTime
   User: UserCreateNestedOneWithoutConvertionTransactionInput!
 }
 
-input ConvertionTransactionCreateWithoutExchangeWalletInput {
+input ConvertionTransactionCreateWithoutMainWalletFromInput {
   amount: Float!
   converted_amount: Float
   ConvertionPair: ConvertionPairCreateNestedOneWithoutConvertionTransactionInput!
@@ -729,21 +798,21 @@ input ConvertionTransactionCreateWithoutExchangeWalletInput {
   direction: ConvertionDirection!
   fee: Float
   id: String
-  MainWallet: MainWalletCreateNestedOneWithoutConvertionTransactionInput!
+  MainWalletTo: MainWalletCreateNestedOneWithoutConvertionTransactionToInput!
   price: Float!
   updatedAt: DateTime
   User: UserCreateNestedOneWithoutConvertionTransactionInput!
 }
 
-input ConvertionTransactionCreateWithoutMainWalletInput {
+input ConvertionTransactionCreateWithoutMainWalletToInput {
   amount: Float!
   converted_amount: Float
   ConvertionPair: ConvertionPairCreateNestedOneWithoutConvertionTransactionInput!
   createdAt: DateTime
   direction: ConvertionDirection!
-  ExchangeWallet: ExchangeWalletCreateNestedOneWithoutConvertionTransactionInput!
   fee: Float
   id: String
+  MainWalletFrom: MainWalletCreateNestedOneWithoutConvertionTransactionFromInput!
   price: Float!
   updatedAt: DateTime
   User: UserCreateNestedOneWithoutConvertionTransactionInput!
@@ -755,10 +824,10 @@ input ConvertionTransactionCreateWithoutUserInput {
   ConvertionPair: ConvertionPairCreateNestedOneWithoutConvertionTransactionInput!
   createdAt: DateTime
   direction: ConvertionDirection!
-  ExchangeWallet: ExchangeWalletCreateNestedOneWithoutConvertionTransactionInput!
   fee: Float
   id: String
-  MainWallet: MainWalletCreateNestedOneWithoutConvertionTransactionInput!
+  MainWalletFrom: MainWalletCreateNestedOneWithoutConvertionTransactionFromInput!
+  MainWalletTo: MainWalletCreateNestedOneWithoutConvertionTransactionToInput!
   price: Float!
   updatedAt: DateTime
 }
@@ -770,10 +839,10 @@ input ConvertionTransactionScalarWhereInput {
   convertion_pair_id: StringFilter
   createdAt: DateTimeFilter
   direction: EnumConvertionDirectionFilter
-  exchange_wallet_id: StringFilter
   fee: FloatNullableFilter
   id: StringFilter
-  main_wallet_id: StringFilter
+  main_wallet_id_from: StringFilter
+  main_wallet_id_to: StringFilter
   NOT: [ConvertionTransactionScalarWhereInput!]
   OR: [ConvertionTransactionScalarWhereInput!]
   price: FloatFilter
@@ -806,32 +875,32 @@ input ConvertionTransactionUpdateManyWithoutConvertionPairInput {
   upsert: [ConvertionTransactionUpsertWithWhereUniqueWithoutConvertionPairInput!]
 }
 
-input ConvertionTransactionUpdateManyWithoutExchangeWalletInput {
+input ConvertionTransactionUpdateManyWithoutMainWalletFromInput {
   connect: [ConvertionTransactionWhereUniqueInput!]
-  connectOrCreate: [ConvertionTransactionCreateOrConnectWithoutExchangeWalletInput!]
-  create: [ConvertionTransactionCreateWithoutExchangeWalletInput!]
-  createMany: ConvertionTransactionCreateManyExchangeWalletInputEnvelope
+  connectOrCreate: [ConvertionTransactionCreateOrConnectWithoutMainWalletFromInput!]
+  create: [ConvertionTransactionCreateWithoutMainWalletFromInput!]
+  createMany: ConvertionTransactionCreateManyMainWalletFromInputEnvelope
   delete: [ConvertionTransactionWhereUniqueInput!]
   deleteMany: [ConvertionTransactionScalarWhereInput!]
   disconnect: [ConvertionTransactionWhereUniqueInput!]
   set: [ConvertionTransactionWhereUniqueInput!]
-  update: [ConvertionTransactionUpdateWithWhereUniqueWithoutExchangeWalletInput!]
-  updateMany: [ConvertionTransactionUpdateManyWithWhereWithoutExchangeWalletInput!]
-  upsert: [ConvertionTransactionUpsertWithWhereUniqueWithoutExchangeWalletInput!]
+  update: [ConvertionTransactionUpdateWithWhereUniqueWithoutMainWalletFromInput!]
+  updateMany: [ConvertionTransactionUpdateManyWithWhereWithoutMainWalletFromInput!]
+  upsert: [ConvertionTransactionUpsertWithWhereUniqueWithoutMainWalletFromInput!]
 }
 
-input ConvertionTransactionUpdateManyWithoutMainWalletInput {
+input ConvertionTransactionUpdateManyWithoutMainWalletToInput {
   connect: [ConvertionTransactionWhereUniqueInput!]
-  connectOrCreate: [ConvertionTransactionCreateOrConnectWithoutMainWalletInput!]
-  create: [ConvertionTransactionCreateWithoutMainWalletInput!]
-  createMany: ConvertionTransactionCreateManyMainWalletInputEnvelope
+  connectOrCreate: [ConvertionTransactionCreateOrConnectWithoutMainWalletToInput!]
+  create: [ConvertionTransactionCreateWithoutMainWalletToInput!]
+  createMany: ConvertionTransactionCreateManyMainWalletToInputEnvelope
   delete: [ConvertionTransactionWhereUniqueInput!]
   deleteMany: [ConvertionTransactionScalarWhereInput!]
   disconnect: [ConvertionTransactionWhereUniqueInput!]
   set: [ConvertionTransactionWhereUniqueInput!]
-  update: [ConvertionTransactionUpdateWithWhereUniqueWithoutMainWalletInput!]
-  updateMany: [ConvertionTransactionUpdateManyWithWhereWithoutMainWalletInput!]
-  upsert: [ConvertionTransactionUpsertWithWhereUniqueWithoutMainWalletInput!]
+  update: [ConvertionTransactionUpdateWithWhereUniqueWithoutMainWalletToInput!]
+  updateMany: [ConvertionTransactionUpdateManyWithWhereWithoutMainWalletToInput!]
+  upsert: [ConvertionTransactionUpsertWithWhereUniqueWithoutMainWalletToInput!]
 }
 
 input ConvertionTransactionUpdateManyWithoutUserInput {
@@ -853,12 +922,12 @@ input ConvertionTransactionUpdateManyWithWhereWithoutConvertionPairInput {
   where: ConvertionTransactionScalarWhereInput!
 }
 
-input ConvertionTransactionUpdateManyWithWhereWithoutExchangeWalletInput {
+input ConvertionTransactionUpdateManyWithWhereWithoutMainWalletFromInput {
   data: ConvertionTransactionUpdateManyMutationInput!
   where: ConvertionTransactionScalarWhereInput!
 }
 
-input ConvertionTransactionUpdateManyWithWhereWithoutMainWalletInput {
+input ConvertionTransactionUpdateManyWithWhereWithoutMainWalletToInput {
   data: ConvertionTransactionUpdateManyMutationInput!
   where: ConvertionTransactionScalarWhereInput!
 }
@@ -873,16 +942,16 @@ input ConvertionTransactionUpdateWithoutConvertionPairInput {
   converted_amount: NullableFloatFieldUpdateOperationsInput
   createdAt: DateTimeFieldUpdateOperationsInput
   direction: EnumConvertionDirectionFieldUpdateOperationsInput
-  ExchangeWallet: ExchangeWalletUpdateOneRequiredWithoutConvertionTransactionInput
   fee: NullableFloatFieldUpdateOperationsInput
   id: StringFieldUpdateOperationsInput
-  MainWallet: MainWalletUpdateOneRequiredWithoutConvertionTransactionInput
+  MainWalletFrom: MainWalletUpdateOneRequiredWithoutConvertionTransactionFromInput
+  MainWalletTo: MainWalletUpdateOneRequiredWithoutConvertionTransactionToInput
   price: FloatFieldUpdateOperationsInput
   updatedAt: DateTimeFieldUpdateOperationsInput
   User: UserUpdateOneRequiredWithoutConvertionTransactionInput
 }
 
-input ConvertionTransactionUpdateWithoutExchangeWalletInput {
+input ConvertionTransactionUpdateWithoutMainWalletFromInput {
   amount: FloatFieldUpdateOperationsInput
   converted_amount: NullableFloatFieldUpdateOperationsInput
   ConvertionPair: ConvertionPairUpdateOneRequiredWithoutConvertionTransactionInput
@@ -890,21 +959,21 @@ input ConvertionTransactionUpdateWithoutExchangeWalletInput {
   direction: EnumConvertionDirectionFieldUpdateOperationsInput
   fee: NullableFloatFieldUpdateOperationsInput
   id: StringFieldUpdateOperationsInput
-  MainWallet: MainWalletUpdateOneRequiredWithoutConvertionTransactionInput
+  MainWalletTo: MainWalletUpdateOneRequiredWithoutConvertionTransactionToInput
   price: FloatFieldUpdateOperationsInput
   updatedAt: DateTimeFieldUpdateOperationsInput
   User: UserUpdateOneRequiredWithoutConvertionTransactionInput
 }
 
-input ConvertionTransactionUpdateWithoutMainWalletInput {
+input ConvertionTransactionUpdateWithoutMainWalletToInput {
   amount: FloatFieldUpdateOperationsInput
   converted_amount: NullableFloatFieldUpdateOperationsInput
   ConvertionPair: ConvertionPairUpdateOneRequiredWithoutConvertionTransactionInput
   createdAt: DateTimeFieldUpdateOperationsInput
   direction: EnumConvertionDirectionFieldUpdateOperationsInput
-  ExchangeWallet: ExchangeWalletUpdateOneRequiredWithoutConvertionTransactionInput
   fee: NullableFloatFieldUpdateOperationsInput
   id: StringFieldUpdateOperationsInput
+  MainWalletFrom: MainWalletUpdateOneRequiredWithoutConvertionTransactionFromInput
   price: FloatFieldUpdateOperationsInput
   updatedAt: DateTimeFieldUpdateOperationsInput
   User: UserUpdateOneRequiredWithoutConvertionTransactionInput
@@ -916,10 +985,10 @@ input ConvertionTransactionUpdateWithoutUserInput {
   ConvertionPair: ConvertionPairUpdateOneRequiredWithoutConvertionTransactionInput
   createdAt: DateTimeFieldUpdateOperationsInput
   direction: EnumConvertionDirectionFieldUpdateOperationsInput
-  ExchangeWallet: ExchangeWalletUpdateOneRequiredWithoutConvertionTransactionInput
   fee: NullableFloatFieldUpdateOperationsInput
   id: StringFieldUpdateOperationsInput
-  MainWallet: MainWalletUpdateOneRequiredWithoutConvertionTransactionInput
+  MainWalletFrom: MainWalletUpdateOneRequiredWithoutConvertionTransactionFromInput
+  MainWalletTo: MainWalletUpdateOneRequiredWithoutConvertionTransactionToInput
   price: FloatFieldUpdateOperationsInput
   updatedAt: DateTimeFieldUpdateOperationsInput
 }
@@ -929,13 +998,13 @@ input ConvertionTransactionUpdateWithWhereUniqueWithoutConvertionPairInput {
   where: ConvertionTransactionWhereUniqueInput!
 }
 
-input ConvertionTransactionUpdateWithWhereUniqueWithoutExchangeWalletInput {
-  data: ConvertionTransactionUpdateWithoutExchangeWalletInput!
+input ConvertionTransactionUpdateWithWhereUniqueWithoutMainWalletFromInput {
+  data: ConvertionTransactionUpdateWithoutMainWalletFromInput!
   where: ConvertionTransactionWhereUniqueInput!
 }
 
-input ConvertionTransactionUpdateWithWhereUniqueWithoutMainWalletInput {
-  data: ConvertionTransactionUpdateWithoutMainWalletInput!
+input ConvertionTransactionUpdateWithWhereUniqueWithoutMainWalletToInput {
+  data: ConvertionTransactionUpdateWithoutMainWalletToInput!
   where: ConvertionTransactionWhereUniqueInput!
 }
 
@@ -950,15 +1019,15 @@ input ConvertionTransactionUpsertWithWhereUniqueWithoutConvertionPairInput {
   where: ConvertionTransactionWhereUniqueInput!
 }
 
-input ConvertionTransactionUpsertWithWhereUniqueWithoutExchangeWalletInput {
-  create: ConvertionTransactionCreateWithoutExchangeWalletInput!
-  update: ConvertionTransactionUpdateWithoutExchangeWalletInput!
+input ConvertionTransactionUpsertWithWhereUniqueWithoutMainWalletFromInput {
+  create: ConvertionTransactionCreateWithoutMainWalletFromInput!
+  update: ConvertionTransactionUpdateWithoutMainWalletFromInput!
   where: ConvertionTransactionWhereUniqueInput!
 }
 
-input ConvertionTransactionUpsertWithWhereUniqueWithoutMainWalletInput {
-  create: ConvertionTransactionCreateWithoutMainWalletInput!
-  update: ConvertionTransactionUpdateWithoutMainWalletInput!
+input ConvertionTransactionUpsertWithWhereUniqueWithoutMainWalletToInput {
+  create: ConvertionTransactionCreateWithoutMainWalletToInput!
+  update: ConvertionTransactionUpdateWithoutMainWalletToInput!
   where: ConvertionTransactionWhereUniqueInput!
 }
 
@@ -1081,10 +1150,16 @@ type CurrencyConnectionPayload {
   total: Int
 }
 
-input CurrencyCreateNestedOneWithoutConvertionPairInput {
+input CurrencyCreateNestedOneWithoutConvertionPairFromInput {
   connect: CurrencyWhereUniqueInput
-  connectOrCreate: CurrencyCreateOrConnectWithoutConvertionPairInput
-  create: CurrencyCreateWithoutConvertionPairInput
+  connectOrCreate: CurrencyCreateOrConnectWithoutConvertionPairFromInput
+  create: CurrencyCreateWithoutConvertionPairFromInput
+}
+
+input CurrencyCreateNestedOneWithoutConvertionPairToInput {
+  connect: CurrencyWhereUniqueInput
+  connectOrCreate: CurrencyCreateOrConnectWithoutConvertionPairToInput
+  create: CurrencyCreateWithoutConvertionPairToInput
 }
 
 input CurrencyCreateNestedOneWithoutMainWalletInput {
@@ -1105,8 +1180,13 @@ input CurrencyCreateNestedOneWithoutTransactionMasterInput {
   create: CurrencyCreateWithoutTransactionMasterInput
 }
 
-input CurrencyCreateOrConnectWithoutConvertionPairInput {
-  create: CurrencyCreateWithoutConvertionPairInput!
+input CurrencyCreateOrConnectWithoutConvertionPairFromInput {
+  create: CurrencyCreateWithoutConvertionPairFromInput!
+  where: CurrencyWhereUniqueInput!
+}
+
+input CurrencyCreateOrConnectWithoutConvertionPairToInput {
+  create: CurrencyCreateWithoutConvertionPairToInput!
   where: CurrencyWhereUniqueInput!
 }
 
@@ -1125,12 +1205,54 @@ input CurrencyCreateOrConnectWithoutTransactionMasterInput {
   where: CurrencyWhereUniqueInput!
 }
 
-input CurrencyCreateWithoutConvertionPairInput {
+input CurrencyCreateWithoutConvertionPairFromInput {
   admin_config_price: Float
   admin_config_price_price_step: Float
   admin_config_price_volume_step: Float
   admin_config_total_volume: Float
   admin_config_volume_cache_time: DateTime
+  ConvertionPairTo: ConvertionPairCreateNestedManyWithoutCurrencyToInput
+  createdAt: DateTime
+  crypto_data: NullableJsonNullValueInput
+  crypto_service: Crypto_Service
+  disclaimer_deposit: String
+  disclaimer_withdraw: String
+  icon: String
+  id: String
+  instruction_deposit: String
+  instruction_withdraw: String
+  is_enable: Boolean
+  is_enable_convert: Boolean
+  is_enable_convert_from: Boolean
+  is_enable_convert_to: Boolean
+  is_enable_deposit: Boolean
+  is_enable_withdraw: Boolean
+  is_enable_withdraw_cron: Boolean
+  MainWallet: MainWalletCreateNestedManyWithoutCurrencyInput
+  MainWalletTransaction: MainWalletTransactionCreateNestedManyWithoutCurrencyInput
+  MasterWallet: MasterWalletCreateNestedManyWithoutCurrencyInput
+  max_daily_withdraw: Float
+  max_daily_withdraw_verified: Float
+  max_withdraw: Float
+  min_withdraw: Float
+  name: String!
+  regex: String
+  required_confirmation: Int
+  symbol: String!
+  TransactionMaster: TransactionMasterCreateNestedManyWithoutCurrencyInput
+  updatedAt: DateTime
+  withdraw_fee_flat: Float
+  withdraw_fee_pct: Float
+  withdraw_manual_threshold: Float
+}
+
+input CurrencyCreateWithoutConvertionPairToInput {
+  admin_config_price: Float
+  admin_config_price_price_step: Float
+  admin_config_price_volume_step: Float
+  admin_config_total_volume: Float
+  admin_config_volume_cache_time: DateTime
+  ConvertionPairFrom: ConvertionPairCreateNestedManyWithoutCurrencyFromInput
   createdAt: DateTime
   crypto_data: NullableJsonNullValueInput
   crypto_service: Crypto_Service
@@ -1171,7 +1293,8 @@ input CurrencyCreateWithoutMainWalletInput {
   admin_config_price_volume_step: Float
   admin_config_total_volume: Float
   admin_config_volume_cache_time: DateTime
-  ConvertionPair: ConvertionPairCreateNestedManyWithoutCurrencyInput
+  ConvertionPairFrom: ConvertionPairCreateNestedManyWithoutCurrencyFromInput
+  ConvertionPairTo: ConvertionPairCreateNestedManyWithoutCurrencyToInput
   createdAt: DateTime
   crypto_data: NullableJsonNullValueInput
   crypto_service: Crypto_Service
@@ -1211,7 +1334,8 @@ input CurrencyCreateWithoutMainWalletTransactionInput {
   admin_config_price_volume_step: Float
   admin_config_total_volume: Float
   admin_config_volume_cache_time: DateTime
-  ConvertionPair: ConvertionPairCreateNestedManyWithoutCurrencyInput
+  ConvertionPairFrom: ConvertionPairCreateNestedManyWithoutCurrencyFromInput
+  ConvertionPairTo: ConvertionPairCreateNestedManyWithoutCurrencyToInput
   createdAt: DateTime
   crypto_data: NullableJsonNullValueInput
   crypto_service: Crypto_Service
@@ -1251,7 +1375,8 @@ input CurrencyCreateWithoutTransactionMasterInput {
   admin_config_price_volume_step: Float
   admin_config_total_volume: Float
   admin_config_volume_cache_time: DateTime
-  ConvertionPair: ConvertionPairCreateNestedManyWithoutCurrencyInput
+  ConvertionPairFrom: ConvertionPairCreateNestedManyWithoutCurrencyFromInput
+  ConvertionPairTo: ConvertionPairCreateNestedManyWithoutCurrencyToInput
   createdAt: DateTime
   crypto_data: NullableJsonNullValueInput
   crypto_service: Crypto_Service
@@ -1299,7 +1424,8 @@ input CurrencyUpdateInput {
   admin_config_price_volume_step: NullableFloatFieldUpdateOperationsInput
   admin_config_total_volume: NullableFloatFieldUpdateOperationsInput
   admin_config_volume_cache_time: NullableDateTimeFieldUpdateOperationsInput
-  ConvertionPair: ConvertionPairUpdateManyWithoutCurrencyInput
+  ConvertionPairFrom: ConvertionPairUpdateManyWithoutCurrencyFromInput
+  ConvertionPairTo: ConvertionPairUpdateManyWithoutCurrencyToInput
   createdAt: DateTimeFieldUpdateOperationsInput
   crypto_data: NullableJsonNullValueInput
   crypto_service: NullableEnumCrypto_ServiceFieldUpdateOperationsInput
@@ -1334,12 +1460,20 @@ input CurrencyUpdateInput {
   withdraw_manual_threshold: NullableFloatFieldUpdateOperationsInput
 }
 
-input CurrencyUpdateOneRequiredWithoutConvertionPairInput {
+input CurrencyUpdateOneRequiredWithoutConvertionPairFromInput {
   connect: CurrencyWhereUniqueInput
-  connectOrCreate: CurrencyCreateOrConnectWithoutConvertionPairInput
-  create: CurrencyCreateWithoutConvertionPairInput
-  update: CurrencyUpdateWithoutConvertionPairInput
-  upsert: CurrencyUpsertWithoutConvertionPairInput
+  connectOrCreate: CurrencyCreateOrConnectWithoutConvertionPairFromInput
+  create: CurrencyCreateWithoutConvertionPairFromInput
+  update: CurrencyUpdateWithoutConvertionPairFromInput
+  upsert: CurrencyUpsertWithoutConvertionPairFromInput
+}
+
+input CurrencyUpdateOneRequiredWithoutConvertionPairToInput {
+  connect: CurrencyWhereUniqueInput
+  connectOrCreate: CurrencyCreateOrConnectWithoutConvertionPairToInput
+  create: CurrencyCreateWithoutConvertionPairToInput
+  update: CurrencyUpdateWithoutConvertionPairToInput
+  upsert: CurrencyUpsertWithoutConvertionPairToInput
 }
 
 input CurrencyUpdateOneRequiredWithoutMainWalletInput {
@@ -1366,12 +1500,54 @@ input CurrencyUpdateOneRequiredWithoutTransactionMasterInput {
   upsert: CurrencyUpsertWithoutTransactionMasterInput
 }
 
-input CurrencyUpdateWithoutConvertionPairInput {
+input CurrencyUpdateWithoutConvertionPairFromInput {
   admin_config_price: NullableFloatFieldUpdateOperationsInput
   admin_config_price_price_step: NullableFloatFieldUpdateOperationsInput
   admin_config_price_volume_step: NullableFloatFieldUpdateOperationsInput
   admin_config_total_volume: NullableFloatFieldUpdateOperationsInput
   admin_config_volume_cache_time: NullableDateTimeFieldUpdateOperationsInput
+  ConvertionPairTo: ConvertionPairUpdateManyWithoutCurrencyToInput
+  createdAt: DateTimeFieldUpdateOperationsInput
+  crypto_data: NullableJsonNullValueInput
+  crypto_service: NullableEnumCrypto_ServiceFieldUpdateOperationsInput
+  disclaimer_deposit: NullableStringFieldUpdateOperationsInput
+  disclaimer_withdraw: NullableStringFieldUpdateOperationsInput
+  icon: NullableStringFieldUpdateOperationsInput
+  id: StringFieldUpdateOperationsInput
+  instruction_deposit: NullableStringFieldUpdateOperationsInput
+  instruction_withdraw: NullableStringFieldUpdateOperationsInput
+  is_enable: BoolFieldUpdateOperationsInput
+  is_enable_convert: BoolFieldUpdateOperationsInput
+  is_enable_convert_from: BoolFieldUpdateOperationsInput
+  is_enable_convert_to: BoolFieldUpdateOperationsInput
+  is_enable_deposit: BoolFieldUpdateOperationsInput
+  is_enable_withdraw: BoolFieldUpdateOperationsInput
+  is_enable_withdraw_cron: BoolFieldUpdateOperationsInput
+  MainWallet: MainWalletUpdateManyWithoutCurrencyInput
+  MainWalletTransaction: MainWalletTransactionUpdateManyWithoutCurrencyInput
+  MasterWallet: MasterWalletUpdateManyWithoutCurrencyInput
+  max_daily_withdraw: NullableFloatFieldUpdateOperationsInput
+  max_daily_withdraw_verified: NullableFloatFieldUpdateOperationsInput
+  max_withdraw: NullableFloatFieldUpdateOperationsInput
+  min_withdraw: NullableFloatFieldUpdateOperationsInput
+  name: StringFieldUpdateOperationsInput
+  regex: NullableStringFieldUpdateOperationsInput
+  required_confirmation: IntFieldUpdateOperationsInput
+  symbol: StringFieldUpdateOperationsInput
+  TransactionMaster: TransactionMasterUpdateManyWithoutCurrencyInput
+  updatedAt: DateTimeFieldUpdateOperationsInput
+  withdraw_fee_flat: NullableFloatFieldUpdateOperationsInput
+  withdraw_fee_pct: NullableFloatFieldUpdateOperationsInput
+  withdraw_manual_threshold: NullableFloatFieldUpdateOperationsInput
+}
+
+input CurrencyUpdateWithoutConvertionPairToInput {
+  admin_config_price: NullableFloatFieldUpdateOperationsInput
+  admin_config_price_price_step: NullableFloatFieldUpdateOperationsInput
+  admin_config_price_volume_step: NullableFloatFieldUpdateOperationsInput
+  admin_config_total_volume: NullableFloatFieldUpdateOperationsInput
+  admin_config_volume_cache_time: NullableDateTimeFieldUpdateOperationsInput
+  ConvertionPairFrom: ConvertionPairUpdateManyWithoutCurrencyFromInput
   createdAt: DateTimeFieldUpdateOperationsInput
   crypto_data: NullableJsonNullValueInput
   crypto_service: NullableEnumCrypto_ServiceFieldUpdateOperationsInput
@@ -1412,7 +1588,8 @@ input CurrencyUpdateWithoutMainWalletInput {
   admin_config_price_volume_step: NullableFloatFieldUpdateOperationsInput
   admin_config_total_volume: NullableFloatFieldUpdateOperationsInput
   admin_config_volume_cache_time: NullableDateTimeFieldUpdateOperationsInput
-  ConvertionPair: ConvertionPairUpdateManyWithoutCurrencyInput
+  ConvertionPairFrom: ConvertionPairUpdateManyWithoutCurrencyFromInput
+  ConvertionPairTo: ConvertionPairUpdateManyWithoutCurrencyToInput
   createdAt: DateTimeFieldUpdateOperationsInput
   crypto_data: NullableJsonNullValueInput
   crypto_service: NullableEnumCrypto_ServiceFieldUpdateOperationsInput
@@ -1452,7 +1629,8 @@ input CurrencyUpdateWithoutMainWalletTransactionInput {
   admin_config_price_volume_step: NullableFloatFieldUpdateOperationsInput
   admin_config_total_volume: NullableFloatFieldUpdateOperationsInput
   admin_config_volume_cache_time: NullableDateTimeFieldUpdateOperationsInput
-  ConvertionPair: ConvertionPairUpdateManyWithoutCurrencyInput
+  ConvertionPairFrom: ConvertionPairUpdateManyWithoutCurrencyFromInput
+  ConvertionPairTo: ConvertionPairUpdateManyWithoutCurrencyToInput
   createdAt: DateTimeFieldUpdateOperationsInput
   crypto_data: NullableJsonNullValueInput
   crypto_service: NullableEnumCrypto_ServiceFieldUpdateOperationsInput
@@ -1492,7 +1670,8 @@ input CurrencyUpdateWithoutTransactionMasterInput {
   admin_config_price_volume_step: NullableFloatFieldUpdateOperationsInput
   admin_config_total_volume: NullableFloatFieldUpdateOperationsInput
   admin_config_volume_cache_time: NullableDateTimeFieldUpdateOperationsInput
-  ConvertionPair: ConvertionPairUpdateManyWithoutCurrencyInput
+  ConvertionPairFrom: ConvertionPairUpdateManyWithoutCurrencyFromInput
+  ConvertionPairTo: ConvertionPairUpdateManyWithoutCurrencyToInput
   createdAt: DateTimeFieldUpdateOperationsInput
   crypto_data: NullableJsonNullValueInput
   crypto_service: NullableEnumCrypto_ServiceFieldUpdateOperationsInput
@@ -1526,9 +1705,14 @@ input CurrencyUpdateWithoutTransactionMasterInput {
   withdraw_manual_threshold: NullableFloatFieldUpdateOperationsInput
 }
 
-input CurrencyUpsertWithoutConvertionPairInput {
-  create: CurrencyCreateWithoutConvertionPairInput!
-  update: CurrencyUpdateWithoutConvertionPairInput!
+input CurrencyUpsertWithoutConvertionPairFromInput {
+  create: CurrencyCreateWithoutConvertionPairFromInput!
+  update: CurrencyUpdateWithoutConvertionPairFromInput!
+}
+
+input CurrencyUpsertWithoutConvertionPairToInput {
+  create: CurrencyCreateWithoutConvertionPairToInput!
+  update: CurrencyUpdateWithoutConvertionPairToInput!
 }
 
 input CurrencyUpsertWithoutMainWalletInput {
@@ -1710,17 +1894,6 @@ type DisableTwoFactor {
   success: Boolean
 }
 
-input EnumAccountTypeFieldUpdateOperationsInput {
-  set: AccountType
-}
-
-input EnumAccountTypeFilter {
-  equals: AccountType
-  in: [AccountType!]
-  not: NestedEnumAccountTypeFilter
-  notIn: [AccountType!]
-}
-
 input EnumApprovedStatusNullableFilter {
   equals: ApprovedStatus
   in: [ApprovedStatus!]
@@ -1748,17 +1921,6 @@ input EnumDestinationTypeFilter {
   in: [DestinationType!]
   not: NestedEnumDestinationTypeFilter
   notIn: [DestinationType!]
-}
-
-input EnumExchangeWalletEventTypeFieldUpdateOperationsInput {
-  set: ExchangeWalletEventType
-}
-
-input EnumExchangeWalletEventTypeFilter {
-  equals: ExchangeWalletEventType
-  in: [ExchangeWalletEventType!]
-  not: NestedEnumExchangeWalletEventTypeFilter
-  notIn: [ExchangeWalletEventType!]
 }
 
 input EnumInternalTransactionStatusFieldUpdateOperationsInput {
@@ -1952,231 +2114,6 @@ type ExchangeSumary {
   promotion: ExchangeDetail
 }
 
-type ExchangeWallet {
-  balance: Float
-  base_balance: Float!
-  createdAt: DateTime!
-  id: String!
-  is_frozen: Boolean!
-  type: AccountType!
-  updatedAt: DateTime!
-}
-
-type ExchangeWalletChange {
-  amount: Float!
-  createdAt: DateTime!
-  event_id: String!
-  event_type: ExchangeWalletEventType!
-  exchange_wallet_id: String!
-  ExchangeWallet: ExchangeWallet!
-  id: String!
-  updatedAt: DateTime!
-}
-
-input ExchangeWalletChangeCreateManyExchangeWalletInput {
-  amount: Float!
-  createdAt: DateTime
-  event_id: String!
-  event_type: ExchangeWalletEventType!
-  id: String
-  updatedAt: DateTime
-}
-
-input ExchangeWalletChangeCreateManyExchangeWalletInputEnvelope {
-  data: [ExchangeWalletChangeCreateManyExchangeWalletInput!]
-  skipDuplicates: Boolean
-}
-
-input ExchangeWalletChangeCreateNestedManyWithoutExchangeWalletInput {
-  connect: [ExchangeWalletChangeWhereUniqueInput!]
-  connectOrCreate: [ExchangeWalletChangeCreateOrConnectWithoutExchangeWalletInput!]
-  create: [ExchangeWalletChangeCreateWithoutExchangeWalletInput!]
-  createMany: ExchangeWalletChangeCreateManyExchangeWalletInputEnvelope
-}
-
-input ExchangeWalletChangeCreateOrConnectWithoutExchangeWalletInput {
-  create: ExchangeWalletChangeCreateWithoutExchangeWalletInput!
-  where: ExchangeWalletChangeWhereUniqueInput!
-}
-
-input ExchangeWalletChangeCreateWithoutExchangeWalletInput {
-  amount: Float!
-  createdAt: DateTime
-  event_id: String!
-  event_type: ExchangeWalletEventType!
-  id: String
-  updatedAt: DateTime
-}
-
-type ExchangeWalletChangePagination {
-  nodes: [ExchangeWalletChange]
-  total: Int
-}
-
-input ExchangeWalletChangeScalarWhereInput {
-  amount: FloatFilter
-  AND: [ExchangeWalletChangeScalarWhereInput!]
-  createdAt: DateTimeFilter
-  event_id: StringFilter
-  event_type: EnumExchangeWalletEventTypeFilter
-  exchange_wallet_id: StringFilter
-  id: StringFilter
-  NOT: [ExchangeWalletChangeScalarWhereInput!]
-  OR: [ExchangeWalletChangeScalarWhereInput!]
-  updatedAt: DateTimeFilter
-}
-
-input ExchangeWalletChangeUpdateManyMutationInput {
-  amount: FloatFieldUpdateOperationsInput
-  createdAt: DateTimeFieldUpdateOperationsInput
-  event_id: StringFieldUpdateOperationsInput
-  event_type: EnumExchangeWalletEventTypeFieldUpdateOperationsInput
-  id: StringFieldUpdateOperationsInput
-  updatedAt: DateTimeFieldUpdateOperationsInput
-}
-
-input ExchangeWalletChangeUpdateManyWithoutExchangeWalletInput {
-  connect: [ExchangeWalletChangeWhereUniqueInput!]
-  connectOrCreate: [ExchangeWalletChangeCreateOrConnectWithoutExchangeWalletInput!]
-  create: [ExchangeWalletChangeCreateWithoutExchangeWalletInput!]
-  createMany: ExchangeWalletChangeCreateManyExchangeWalletInputEnvelope
-  delete: [ExchangeWalletChangeWhereUniqueInput!]
-  deleteMany: [ExchangeWalletChangeScalarWhereInput!]
-  disconnect: [ExchangeWalletChangeWhereUniqueInput!]
-  set: [ExchangeWalletChangeWhereUniqueInput!]
-  update: [ExchangeWalletChangeUpdateWithWhereUniqueWithoutExchangeWalletInput!]
-  updateMany: [ExchangeWalletChangeUpdateManyWithWhereWithoutExchangeWalletInput!]
-  upsert: [ExchangeWalletChangeUpsertWithWhereUniqueWithoutExchangeWalletInput!]
-}
-
-input ExchangeWalletChangeUpdateManyWithWhereWithoutExchangeWalletInput {
-  data: ExchangeWalletChangeUpdateManyMutationInput!
-  where: ExchangeWalletChangeScalarWhereInput!
-}
-
-input ExchangeWalletChangeUpdateWithoutExchangeWalletInput {
-  amount: FloatFieldUpdateOperationsInput
-  createdAt: DateTimeFieldUpdateOperationsInput
-  event_id: StringFieldUpdateOperationsInput
-  event_type: EnumExchangeWalletEventTypeFieldUpdateOperationsInput
-  id: StringFieldUpdateOperationsInput
-  updatedAt: DateTimeFieldUpdateOperationsInput
-}
-
-input ExchangeWalletChangeUpdateWithWhereUniqueWithoutExchangeWalletInput {
-  data: ExchangeWalletChangeUpdateWithoutExchangeWalletInput!
-  where: ExchangeWalletChangeWhereUniqueInput!
-}
-
-input ExchangeWalletChangeUpsertWithWhereUniqueWithoutExchangeWalletInput {
-  create: ExchangeWalletChangeCreateWithoutExchangeWalletInput!
-  update: ExchangeWalletChangeUpdateWithoutExchangeWalletInput!
-  where: ExchangeWalletChangeWhereUniqueInput!
-}
-
-input ExchangeWalletChangeWhereUniqueInput {
-  id: String
-}
-
-input ExchangeWalletCreateManyUserInput {
-  balance_cache_datetime: DateTime
-  base_balance: Float
-  createdAt: DateTime
-  id: String
-  is_frozen: Boolean
-  type: AccountType!
-  updatedAt: DateTime
-}
-
-input ExchangeWalletCreateManyUserInputEnvelope {
-  data: [ExchangeWalletCreateManyUserInput!]
-  skipDuplicates: Boolean
-}
-
-input ExchangeWalletCreateNestedManyWithoutUserInput {
-  connect: [ExchangeWalletWhereUniqueInput!]
-  connectOrCreate: [ExchangeWalletCreateOrConnectWithoutUserInput!]
-  create: [ExchangeWalletCreateWithoutUserInput!]
-  createMany: ExchangeWalletCreateManyUserInputEnvelope
-}
-
-input ExchangeWalletCreateNestedOneWithoutConvertionTransactionInput {
-  connect: ExchangeWalletWhereUniqueInput
-  connectOrCreate: ExchangeWalletCreateOrConnectWithoutConvertionTransactionInput
-  create: ExchangeWalletCreateWithoutConvertionTransactionInput
-}
-
-input ExchangeWalletCreateOrConnectWithoutConvertionTransactionInput {
-  create: ExchangeWalletCreateWithoutConvertionTransactionInput!
-  where: ExchangeWalletWhereUniqueInput!
-}
-
-input ExchangeWalletCreateOrConnectWithoutUserInput {
-  create: ExchangeWalletCreateWithoutUserInput!
-  where: ExchangeWalletWhereUniqueInput!
-}
-
-input ExchangeWalletCreateWithoutConvertionTransactionInput {
-  balance_cache_datetime: DateTime
-  base_balance: Float
-  createdAt: DateTime
-  ExchangeWalletChange: ExchangeWalletChangeCreateNestedManyWithoutExchangeWalletInput
-  id: String
-  is_frozen: Boolean
-  type: AccountType!
-  updatedAt: DateTime
-  User: UserCreateNestedOneWithoutExchangeWalletInput!
-}
-
-input ExchangeWalletCreateWithoutUserInput {
-  balance_cache_datetime: DateTime
-  base_balance: Float
-  ConvertionTransaction: ConvertionTransactionCreateNestedManyWithoutExchangeWalletInput
-  createdAt: DateTime
-  ExchangeWalletChange: ExchangeWalletChangeCreateNestedManyWithoutExchangeWalletInput
-  id: String
-  is_frozen: Boolean
-  type: AccountType!
-  updatedAt: DateTime
-}
-
-enum ExchangeWalletEventType {
-  AGENCY_LICENCE
-  BUY_PROMOTION_CODE
-  CONVERT
-  COPY_TRADE_COMISSION
-  COPY_TRADE_COMISSION_BACK
-  INSURANCE_REFUND
-  INSURANCE_WIN
-  INTERNAL_TRANSACTION
-  INVESTING_REFUND
-  MANUAL
-  ORDER
-  ORDER_RESULT
-  PROMOTION
-  PROMOTION_CODE
-  PROMOTION_CODE_REFUND
-  REF
-  REFUND
-  RING_ORDER
-  RING_ORDER_RESULT
-  SERVICE_SUBSCRIPTION
-}
-
-input ExchangeWalletScalarWhereInput {
-  AND: [ExchangeWalletScalarWhereInput!]
-  balance_cache_datetime: DateTimeFilter
-  base_balance: FloatFilter
-  createdAt: DateTimeFilter
-  id: StringFilter
-  is_frozen: BoolFilter
-  NOT: [ExchangeWalletScalarWhereInput!]
-  OR: [ExchangeWalletScalarWhereInput!]
-  type: EnumAccountTypeFilter
-  updatedAt: DateTimeFilter
-  user_id: StringFilter
-}
-
 type ExchangeWalletSumary {
   agency: Float
   balance: Float
@@ -2193,87 +2130,6 @@ type ExchangeWalletSumary {
   transferIn: Float
   transferOut: Float
   win: Float
-}
-
-input ExchangeWalletUpdateManyMutationInput {
-  balance_cache_datetime: DateTimeFieldUpdateOperationsInput
-  base_balance: FloatFieldUpdateOperationsInput
-  createdAt: DateTimeFieldUpdateOperationsInput
-  id: StringFieldUpdateOperationsInput
-  is_frozen: BoolFieldUpdateOperationsInput
-  type: EnumAccountTypeFieldUpdateOperationsInput
-  updatedAt: DateTimeFieldUpdateOperationsInput
-}
-
-input ExchangeWalletUpdateManyWithoutUserInput {
-  connect: [ExchangeWalletWhereUniqueInput!]
-  connectOrCreate: [ExchangeWalletCreateOrConnectWithoutUserInput!]
-  create: [ExchangeWalletCreateWithoutUserInput!]
-  createMany: ExchangeWalletCreateManyUserInputEnvelope
-  delete: [ExchangeWalletWhereUniqueInput!]
-  deleteMany: [ExchangeWalletScalarWhereInput!]
-  disconnect: [ExchangeWalletWhereUniqueInput!]
-  set: [ExchangeWalletWhereUniqueInput!]
-  update: [ExchangeWalletUpdateWithWhereUniqueWithoutUserInput!]
-  updateMany: [ExchangeWalletUpdateManyWithWhereWithoutUserInput!]
-  upsert: [ExchangeWalletUpsertWithWhereUniqueWithoutUserInput!]
-}
-
-input ExchangeWalletUpdateManyWithWhereWithoutUserInput {
-  data: ExchangeWalletUpdateManyMutationInput!
-  where: ExchangeWalletScalarWhereInput!
-}
-
-input ExchangeWalletUpdateOneRequiredWithoutConvertionTransactionInput {
-  connect: ExchangeWalletWhereUniqueInput
-  connectOrCreate: ExchangeWalletCreateOrConnectWithoutConvertionTransactionInput
-  create: ExchangeWalletCreateWithoutConvertionTransactionInput
-  update: ExchangeWalletUpdateWithoutConvertionTransactionInput
-  upsert: ExchangeWalletUpsertWithoutConvertionTransactionInput
-}
-
-input ExchangeWalletUpdateWithoutConvertionTransactionInput {
-  balance_cache_datetime: DateTimeFieldUpdateOperationsInput
-  base_balance: FloatFieldUpdateOperationsInput
-  createdAt: DateTimeFieldUpdateOperationsInput
-  ExchangeWalletChange: ExchangeWalletChangeUpdateManyWithoutExchangeWalletInput
-  id: StringFieldUpdateOperationsInput
-  is_frozen: BoolFieldUpdateOperationsInput
-  type: EnumAccountTypeFieldUpdateOperationsInput
-  updatedAt: DateTimeFieldUpdateOperationsInput
-  User: UserUpdateOneRequiredWithoutExchangeWalletInput
-}
-
-input ExchangeWalletUpdateWithoutUserInput {
-  balance_cache_datetime: DateTimeFieldUpdateOperationsInput
-  base_balance: FloatFieldUpdateOperationsInput
-  ConvertionTransaction: ConvertionTransactionUpdateManyWithoutExchangeWalletInput
-  createdAt: DateTimeFieldUpdateOperationsInput
-  ExchangeWalletChange: ExchangeWalletChangeUpdateManyWithoutExchangeWalletInput
-  id: StringFieldUpdateOperationsInput
-  is_frozen: BoolFieldUpdateOperationsInput
-  type: EnumAccountTypeFieldUpdateOperationsInput
-  updatedAt: DateTimeFieldUpdateOperationsInput
-}
-
-input ExchangeWalletUpdateWithWhereUniqueWithoutUserInput {
-  data: ExchangeWalletUpdateWithoutUserInput!
-  where: ExchangeWalletWhereUniqueInput!
-}
-
-input ExchangeWalletUpsertWithoutConvertionTransactionInput {
-  create: ExchangeWalletCreateWithoutConvertionTransactionInput!
-  update: ExchangeWalletUpdateWithoutConvertionTransactionInput!
-}
-
-input ExchangeWalletUpsertWithWhereUniqueWithoutUserInput {
-  create: ExchangeWalletCreateWithoutUserInput!
-  update: ExchangeWalletUpdateWithoutUserInput!
-  where: ExchangeWalletWhereUniqueInput!
-}
-
-input ExchangeWalletWhereUniqueInput {
-  id: String
 }
 
 input FloatFieldUpdateOperationsInput {
@@ -2498,187 +2354,6 @@ enum JsonNullValueFilter {
   AnyNull
   DbNull
   JsonNull
-}
-
-input LeaderBoardCreateManyUserInput {
-  cache_time: DateTime!
-  commission: Float
-  createdAt: DateTime
-  exchange_wallets: NullableJsonNullValueInput
-  f1_count: Int
-  f1_volume: Float
-  id: String
-  lose_amount: Float
-  lose_count: Int
-  main_wallets: NullableJsonNullValueInput
-  net_profit: Float
-  order_count: Int
-  ref_count: Int
-  ref_network_volume: Float
-  sensored_username: String!
-  trade_amount: Float
-  transfer: NullableJsonNullValueInput
-  tx_by_wallet: NullableJsonNullValueInput
-  updatedAt: DateTime
-  win_amount: Float
-  win_count: Int
-  win_rate: Float
-}
-
-input LeaderBoardCreateManyUserInputEnvelope {
-  data: [LeaderBoardCreateManyUserInput!]
-  skipDuplicates: Boolean
-}
-
-input LeaderBoardCreateNestedManyWithoutUserInput {
-  connect: [LeaderBoardWhereUniqueInput!]
-  connectOrCreate: [LeaderBoardCreateOrConnectWithoutUserInput!]
-  create: [LeaderBoardCreateWithoutUserInput!]
-  createMany: LeaderBoardCreateManyUserInputEnvelope
-}
-
-input LeaderBoardCreateOrConnectWithoutUserInput {
-  create: LeaderBoardCreateWithoutUserInput!
-  where: LeaderBoardWhereUniqueInput!
-}
-
-input LeaderBoardCreateWithoutUserInput {
-  cache_time: DateTime!
-  commission: Float
-  createdAt: DateTime
-  exchange_wallets: NullableJsonNullValueInput
-  f1_count: Int
-  f1_volume: Float
-  id: String
-  lose_amount: Float
-  lose_count: Int
-  main_wallets: NullableJsonNullValueInput
-  net_profit: Float
-  order_count: Int
-  ref_count: Int
-  ref_network_volume: Float
-  sensored_username: String!
-  trade_amount: Float
-  transfer: NullableJsonNullValueInput
-  tx_by_wallet: NullableJsonNullValueInput
-  updatedAt: DateTime
-  win_amount: Float
-  win_count: Int
-  win_rate: Float
-}
-
-input LeaderBoardScalarWhereInput {
-  AND: [LeaderBoardScalarWhereInput!]
-  cache_time: DateTimeFilter
-  commission: FloatFilter
-  createdAt: DateTimeFilter
-  exchange_wallets: JsonNullableFilter
-  f1_count: IntFilter
-  f1_volume: FloatFilter
-  id: StringFilter
-  lose_amount: FloatFilter
-  lose_count: IntFilter
-  main_wallets: JsonNullableFilter
-  net_profit: FloatFilter
-  NOT: [LeaderBoardScalarWhereInput!]
-  OR: [LeaderBoardScalarWhereInput!]
-  order_count: IntFilter
-  ref_count: IntFilter
-  ref_network_volume: FloatFilter
-  sensored_username: StringFilter
-  trade_amount: FloatFilter
-  transfer: JsonNullableFilter
-  tx_by_wallet: JsonNullableFilter
-  updatedAt: DateTimeFilter
-  user_id: StringFilter
-  win_amount: FloatFilter
-  win_count: IntFilter
-  win_rate: FloatFilter
-}
-
-input LeaderBoardUpdateManyMutationInput {
-  cache_time: DateTimeFieldUpdateOperationsInput
-  commission: FloatFieldUpdateOperationsInput
-  createdAt: DateTimeFieldUpdateOperationsInput
-  exchange_wallets: NullableJsonNullValueInput
-  f1_count: IntFieldUpdateOperationsInput
-  f1_volume: FloatFieldUpdateOperationsInput
-  id: StringFieldUpdateOperationsInput
-  lose_amount: FloatFieldUpdateOperationsInput
-  lose_count: IntFieldUpdateOperationsInput
-  main_wallets: NullableJsonNullValueInput
-  net_profit: FloatFieldUpdateOperationsInput
-  order_count: IntFieldUpdateOperationsInput
-  ref_count: IntFieldUpdateOperationsInput
-  ref_network_volume: FloatFieldUpdateOperationsInput
-  sensored_username: StringFieldUpdateOperationsInput
-  trade_amount: FloatFieldUpdateOperationsInput
-  transfer: NullableJsonNullValueInput
-  tx_by_wallet: NullableJsonNullValueInput
-  updatedAt: DateTimeFieldUpdateOperationsInput
-  win_amount: FloatFieldUpdateOperationsInput
-  win_count: IntFieldUpdateOperationsInput
-  win_rate: FloatFieldUpdateOperationsInput
-}
-
-input LeaderBoardUpdateManyWithoutUserInput {
-  connect: [LeaderBoardWhereUniqueInput!]
-  connectOrCreate: [LeaderBoardCreateOrConnectWithoutUserInput!]
-  create: [LeaderBoardCreateWithoutUserInput!]
-  createMany: LeaderBoardCreateManyUserInputEnvelope
-  delete: [LeaderBoardWhereUniqueInput!]
-  deleteMany: [LeaderBoardScalarWhereInput!]
-  disconnect: [LeaderBoardWhereUniqueInput!]
-  set: [LeaderBoardWhereUniqueInput!]
-  update: [LeaderBoardUpdateWithWhereUniqueWithoutUserInput!]
-  updateMany: [LeaderBoardUpdateManyWithWhereWithoutUserInput!]
-  upsert: [LeaderBoardUpsertWithWhereUniqueWithoutUserInput!]
-}
-
-input LeaderBoardUpdateManyWithWhereWithoutUserInput {
-  data: LeaderBoardUpdateManyMutationInput!
-  where: LeaderBoardScalarWhereInput!
-}
-
-input LeaderBoardUpdateWithoutUserInput {
-  cache_time: DateTimeFieldUpdateOperationsInput
-  commission: FloatFieldUpdateOperationsInput
-  createdAt: DateTimeFieldUpdateOperationsInput
-  exchange_wallets: NullableJsonNullValueInput
-  f1_count: IntFieldUpdateOperationsInput
-  f1_volume: FloatFieldUpdateOperationsInput
-  id: StringFieldUpdateOperationsInput
-  lose_amount: FloatFieldUpdateOperationsInput
-  lose_count: IntFieldUpdateOperationsInput
-  main_wallets: NullableJsonNullValueInput
-  net_profit: FloatFieldUpdateOperationsInput
-  order_count: IntFieldUpdateOperationsInput
-  ref_count: IntFieldUpdateOperationsInput
-  ref_network_volume: FloatFieldUpdateOperationsInput
-  sensored_username: StringFieldUpdateOperationsInput
-  trade_amount: FloatFieldUpdateOperationsInput
-  transfer: NullableJsonNullValueInput
-  tx_by_wallet: NullableJsonNullValueInput
-  updatedAt: DateTimeFieldUpdateOperationsInput
-  win_amount: FloatFieldUpdateOperationsInput
-  win_count: IntFieldUpdateOperationsInput
-  win_rate: FloatFieldUpdateOperationsInput
-}
-
-input LeaderBoardUpdateWithWhereUniqueWithoutUserInput {
-  data: LeaderBoardUpdateWithoutUserInput!
-  where: LeaderBoardWhereUniqueInput!
-}
-
-input LeaderBoardUpsertWithWhereUniqueWithoutUserInput {
-  create: LeaderBoardCreateWithoutUserInput!
-  update: LeaderBoardUpdateWithoutUserInput!
-  where: LeaderBoardWhereUniqueInput!
-}
-
-input LeaderBoardWhereUniqueInput {
-  id: String
-  user_id: String
 }
 
 type MainWallet {
@@ -2969,10 +2644,16 @@ input MainWalletCreateNestedManyWithoutUserInput {
   createMany: MainWalletCreateManyUserInputEnvelope
 }
 
-input MainWalletCreateNestedOneWithoutConvertionTransactionInput {
+input MainWalletCreateNestedOneWithoutConvertionTransactionFromInput {
   connect: MainWalletWhereUniqueInput
-  connectOrCreate: MainWalletCreateOrConnectWithoutConvertionTransactionInput
-  create: MainWalletCreateWithoutConvertionTransactionInput
+  connectOrCreate: MainWalletCreateOrConnectWithoutConvertionTransactionFromInput
+  create: MainWalletCreateWithoutConvertionTransactionFromInput
+}
+
+input MainWalletCreateNestedOneWithoutConvertionTransactionToInput {
+  connect: MainWalletWhereUniqueInput
+  connectOrCreate: MainWalletCreateOrConnectWithoutConvertionTransactionToInput
+  create: MainWalletCreateWithoutConvertionTransactionToInput
 }
 
 input MainWalletCreateNestedOneWithoutMainWalletAddressInput {
@@ -2981,8 +2662,13 @@ input MainWalletCreateNestedOneWithoutMainWalletAddressInput {
   create: MainWalletCreateWithoutMainWalletAddressInput
 }
 
-input MainWalletCreateOrConnectWithoutConvertionTransactionInput {
-  create: MainWalletCreateWithoutConvertionTransactionInput!
+input MainWalletCreateOrConnectWithoutConvertionTransactionFromInput {
+  create: MainWalletCreateWithoutConvertionTransactionFromInput!
+  where: MainWalletWhereUniqueInput!
+}
+
+input MainWalletCreateOrConnectWithoutConvertionTransactionToInput {
+  create: MainWalletCreateWithoutConvertionTransactionToInput!
   where: MainWalletWhereUniqueInput!
 }
 
@@ -3001,9 +2687,24 @@ input MainWalletCreateOrConnectWithoutUserInput {
   where: MainWalletWhereUniqueInput!
 }
 
-input MainWalletCreateWithoutConvertionTransactionInput {
+input MainWalletCreateWithoutConvertionTransactionFromInput {
   balance_cache_datetime: DateTime
   base_balance: Float
+  ConvertionTransactionTo: ConvertionTransactionCreateNestedManyWithoutMainWalletToInput
+  createdAt: DateTime
+  Currency: CurrencyCreateNestedOneWithoutMainWalletInput!
+  id: String
+  is_frozen: Boolean
+  MainWalletAddress: MainWalletAddressCreateNestedOneWithoutMainWalletInput
+  MainWalletChange: MainWalletChangeCreateNestedManyWithoutMainWalletInput
+  updatedAt: DateTime
+  User: UserCreateNestedOneWithoutMainWalletInput!
+}
+
+input MainWalletCreateWithoutConvertionTransactionToInput {
+  balance_cache_datetime: DateTime
+  base_balance: Float
+  ConvertionTransactionFrom: ConvertionTransactionCreateNestedManyWithoutMainWalletFromInput
   createdAt: DateTime
   Currency: CurrencyCreateNestedOneWithoutMainWalletInput!
   id: String
@@ -3017,7 +2718,8 @@ input MainWalletCreateWithoutConvertionTransactionInput {
 input MainWalletCreateWithoutCurrencyInput {
   balance_cache_datetime: DateTime
   base_balance: Float
-  ConvertionTransaction: ConvertionTransactionCreateNestedManyWithoutMainWalletInput
+  ConvertionTransactionFrom: ConvertionTransactionCreateNestedManyWithoutMainWalletFromInput
+  ConvertionTransactionTo: ConvertionTransactionCreateNestedManyWithoutMainWalletToInput
   createdAt: DateTime
   id: String
   is_frozen: Boolean
@@ -3030,7 +2732,8 @@ input MainWalletCreateWithoutCurrencyInput {
 input MainWalletCreateWithoutMainWalletAddressInput {
   balance_cache_datetime: DateTime
   base_balance: Float
-  ConvertionTransaction: ConvertionTransactionCreateNestedManyWithoutMainWalletInput
+  ConvertionTransactionFrom: ConvertionTransactionCreateNestedManyWithoutMainWalletFromInput
+  ConvertionTransactionTo: ConvertionTransactionCreateNestedManyWithoutMainWalletToInput
   createdAt: DateTime
   Currency: CurrencyCreateNestedOneWithoutMainWalletInput!
   id: String
@@ -3043,7 +2746,8 @@ input MainWalletCreateWithoutMainWalletAddressInput {
 input MainWalletCreateWithoutUserInput {
   balance_cache_datetime: DateTime
   base_balance: Float
-  ConvertionTransaction: ConvertionTransactionCreateNestedManyWithoutMainWalletInput
+  ConvertionTransactionFrom: ConvertionTransactionCreateNestedManyWithoutMainWalletFromInput
+  ConvertionTransactionTo: ConvertionTransactionCreateNestedManyWithoutMainWalletToInput
   createdAt: DateTime
   Currency: CurrencyCreateNestedOneWithoutMainWalletInput!
   id: String
@@ -3517,12 +3221,20 @@ input MainWalletUpdateManyWithWhereWithoutUserInput {
   where: MainWalletScalarWhereInput!
 }
 
-input MainWalletUpdateOneRequiredWithoutConvertionTransactionInput {
+input MainWalletUpdateOneRequiredWithoutConvertionTransactionFromInput {
   connect: MainWalletWhereUniqueInput
-  connectOrCreate: MainWalletCreateOrConnectWithoutConvertionTransactionInput
-  create: MainWalletCreateWithoutConvertionTransactionInput
-  update: MainWalletUpdateWithoutConvertionTransactionInput
-  upsert: MainWalletUpsertWithoutConvertionTransactionInput
+  connectOrCreate: MainWalletCreateOrConnectWithoutConvertionTransactionFromInput
+  create: MainWalletCreateWithoutConvertionTransactionFromInput
+  update: MainWalletUpdateWithoutConvertionTransactionFromInput
+  upsert: MainWalletUpsertWithoutConvertionTransactionFromInput
+}
+
+input MainWalletUpdateOneRequiredWithoutConvertionTransactionToInput {
+  connect: MainWalletWhereUniqueInput
+  connectOrCreate: MainWalletCreateOrConnectWithoutConvertionTransactionToInput
+  create: MainWalletCreateWithoutConvertionTransactionToInput
+  update: MainWalletUpdateWithoutConvertionTransactionToInput
+  upsert: MainWalletUpsertWithoutConvertionTransactionToInput
 }
 
 input MainWalletUpdateOneRequiredWithoutMainWalletAddressInput {
@@ -3533,9 +3245,24 @@ input MainWalletUpdateOneRequiredWithoutMainWalletAddressInput {
   upsert: MainWalletUpsertWithoutMainWalletAddressInput
 }
 
-input MainWalletUpdateWithoutConvertionTransactionInput {
+input MainWalletUpdateWithoutConvertionTransactionFromInput {
   balance_cache_datetime: DateTimeFieldUpdateOperationsInput
   base_balance: FloatFieldUpdateOperationsInput
+  ConvertionTransactionTo: ConvertionTransactionUpdateManyWithoutMainWalletToInput
+  createdAt: DateTimeFieldUpdateOperationsInput
+  Currency: CurrencyUpdateOneRequiredWithoutMainWalletInput
+  id: StringFieldUpdateOperationsInput
+  is_frozen: BoolFieldUpdateOperationsInput
+  MainWalletAddress: MainWalletAddressUpdateOneWithoutMainWalletInput
+  MainWalletChange: MainWalletChangeUpdateManyWithoutMainWalletInput
+  updatedAt: DateTimeFieldUpdateOperationsInput
+  User: UserUpdateOneRequiredWithoutMainWalletInput
+}
+
+input MainWalletUpdateWithoutConvertionTransactionToInput {
+  balance_cache_datetime: DateTimeFieldUpdateOperationsInput
+  base_balance: FloatFieldUpdateOperationsInput
+  ConvertionTransactionFrom: ConvertionTransactionUpdateManyWithoutMainWalletFromInput
   createdAt: DateTimeFieldUpdateOperationsInput
   Currency: CurrencyUpdateOneRequiredWithoutMainWalletInput
   id: StringFieldUpdateOperationsInput
@@ -3549,7 +3276,8 @@ input MainWalletUpdateWithoutConvertionTransactionInput {
 input MainWalletUpdateWithoutCurrencyInput {
   balance_cache_datetime: DateTimeFieldUpdateOperationsInput
   base_balance: FloatFieldUpdateOperationsInput
-  ConvertionTransaction: ConvertionTransactionUpdateManyWithoutMainWalletInput
+  ConvertionTransactionFrom: ConvertionTransactionUpdateManyWithoutMainWalletFromInput
+  ConvertionTransactionTo: ConvertionTransactionUpdateManyWithoutMainWalletToInput
   createdAt: DateTimeFieldUpdateOperationsInput
   id: StringFieldUpdateOperationsInput
   is_frozen: BoolFieldUpdateOperationsInput
@@ -3562,7 +3290,8 @@ input MainWalletUpdateWithoutCurrencyInput {
 input MainWalletUpdateWithoutMainWalletAddressInput {
   balance_cache_datetime: DateTimeFieldUpdateOperationsInput
   base_balance: FloatFieldUpdateOperationsInput
-  ConvertionTransaction: ConvertionTransactionUpdateManyWithoutMainWalletInput
+  ConvertionTransactionFrom: ConvertionTransactionUpdateManyWithoutMainWalletFromInput
+  ConvertionTransactionTo: ConvertionTransactionUpdateManyWithoutMainWalletToInput
   createdAt: DateTimeFieldUpdateOperationsInput
   Currency: CurrencyUpdateOneRequiredWithoutMainWalletInput
   id: StringFieldUpdateOperationsInput
@@ -3575,7 +3304,8 @@ input MainWalletUpdateWithoutMainWalletAddressInput {
 input MainWalletUpdateWithoutUserInput {
   balance_cache_datetime: DateTimeFieldUpdateOperationsInput
   base_balance: FloatFieldUpdateOperationsInput
-  ConvertionTransaction: ConvertionTransactionUpdateManyWithoutMainWalletInput
+  ConvertionTransactionFrom: ConvertionTransactionUpdateManyWithoutMainWalletFromInput
+  ConvertionTransactionTo: ConvertionTransactionUpdateManyWithoutMainWalletToInput
   createdAt: DateTimeFieldUpdateOperationsInput
   Currency: CurrencyUpdateOneRequiredWithoutMainWalletInput
   id: StringFieldUpdateOperationsInput
@@ -3595,9 +3325,14 @@ input MainWalletUpdateWithWhereUniqueWithoutUserInput {
   where: MainWalletWhereUniqueInput!
 }
 
-input MainWalletUpsertWithoutConvertionTransactionInput {
-  create: MainWalletCreateWithoutConvertionTransactionInput!
-  update: MainWalletUpdateWithoutConvertionTransactionInput!
+input MainWalletUpsertWithoutConvertionTransactionFromInput {
+  create: MainWalletCreateWithoutConvertionTransactionFromInput!
+  update: MainWalletUpdateWithoutConvertionTransactionFromInput!
+}
+
+input MainWalletUpsertWithoutConvertionTransactionToInput {
+  create: MainWalletCreateWithoutConvertionTransactionToInput!
+  update: MainWalletUpdateWithoutConvertionTransactionToInput!
 }
 
 input MainWalletUpsertWithoutMainWalletAddressInput {
@@ -3843,15 +3578,15 @@ type Mutation {
   adminUpdateOneCurrency(data: CurrencyUpdateInput!, where: CurrencyWhereUniqueInput!): AdminCurrency
   adminUpdateOneRefLevel(data: RefLevelUpdateInput!, where: RefLevelWhereUniqueInput!): RefLevel
   changePassword(old_password: String!, password: String!, password_confirmation: String!): CoinheIDAuthMessagePayload
-  convertCurrency(amount: Float!, direction: ConvertionDirection!, exchange_wallet: String!, main_wallet: String!): ConvertCurrencyPayload
+  convertCurrency(amount: Float!, currency_from: String!, currency_to: String!): ConvertCurrencyPayload
   createCurrency(icon: String, name: String!, symbol: String!): Currency
   createRef(refCode: String!, usernameUser: String!): Ref!
   createWalletRequest(currency_id: String!): MainWallet
+  depositWallet(amount: Float!, symbol: String!): Boolean
   disableTwoFactor(captchaToken: String, password: String!, token: String!): DisableTwoFactor
   disableTwoFactorMobile(temporaryToken: String!, token: String!): DisableTwoFactor
   enableTwoFactor(captchaToken: String, password: String!, token: String!): TwoFactor
   enableTwoFactorMobile(temporaryToken: String!, token: String!): TwoFactor
-  exchangeWalletInternalTransfer(amount: Float!, otpToken: String!, receiver: String!): WithdrawPayload
   forgotPassword(email: String!): CoinheIDAuthMessagePayload
   generateTemporaryToken(captchaToken: String, password: String!): TemporaryToken
   generateToken(userName: String!): TokenLogin
@@ -3863,8 +3598,7 @@ type Mutation {
   manualSet(overwriteResult: String!): Boolean
   pushNotification(body: String!, title: String!, type: NotificationCategory): Boolean
   readAllNotify: Boolean
-  refillDemoWallet: ExchangeWallet
-  register(countryId: String, email: String!, password: String!, password_confirmation: String!, phoneNumber: String, refCode: String, username: String!): AuthPayload
+  register(email: String!, password: String!, password_confirmation: String!, refCode: String, username: String!): AuthPayload
   registerDevice(model: String, platform: Platform!, token: String!, version: String): Boolean
   resendActivationEmail(email: String!): Boolean
   resetPassword(email: String!, password: String!, password_confirmation: String!, token: String!): CoinheIDAuthMessagePayload
@@ -3908,13 +3642,6 @@ input NestedDateTimeNullableFilter {
   notIn: [DateTime!]
 }
 
-input NestedEnumAccountTypeFilter {
-  equals: AccountType
-  in: [AccountType!]
-  not: NestedEnumAccountTypeFilter
-  notIn: [AccountType!]
-}
-
 input NestedEnumApprovedStatusNullableFilter {
   equals: ApprovedStatus
   in: [ApprovedStatus!]
@@ -3934,13 +3661,6 @@ input NestedEnumDestinationTypeFilter {
   in: [DestinationType!]
   not: NestedEnumDestinationTypeFilter
   notIn: [DestinationType!]
-}
-
-input NestedEnumExchangeWalletEventTypeFilter {
-  equals: ExchangeWalletEventType
-  in: [ExchangeWalletEventType!]
-  not: NestedEnumExchangeWalletEventTypeFilter
-  notIn: [ExchangeWalletEventType!]
 }
 
 input NestedEnumInternalTransactionStatusFilter {
@@ -4826,8 +4546,7 @@ type Query {
     """Returns the last n elements from the list."""
     last: Int
   ): CurrencyConnection
-  exchangeWalletChange(account_type: AccountType, event_type: ExchangeWalletEventType, limit: Int = 10, orderBy: String, search: String, skip: Int = 0, user_id: String!, wallet_id: String): ExchangeWalletChangePagination
-  getConvetionPrice(currencySymbol: String, direction: ConvertionDirection): Float
+  getConvetionPrice(currencySymbolFrom: String!, currencySymbolTo: String!): Float
   mainWalletChange(currency_id: String, event_type: WalletChangeEventType, limit: Int = 10, orderBy: String, search: String, skip: Int = 0, user_id: String!, wallet_id: String): MainWalletChangePagination
   mainWallettransactionAggregate: MainWalletTransactionAggregate
   me: User
@@ -4855,7 +4574,6 @@ type Query {
   user(username: String): User
   userCommissions(limit: Int = 10, skip: Int, type: RefTransactionEventType): [RefTransaction]
   userConvertions(limit: Int = 10, skip: Int): [ConvertionTransaction]
-  userExchangeWallets: [ExchangeWallet]
   userInternalTransaction(limit: Int, skip: Int, status: InternalTransactionStatus, type: InternalTransactionType): [InternalTransaction]
   userInternalTransactionAggregate: InternalTransactionAggregate
   userMainWalletTransactions(currency_id: String, limit: Int = 10, skip: Int, type: TransactionType): [MainWalletTransaction]
@@ -6179,158 +5897,6 @@ type TokenLogin {
   token: String
 }
 
-input TournamentCreateNestedOneWithoutTournamentTransactionInput {
-  connect: TournamentWhereUniqueInput
-  connectOrCreate: TournamentCreateOrConnectWithoutTournamentTransactionInput
-  create: TournamentCreateWithoutTournamentTransactionInput
-}
-
-input TournamentCreateOrConnectWithoutTournamentTransactionInput {
-  create: TournamentCreateWithoutTournamentTransactionInput!
-  where: TournamentWhereUniqueInput!
-}
-
-input TournamentCreateWithoutTournamentTransactionInput {
-  channel: String!
-  createdAt: DateTime
-  end_date: DateTime!
-  extra_data: NullableJsonNullValueInput
-  id: String
-  isActive: Boolean
-  name: String!
-  start_date: DateTime!
-  updatedAt: DateTime
-}
-
-input TournamentTransactionCreateManyUserInput {
-  createdAt: DateTime
-  extra_data: NullableJsonNullValueInput
-  id: String
-  tournament_id: String!
-  updatedAt: DateTime
-  value: Float
-}
-
-input TournamentTransactionCreateManyUserInputEnvelope {
-  data: [TournamentTransactionCreateManyUserInput!]
-  skipDuplicates: Boolean
-}
-
-input TournamentTransactionCreateNestedManyWithoutUserInput {
-  connect: [TournamentTransactionWhereUniqueInput!]
-  connectOrCreate: [TournamentTransactionCreateOrConnectWithoutUserInput!]
-  create: [TournamentTransactionCreateWithoutUserInput!]
-  createMany: TournamentTransactionCreateManyUserInputEnvelope
-}
-
-input TournamentTransactionCreateOrConnectWithoutUserInput {
-  create: TournamentTransactionCreateWithoutUserInput!
-  where: TournamentTransactionWhereUniqueInput!
-}
-
-input TournamentTransactionCreateWithoutUserInput {
-  createdAt: DateTime
-  extra_data: NullableJsonNullValueInput
-  id: String
-  Tournament: TournamentCreateNestedOneWithoutTournamentTransactionInput!
-  updatedAt: DateTime
-  value: Float
-}
-
-input TournamentTransactionScalarWhereInput {
-  AND: [TournamentTransactionScalarWhereInput!]
-  createdAt: DateTimeFilter
-  extra_data: JsonNullableFilter
-  id: StringFilter
-  NOT: [TournamentTransactionScalarWhereInput!]
-  OR: [TournamentTransactionScalarWhereInput!]
-  tournament_id: StringFilter
-  updatedAt: DateTimeFilter
-  user_id: StringFilter
-  value: FloatFilter
-}
-
-input TournamentTransactionUpdateManyMutationInput {
-  createdAt: DateTimeFieldUpdateOperationsInput
-  extra_data: NullableJsonNullValueInput
-  id: StringFieldUpdateOperationsInput
-  updatedAt: DateTimeFieldUpdateOperationsInput
-  value: FloatFieldUpdateOperationsInput
-}
-
-input TournamentTransactionUpdateManyWithoutUserInput {
-  connect: [TournamentTransactionWhereUniqueInput!]
-  connectOrCreate: [TournamentTransactionCreateOrConnectWithoutUserInput!]
-  create: [TournamentTransactionCreateWithoutUserInput!]
-  createMany: TournamentTransactionCreateManyUserInputEnvelope
-  delete: [TournamentTransactionWhereUniqueInput!]
-  deleteMany: [TournamentTransactionScalarWhereInput!]
-  disconnect: [TournamentTransactionWhereUniqueInput!]
-  set: [TournamentTransactionWhereUniqueInput!]
-  update: [TournamentTransactionUpdateWithWhereUniqueWithoutUserInput!]
-  updateMany: [TournamentTransactionUpdateManyWithWhereWithoutUserInput!]
-  upsert: [TournamentTransactionUpsertWithWhereUniqueWithoutUserInput!]
-}
-
-input TournamentTransactionUpdateManyWithWhereWithoutUserInput {
-  data: TournamentTransactionUpdateManyMutationInput!
-  where: TournamentTransactionScalarWhereInput!
-}
-
-input TournamentTransactionUpdateWithoutUserInput {
-  createdAt: DateTimeFieldUpdateOperationsInput
-  extra_data: NullableJsonNullValueInput
-  id: StringFieldUpdateOperationsInput
-  Tournament: TournamentUpdateOneRequiredWithoutTournamentTransactionInput
-  updatedAt: DateTimeFieldUpdateOperationsInput
-  value: FloatFieldUpdateOperationsInput
-}
-
-input TournamentTransactionUpdateWithWhereUniqueWithoutUserInput {
-  data: TournamentTransactionUpdateWithoutUserInput!
-  where: TournamentTransactionWhereUniqueInput!
-}
-
-input TournamentTransactionUpsertWithWhereUniqueWithoutUserInput {
-  create: TournamentTransactionCreateWithoutUserInput!
-  update: TournamentTransactionUpdateWithoutUserInput!
-  where: TournamentTransactionWhereUniqueInput!
-}
-
-input TournamentTransactionWhereUniqueInput {
-  id: String
-}
-
-input TournamentUpdateOneRequiredWithoutTournamentTransactionInput {
-  connect: TournamentWhereUniqueInput
-  connectOrCreate: TournamentCreateOrConnectWithoutTournamentTransactionInput
-  create: TournamentCreateWithoutTournamentTransactionInput
-  update: TournamentUpdateWithoutTournamentTransactionInput
-  upsert: TournamentUpsertWithoutTournamentTransactionInput
-}
-
-input TournamentUpdateWithoutTournamentTransactionInput {
-  channel: StringFieldUpdateOperationsInput
-  createdAt: DateTimeFieldUpdateOperationsInput
-  end_date: DateTimeFieldUpdateOperationsInput
-  extra_data: NullableJsonNullValueInput
-  id: StringFieldUpdateOperationsInput
-  isActive: BoolFieldUpdateOperationsInput
-  name: StringFieldUpdateOperationsInput
-  start_date: DateTimeFieldUpdateOperationsInput
-  updatedAt: DateTimeFieldUpdateOperationsInput
-}
-
-input TournamentUpsertWithoutTournamentTransactionInput {
-  create: TournamentCreateWithoutTournamentTransactionInput!
-  update: TournamentUpdateWithoutTournamentTransactionInput!
-}
-
-input TournamentWhereUniqueInput {
-  id: String
-  name: String
-}
-
 enum TransactionApproveStatus {
   APPROVED
   REJECTED
@@ -6711,12 +6277,6 @@ input UserCreateNestedOneWithoutConvertionTransactionInput {
   create: UserCreateWithoutConvertionTransactionInput
 }
 
-input UserCreateNestedOneWithoutExchangeWalletInput {
-  connect: UserWhereUniqueInput
-  connectOrCreate: UserCreateOrConnectWithoutExchangeWalletInput
-  create: UserCreateWithoutExchangeWalletInput
-}
-
 input UserCreateNestedOneWithoutMainWalletInput {
   connect: UserWhereUniqueInput
   connectOrCreate: UserCreateOrConnectWithoutMainWalletInput
@@ -6787,11 +6347,6 @@ input UserCreateOrConnectWithoutConvertionTransactionInput {
   where: UserWhereUniqueInput!
 }
 
-input UserCreateOrConnectWithoutExchangeWalletInput {
-  create: UserCreateWithoutExchangeWalletInput!
-  where: UserWhereUniqueInput!
-}
-
 input UserCreateOrConnectWithoutMainWalletInput {
   create: UserCreateWithoutMainWalletInput!
   where: UserWhereUniqueInput!
@@ -6852,12 +6407,10 @@ input UserCreateWithoutBuyPromotionCodeTransactionInput {
   createdAt: DateTime
   Device: DeviceCreateNestedManyWithoutUserInput
   email: String!
-  ExchangeWallet: ExchangeWalletCreateNestedManyWithoutUserInput
   id: String
   InternalTransaction: InternalTransactionCreateNestedManyWithoutUserInput
   ip: String
   is_active: Boolean
-  LeaderBoard: LeaderBoardCreateNestedManyWithoutUserInput
   MainWallet: MainWalletCreateNestedManyWithoutUserInput
   MainWalletTransaction: MainWalletTransactionCreateNestedManyWithoutUserInput
   ManualTransaction: ManualTransactionCreateNestedManyWithoutUserInput
@@ -6876,7 +6429,6 @@ input UserCreateWithoutBuyPromotionCodeTransactionInput {
   role: UserRole
   Sponsor: RefCreateNestedManyWithoutSponsorInput
   Ticket: TicketCreateNestedManyWithoutUserInput
-  TournamentTransaction: TournamentTransactionCreateNestedManyWithoutUserInput
   TransactionApprover: MainWalletTransactionCreateNestedManyWithoutApproved_byInput
   TwoFactor: TwoFactorCreateNestedManyWithoutUserInput
   updatedAt: DateTime
@@ -6890,12 +6442,10 @@ input UserCreateWithoutConvertionTransactionInput {
   createdAt: DateTime
   Device: DeviceCreateNestedManyWithoutUserInput
   email: String!
-  ExchangeWallet: ExchangeWalletCreateNestedManyWithoutUserInput
   id: String
   InternalTransaction: InternalTransactionCreateNestedManyWithoutUserInput
   ip: String
   is_active: Boolean
-  LeaderBoard: LeaderBoardCreateNestedManyWithoutUserInput
   MainWallet: MainWalletCreateNestedManyWithoutUserInput
   MainWalletTransaction: MainWalletTransactionCreateNestedManyWithoutUserInput
   ManualTransaction: ManualTransactionCreateNestedManyWithoutUserInput
@@ -6914,45 +6464,6 @@ input UserCreateWithoutConvertionTransactionInput {
   role: UserRole
   Sponsor: RefCreateNestedManyWithoutSponsorInput
   Ticket: TicketCreateNestedManyWithoutUserInput
-  TournamentTransaction: TournamentTransactionCreateNestedManyWithoutUserInput
-  TransactionApprover: MainWalletTransactionCreateNestedManyWithoutApproved_byInput
-  TwoFactor: TwoFactorCreateNestedManyWithoutUserInput
-  updatedAt: DateTime
-  username: String
-  UserProfile: UserProfileCreateNestedOneWithoutUserInput
-}
-
-input UserCreateWithoutExchangeWalletInput {
-  BuyPromotionCodeTransaction: BuyPromotionCodeTransactionCreateNestedManyWithoutUserInput
-  ConvertionTransaction: ConvertionTransactionCreateNestedManyWithoutUserInput
-  country: CountryCreateNestedOneWithoutUsersInput
-  createdAt: DateTime
-  Device: DeviceCreateNestedManyWithoutUserInput
-  email: String!
-  id: String
-  InternalTransaction: InternalTransactionCreateNestedManyWithoutUserInput
-  ip: String
-  is_active: Boolean
-  LeaderBoard: LeaderBoardCreateNestedManyWithoutUserInput
-  MainWallet: MainWalletCreateNestedManyWithoutUserInput
-  MainWalletTransaction: MainWalletTransactionCreateNestedManyWithoutUserInput
-  ManualTransaction: ManualTransactionCreateNestedManyWithoutUserInput
-  name: String
-  Notification: NotificationCreateNestedManyWithoutUserInput
-  password: String!
-  permissions: UserCreatepermissionsInput
-  phoneNumber: String
-  PromotionCodeTransaction: PromotionCodeTransactionCreateNestedManyWithoutUserInput
-  PromotionTransaction: PromotionTransactionCreateNestedManyWithoutUserInput
-  Ref: RefCreateNestedOneWithoutUserInput
-  RefTransactionOfSponsor: RefTransactionCreateNestedManyWithoutSponsorInput
-  RefTransactionOfUser: RefTransactionCreateNestedManyWithoutUserInput
-  RefundTransaction: RefundTransactionCreateNestedManyWithoutUserInput
-  Reply: ReplyCreateNestedManyWithoutUserInput
-  role: UserRole
-  Sponsor: RefCreateNestedManyWithoutSponsorInput
-  Ticket: TicketCreateNestedManyWithoutUserInput
-  TournamentTransaction: TournamentTransactionCreateNestedManyWithoutUserInput
   TransactionApprover: MainWalletTransactionCreateNestedManyWithoutApproved_byInput
   TwoFactor: TwoFactorCreateNestedManyWithoutUserInput
   updatedAt: DateTime
@@ -6967,12 +6478,10 @@ input UserCreateWithoutMainWalletInput {
   createdAt: DateTime
   Device: DeviceCreateNestedManyWithoutUserInput
   email: String!
-  ExchangeWallet: ExchangeWalletCreateNestedManyWithoutUserInput
   id: String
   InternalTransaction: InternalTransactionCreateNestedManyWithoutUserInput
   ip: String
   is_active: Boolean
-  LeaderBoard: LeaderBoardCreateNestedManyWithoutUserInput
   MainWalletTransaction: MainWalletTransactionCreateNestedManyWithoutUserInput
   ManualTransaction: ManualTransactionCreateNestedManyWithoutUserInput
   name: String
@@ -6990,7 +6499,6 @@ input UserCreateWithoutMainWalletInput {
   role: UserRole
   Sponsor: RefCreateNestedManyWithoutSponsorInput
   Ticket: TicketCreateNestedManyWithoutUserInput
-  TournamentTransaction: TournamentTransactionCreateNestedManyWithoutUserInput
   TransactionApprover: MainWalletTransactionCreateNestedManyWithoutApproved_byInput
   TwoFactor: TwoFactorCreateNestedManyWithoutUserInput
   updatedAt: DateTime
@@ -7005,12 +6513,10 @@ input UserCreateWithoutMainWalletTransactionInput {
   createdAt: DateTime
   Device: DeviceCreateNestedManyWithoutUserInput
   email: String!
-  ExchangeWallet: ExchangeWalletCreateNestedManyWithoutUserInput
   id: String
   InternalTransaction: InternalTransactionCreateNestedManyWithoutUserInput
   ip: String
   is_active: Boolean
-  LeaderBoard: LeaderBoardCreateNestedManyWithoutUserInput
   MainWallet: MainWalletCreateNestedManyWithoutUserInput
   ManualTransaction: ManualTransactionCreateNestedManyWithoutUserInput
   name: String
@@ -7028,7 +6534,6 @@ input UserCreateWithoutMainWalletTransactionInput {
   role: UserRole
   Sponsor: RefCreateNestedManyWithoutSponsorInput
   Ticket: TicketCreateNestedManyWithoutUserInput
-  TournamentTransaction: TournamentTransactionCreateNestedManyWithoutUserInput
   TransactionApprover: MainWalletTransactionCreateNestedManyWithoutApproved_byInput
   TwoFactor: TwoFactorCreateNestedManyWithoutUserInput
   updatedAt: DateTime
@@ -7043,12 +6548,10 @@ input UserCreateWithoutPromotionCodeTransactionInput {
   createdAt: DateTime
   Device: DeviceCreateNestedManyWithoutUserInput
   email: String!
-  ExchangeWallet: ExchangeWalletCreateNestedManyWithoutUserInput
   id: String
   InternalTransaction: InternalTransactionCreateNestedManyWithoutUserInput
   ip: String
   is_active: Boolean
-  LeaderBoard: LeaderBoardCreateNestedManyWithoutUserInput
   MainWallet: MainWalletCreateNestedManyWithoutUserInput
   MainWalletTransaction: MainWalletTransactionCreateNestedManyWithoutUserInput
   ManualTransaction: ManualTransactionCreateNestedManyWithoutUserInput
@@ -7066,7 +6569,6 @@ input UserCreateWithoutPromotionCodeTransactionInput {
   role: UserRole
   Sponsor: RefCreateNestedManyWithoutSponsorInput
   Ticket: TicketCreateNestedManyWithoutUserInput
-  TournamentTransaction: TournamentTransactionCreateNestedManyWithoutUserInput
   TransactionApprover: MainWalletTransactionCreateNestedManyWithoutApproved_byInput
   TwoFactor: TwoFactorCreateNestedManyWithoutUserInput
   updatedAt: DateTime
@@ -7081,12 +6583,10 @@ input UserCreateWithoutRefInput {
   createdAt: DateTime
   Device: DeviceCreateNestedManyWithoutUserInput
   email: String!
-  ExchangeWallet: ExchangeWalletCreateNestedManyWithoutUserInput
   id: String
   InternalTransaction: InternalTransactionCreateNestedManyWithoutUserInput
   ip: String
   is_active: Boolean
-  LeaderBoard: LeaderBoardCreateNestedManyWithoutUserInput
   MainWallet: MainWalletCreateNestedManyWithoutUserInput
   MainWalletTransaction: MainWalletTransactionCreateNestedManyWithoutUserInput
   ManualTransaction: ManualTransactionCreateNestedManyWithoutUserInput
@@ -7104,7 +6604,6 @@ input UserCreateWithoutRefInput {
   role: UserRole
   Sponsor: RefCreateNestedManyWithoutSponsorInput
   Ticket: TicketCreateNestedManyWithoutUserInput
-  TournamentTransaction: TournamentTransactionCreateNestedManyWithoutUserInput
   TransactionApprover: MainWalletTransactionCreateNestedManyWithoutApproved_byInput
   TwoFactor: TwoFactorCreateNestedManyWithoutUserInput
   updatedAt: DateTime
@@ -7119,12 +6618,10 @@ input UserCreateWithoutRefTransactionOfSponsorInput {
   createdAt: DateTime
   Device: DeviceCreateNestedManyWithoutUserInput
   email: String!
-  ExchangeWallet: ExchangeWalletCreateNestedManyWithoutUserInput
   id: String
   InternalTransaction: InternalTransactionCreateNestedManyWithoutUserInput
   ip: String
   is_active: Boolean
-  LeaderBoard: LeaderBoardCreateNestedManyWithoutUserInput
   MainWallet: MainWalletCreateNestedManyWithoutUserInput
   MainWalletTransaction: MainWalletTransactionCreateNestedManyWithoutUserInput
   ManualTransaction: ManualTransactionCreateNestedManyWithoutUserInput
@@ -7142,7 +6639,6 @@ input UserCreateWithoutRefTransactionOfSponsorInput {
   role: UserRole
   Sponsor: RefCreateNestedManyWithoutSponsorInput
   Ticket: TicketCreateNestedManyWithoutUserInput
-  TournamentTransaction: TournamentTransactionCreateNestedManyWithoutUserInput
   TransactionApprover: MainWalletTransactionCreateNestedManyWithoutApproved_byInput
   TwoFactor: TwoFactorCreateNestedManyWithoutUserInput
   updatedAt: DateTime
@@ -7157,12 +6653,10 @@ input UserCreateWithoutRefTransactionOfUserInput {
   createdAt: DateTime
   Device: DeviceCreateNestedManyWithoutUserInput
   email: String!
-  ExchangeWallet: ExchangeWalletCreateNestedManyWithoutUserInput
   id: String
   InternalTransaction: InternalTransactionCreateNestedManyWithoutUserInput
   ip: String
   is_active: Boolean
-  LeaderBoard: LeaderBoardCreateNestedManyWithoutUserInput
   MainWallet: MainWalletCreateNestedManyWithoutUserInput
   MainWalletTransaction: MainWalletTransactionCreateNestedManyWithoutUserInput
   ManualTransaction: ManualTransactionCreateNestedManyWithoutUserInput
@@ -7180,7 +6674,6 @@ input UserCreateWithoutRefTransactionOfUserInput {
   role: UserRole
   Sponsor: RefCreateNestedManyWithoutSponsorInput
   Ticket: TicketCreateNestedManyWithoutUserInput
-  TournamentTransaction: TournamentTransactionCreateNestedManyWithoutUserInput
   TransactionApprover: MainWalletTransactionCreateNestedManyWithoutApproved_byInput
   TwoFactor: TwoFactorCreateNestedManyWithoutUserInput
   updatedAt: DateTime
@@ -7195,12 +6688,10 @@ input UserCreateWithoutReplyInput {
   createdAt: DateTime
   Device: DeviceCreateNestedManyWithoutUserInput
   email: String!
-  ExchangeWallet: ExchangeWalletCreateNestedManyWithoutUserInput
   id: String
   InternalTransaction: InternalTransactionCreateNestedManyWithoutUserInput
   ip: String
   is_active: Boolean
-  LeaderBoard: LeaderBoardCreateNestedManyWithoutUserInput
   MainWallet: MainWalletCreateNestedManyWithoutUserInput
   MainWalletTransaction: MainWalletTransactionCreateNestedManyWithoutUserInput
   ManualTransaction: ManualTransactionCreateNestedManyWithoutUserInput
@@ -7218,7 +6709,6 @@ input UserCreateWithoutReplyInput {
   role: UserRole
   Sponsor: RefCreateNestedManyWithoutSponsorInput
   Ticket: TicketCreateNestedManyWithoutUserInput
-  TournamentTransaction: TournamentTransactionCreateNestedManyWithoutUserInput
   TransactionApprover: MainWalletTransactionCreateNestedManyWithoutApproved_byInput
   TwoFactor: TwoFactorCreateNestedManyWithoutUserInput
   updatedAt: DateTime
@@ -7233,12 +6723,10 @@ input UserCreateWithoutSponsorInput {
   createdAt: DateTime
   Device: DeviceCreateNestedManyWithoutUserInput
   email: String!
-  ExchangeWallet: ExchangeWalletCreateNestedManyWithoutUserInput
   id: String
   InternalTransaction: InternalTransactionCreateNestedManyWithoutUserInput
   ip: String
   is_active: Boolean
-  LeaderBoard: LeaderBoardCreateNestedManyWithoutUserInput
   MainWallet: MainWalletCreateNestedManyWithoutUserInput
   MainWalletTransaction: MainWalletTransactionCreateNestedManyWithoutUserInput
   ManualTransaction: ManualTransactionCreateNestedManyWithoutUserInput
@@ -7256,7 +6744,6 @@ input UserCreateWithoutSponsorInput {
   Reply: ReplyCreateNestedManyWithoutUserInput
   role: UserRole
   Ticket: TicketCreateNestedManyWithoutUserInput
-  TournamentTransaction: TournamentTransactionCreateNestedManyWithoutUserInput
   TransactionApprover: MainWalletTransactionCreateNestedManyWithoutApproved_byInput
   TwoFactor: TwoFactorCreateNestedManyWithoutUserInput
   updatedAt: DateTime
@@ -7271,12 +6758,10 @@ input UserCreateWithoutTicketInput {
   createdAt: DateTime
   Device: DeviceCreateNestedManyWithoutUserInput
   email: String!
-  ExchangeWallet: ExchangeWalletCreateNestedManyWithoutUserInput
   id: String
   InternalTransaction: InternalTransactionCreateNestedManyWithoutUserInput
   ip: String
   is_active: Boolean
-  LeaderBoard: LeaderBoardCreateNestedManyWithoutUserInput
   MainWallet: MainWalletCreateNestedManyWithoutUserInput
   MainWalletTransaction: MainWalletTransactionCreateNestedManyWithoutUserInput
   ManualTransaction: ManualTransactionCreateNestedManyWithoutUserInput
@@ -7294,7 +6779,6 @@ input UserCreateWithoutTicketInput {
   Reply: ReplyCreateNestedManyWithoutUserInput
   role: UserRole
   Sponsor: RefCreateNestedManyWithoutSponsorInput
-  TournamentTransaction: TournamentTransactionCreateNestedManyWithoutUserInput
   TransactionApprover: MainWalletTransactionCreateNestedManyWithoutApproved_byInput
   TwoFactor: TwoFactorCreateNestedManyWithoutUserInput
   updatedAt: DateTime
@@ -7309,12 +6793,10 @@ input UserCreateWithoutTransactionApproverInput {
   createdAt: DateTime
   Device: DeviceCreateNestedManyWithoutUserInput
   email: String!
-  ExchangeWallet: ExchangeWalletCreateNestedManyWithoutUserInput
   id: String
   InternalTransaction: InternalTransactionCreateNestedManyWithoutUserInput
   ip: String
   is_active: Boolean
-  LeaderBoard: LeaderBoardCreateNestedManyWithoutUserInput
   MainWallet: MainWalletCreateNestedManyWithoutUserInput
   MainWalletTransaction: MainWalletTransactionCreateNestedManyWithoutUserInput
   ManualTransaction: ManualTransactionCreateNestedManyWithoutUserInput
@@ -7333,7 +6815,6 @@ input UserCreateWithoutTransactionApproverInput {
   role: UserRole
   Sponsor: RefCreateNestedManyWithoutSponsorInput
   Ticket: TicketCreateNestedManyWithoutUserInput
-  TournamentTransaction: TournamentTransactionCreateNestedManyWithoutUserInput
   TwoFactor: TwoFactorCreateNestedManyWithoutUserInput
   updatedAt: DateTime
   username: String
@@ -7473,7 +6954,6 @@ enum UserRole {
 
 type UserSumary {
   convertion: ConvertionSumaries
-  exchange: ExchangeSumary
   general: WalletGeneral
 }
 
@@ -7491,14 +6971,6 @@ input UserUpdateOneRequiredWithoutConvertionTransactionInput {
   create: UserCreateWithoutConvertionTransactionInput
   update: UserUpdateWithoutConvertionTransactionInput
   upsert: UserUpsertWithoutConvertionTransactionInput
-}
-
-input UserUpdateOneRequiredWithoutExchangeWalletInput {
-  connect: UserWhereUniqueInput
-  connectOrCreate: UserCreateOrConnectWithoutExchangeWalletInput
-  create: UserCreateWithoutExchangeWalletInput
-  update: UserUpdateWithoutExchangeWalletInput
-  upsert: UserUpsertWithoutExchangeWalletInput
 }
 
 input UserUpdateOneRequiredWithoutMainWalletInput {
@@ -7598,12 +7070,10 @@ input UserUpdateWithoutBuyPromotionCodeTransactionInput {
   createdAt: DateTimeFieldUpdateOperationsInput
   Device: DeviceUpdateManyWithoutUserInput
   email: StringFieldUpdateOperationsInput
-  ExchangeWallet: ExchangeWalletUpdateManyWithoutUserInput
   id: StringFieldUpdateOperationsInput
   InternalTransaction: InternalTransactionUpdateManyWithoutUserInput
   ip: NullableStringFieldUpdateOperationsInput
   is_active: BoolFieldUpdateOperationsInput
-  LeaderBoard: LeaderBoardUpdateManyWithoutUserInput
   MainWallet: MainWalletUpdateManyWithoutUserInput
   MainWalletTransaction: MainWalletTransactionUpdateManyWithoutUserInput
   ManualTransaction: ManualTransactionUpdateManyWithoutUserInput
@@ -7622,7 +7092,6 @@ input UserUpdateWithoutBuyPromotionCodeTransactionInput {
   role: EnumUserRoleFieldUpdateOperationsInput
   Sponsor: RefUpdateManyWithoutSponsorInput
   Ticket: TicketUpdateManyWithoutUserInput
-  TournamentTransaction: TournamentTransactionUpdateManyWithoutUserInput
   TransactionApprover: MainWalletTransactionUpdateManyWithoutApproved_byInput
   TwoFactor: TwoFactorUpdateManyWithoutUserInput
   updatedAt: DateTimeFieldUpdateOperationsInput
@@ -7636,12 +7105,10 @@ input UserUpdateWithoutConvertionTransactionInput {
   createdAt: DateTimeFieldUpdateOperationsInput
   Device: DeviceUpdateManyWithoutUserInput
   email: StringFieldUpdateOperationsInput
-  ExchangeWallet: ExchangeWalletUpdateManyWithoutUserInput
   id: StringFieldUpdateOperationsInput
   InternalTransaction: InternalTransactionUpdateManyWithoutUserInput
   ip: NullableStringFieldUpdateOperationsInput
   is_active: BoolFieldUpdateOperationsInput
-  LeaderBoard: LeaderBoardUpdateManyWithoutUserInput
   MainWallet: MainWalletUpdateManyWithoutUserInput
   MainWalletTransaction: MainWalletTransactionUpdateManyWithoutUserInput
   ManualTransaction: ManualTransactionUpdateManyWithoutUserInput
@@ -7660,45 +7127,6 @@ input UserUpdateWithoutConvertionTransactionInput {
   role: EnumUserRoleFieldUpdateOperationsInput
   Sponsor: RefUpdateManyWithoutSponsorInput
   Ticket: TicketUpdateManyWithoutUserInput
-  TournamentTransaction: TournamentTransactionUpdateManyWithoutUserInput
-  TransactionApprover: MainWalletTransactionUpdateManyWithoutApproved_byInput
-  TwoFactor: TwoFactorUpdateManyWithoutUserInput
-  updatedAt: DateTimeFieldUpdateOperationsInput
-  username: NullableStringFieldUpdateOperationsInput
-  UserProfile: UserProfileUpdateOneWithoutUserInput
-}
-
-input UserUpdateWithoutExchangeWalletInput {
-  BuyPromotionCodeTransaction: BuyPromotionCodeTransactionUpdateManyWithoutUserInput
-  ConvertionTransaction: ConvertionTransactionUpdateManyWithoutUserInput
-  country: CountryUpdateOneWithoutUsersInput
-  createdAt: DateTimeFieldUpdateOperationsInput
-  Device: DeviceUpdateManyWithoutUserInput
-  email: StringFieldUpdateOperationsInput
-  id: StringFieldUpdateOperationsInput
-  InternalTransaction: InternalTransactionUpdateManyWithoutUserInput
-  ip: NullableStringFieldUpdateOperationsInput
-  is_active: BoolFieldUpdateOperationsInput
-  LeaderBoard: LeaderBoardUpdateManyWithoutUserInput
-  MainWallet: MainWalletUpdateManyWithoutUserInput
-  MainWalletTransaction: MainWalletTransactionUpdateManyWithoutUserInput
-  ManualTransaction: ManualTransactionUpdateManyWithoutUserInput
-  name: NullableStringFieldUpdateOperationsInput
-  Notification: NotificationUpdateManyWithoutUserInput
-  password: StringFieldUpdateOperationsInput
-  permissions: UserUpdatepermissionsInput
-  phoneNumber: NullableStringFieldUpdateOperationsInput
-  PromotionCodeTransaction: PromotionCodeTransactionUpdateManyWithoutUserInput
-  PromotionTransaction: PromotionTransactionUpdateManyWithoutUserInput
-  Ref: RefUpdateOneWithoutUserInput
-  RefTransactionOfSponsor: RefTransactionUpdateManyWithoutSponsorInput
-  RefTransactionOfUser: RefTransactionUpdateManyWithoutUserInput
-  RefundTransaction: RefundTransactionUpdateManyWithoutUserInput
-  Reply: ReplyUpdateManyWithoutUserInput
-  role: EnumUserRoleFieldUpdateOperationsInput
-  Sponsor: RefUpdateManyWithoutSponsorInput
-  Ticket: TicketUpdateManyWithoutUserInput
-  TournamentTransaction: TournamentTransactionUpdateManyWithoutUserInput
   TransactionApprover: MainWalletTransactionUpdateManyWithoutApproved_byInput
   TwoFactor: TwoFactorUpdateManyWithoutUserInput
   updatedAt: DateTimeFieldUpdateOperationsInput
@@ -7713,12 +7141,10 @@ input UserUpdateWithoutMainWalletInput {
   createdAt: DateTimeFieldUpdateOperationsInput
   Device: DeviceUpdateManyWithoutUserInput
   email: StringFieldUpdateOperationsInput
-  ExchangeWallet: ExchangeWalletUpdateManyWithoutUserInput
   id: StringFieldUpdateOperationsInput
   InternalTransaction: InternalTransactionUpdateManyWithoutUserInput
   ip: NullableStringFieldUpdateOperationsInput
   is_active: BoolFieldUpdateOperationsInput
-  LeaderBoard: LeaderBoardUpdateManyWithoutUserInput
   MainWalletTransaction: MainWalletTransactionUpdateManyWithoutUserInput
   ManualTransaction: ManualTransactionUpdateManyWithoutUserInput
   name: NullableStringFieldUpdateOperationsInput
@@ -7736,7 +7162,6 @@ input UserUpdateWithoutMainWalletInput {
   role: EnumUserRoleFieldUpdateOperationsInput
   Sponsor: RefUpdateManyWithoutSponsorInput
   Ticket: TicketUpdateManyWithoutUserInput
-  TournamentTransaction: TournamentTransactionUpdateManyWithoutUserInput
   TransactionApprover: MainWalletTransactionUpdateManyWithoutApproved_byInput
   TwoFactor: TwoFactorUpdateManyWithoutUserInput
   updatedAt: DateTimeFieldUpdateOperationsInput
@@ -7751,12 +7176,10 @@ input UserUpdateWithoutMainWalletTransactionInput {
   createdAt: DateTimeFieldUpdateOperationsInput
   Device: DeviceUpdateManyWithoutUserInput
   email: StringFieldUpdateOperationsInput
-  ExchangeWallet: ExchangeWalletUpdateManyWithoutUserInput
   id: StringFieldUpdateOperationsInput
   InternalTransaction: InternalTransactionUpdateManyWithoutUserInput
   ip: NullableStringFieldUpdateOperationsInput
   is_active: BoolFieldUpdateOperationsInput
-  LeaderBoard: LeaderBoardUpdateManyWithoutUserInput
   MainWallet: MainWalletUpdateManyWithoutUserInput
   ManualTransaction: ManualTransactionUpdateManyWithoutUserInput
   name: NullableStringFieldUpdateOperationsInput
@@ -7774,7 +7197,6 @@ input UserUpdateWithoutMainWalletTransactionInput {
   role: EnumUserRoleFieldUpdateOperationsInput
   Sponsor: RefUpdateManyWithoutSponsorInput
   Ticket: TicketUpdateManyWithoutUserInput
-  TournamentTransaction: TournamentTransactionUpdateManyWithoutUserInput
   TransactionApprover: MainWalletTransactionUpdateManyWithoutApproved_byInput
   TwoFactor: TwoFactorUpdateManyWithoutUserInput
   updatedAt: DateTimeFieldUpdateOperationsInput
@@ -7789,12 +7211,10 @@ input UserUpdateWithoutPromotionCodeTransactionInput {
   createdAt: DateTimeFieldUpdateOperationsInput
   Device: DeviceUpdateManyWithoutUserInput
   email: StringFieldUpdateOperationsInput
-  ExchangeWallet: ExchangeWalletUpdateManyWithoutUserInput
   id: StringFieldUpdateOperationsInput
   InternalTransaction: InternalTransactionUpdateManyWithoutUserInput
   ip: NullableStringFieldUpdateOperationsInput
   is_active: BoolFieldUpdateOperationsInput
-  LeaderBoard: LeaderBoardUpdateManyWithoutUserInput
   MainWallet: MainWalletUpdateManyWithoutUserInput
   MainWalletTransaction: MainWalletTransactionUpdateManyWithoutUserInput
   ManualTransaction: ManualTransactionUpdateManyWithoutUserInput
@@ -7812,7 +7232,6 @@ input UserUpdateWithoutPromotionCodeTransactionInput {
   role: EnumUserRoleFieldUpdateOperationsInput
   Sponsor: RefUpdateManyWithoutSponsorInput
   Ticket: TicketUpdateManyWithoutUserInput
-  TournamentTransaction: TournamentTransactionUpdateManyWithoutUserInput
   TransactionApprover: MainWalletTransactionUpdateManyWithoutApproved_byInput
   TwoFactor: TwoFactorUpdateManyWithoutUserInput
   updatedAt: DateTimeFieldUpdateOperationsInput
@@ -7827,12 +7246,10 @@ input UserUpdateWithoutRefInput {
   createdAt: DateTimeFieldUpdateOperationsInput
   Device: DeviceUpdateManyWithoutUserInput
   email: StringFieldUpdateOperationsInput
-  ExchangeWallet: ExchangeWalletUpdateManyWithoutUserInput
   id: StringFieldUpdateOperationsInput
   InternalTransaction: InternalTransactionUpdateManyWithoutUserInput
   ip: NullableStringFieldUpdateOperationsInput
   is_active: BoolFieldUpdateOperationsInput
-  LeaderBoard: LeaderBoardUpdateManyWithoutUserInput
   MainWallet: MainWalletUpdateManyWithoutUserInput
   MainWalletTransaction: MainWalletTransactionUpdateManyWithoutUserInput
   ManualTransaction: ManualTransactionUpdateManyWithoutUserInput
@@ -7850,7 +7267,6 @@ input UserUpdateWithoutRefInput {
   role: EnumUserRoleFieldUpdateOperationsInput
   Sponsor: RefUpdateManyWithoutSponsorInput
   Ticket: TicketUpdateManyWithoutUserInput
-  TournamentTransaction: TournamentTransactionUpdateManyWithoutUserInput
   TransactionApprover: MainWalletTransactionUpdateManyWithoutApproved_byInput
   TwoFactor: TwoFactorUpdateManyWithoutUserInput
   updatedAt: DateTimeFieldUpdateOperationsInput
@@ -7865,12 +7281,10 @@ input UserUpdateWithoutRefTransactionOfSponsorInput {
   createdAt: DateTimeFieldUpdateOperationsInput
   Device: DeviceUpdateManyWithoutUserInput
   email: StringFieldUpdateOperationsInput
-  ExchangeWallet: ExchangeWalletUpdateManyWithoutUserInput
   id: StringFieldUpdateOperationsInput
   InternalTransaction: InternalTransactionUpdateManyWithoutUserInput
   ip: NullableStringFieldUpdateOperationsInput
   is_active: BoolFieldUpdateOperationsInput
-  LeaderBoard: LeaderBoardUpdateManyWithoutUserInput
   MainWallet: MainWalletUpdateManyWithoutUserInput
   MainWalletTransaction: MainWalletTransactionUpdateManyWithoutUserInput
   ManualTransaction: ManualTransactionUpdateManyWithoutUserInput
@@ -7888,7 +7302,6 @@ input UserUpdateWithoutRefTransactionOfSponsorInput {
   role: EnumUserRoleFieldUpdateOperationsInput
   Sponsor: RefUpdateManyWithoutSponsorInput
   Ticket: TicketUpdateManyWithoutUserInput
-  TournamentTransaction: TournamentTransactionUpdateManyWithoutUserInput
   TransactionApprover: MainWalletTransactionUpdateManyWithoutApproved_byInput
   TwoFactor: TwoFactorUpdateManyWithoutUserInput
   updatedAt: DateTimeFieldUpdateOperationsInput
@@ -7903,12 +7316,10 @@ input UserUpdateWithoutRefTransactionOfUserInput {
   createdAt: DateTimeFieldUpdateOperationsInput
   Device: DeviceUpdateManyWithoutUserInput
   email: StringFieldUpdateOperationsInput
-  ExchangeWallet: ExchangeWalletUpdateManyWithoutUserInput
   id: StringFieldUpdateOperationsInput
   InternalTransaction: InternalTransactionUpdateManyWithoutUserInput
   ip: NullableStringFieldUpdateOperationsInput
   is_active: BoolFieldUpdateOperationsInput
-  LeaderBoard: LeaderBoardUpdateManyWithoutUserInput
   MainWallet: MainWalletUpdateManyWithoutUserInput
   MainWalletTransaction: MainWalletTransactionUpdateManyWithoutUserInput
   ManualTransaction: ManualTransactionUpdateManyWithoutUserInput
@@ -7926,7 +7337,6 @@ input UserUpdateWithoutRefTransactionOfUserInput {
   role: EnumUserRoleFieldUpdateOperationsInput
   Sponsor: RefUpdateManyWithoutSponsorInput
   Ticket: TicketUpdateManyWithoutUserInput
-  TournamentTransaction: TournamentTransactionUpdateManyWithoutUserInput
   TransactionApprover: MainWalletTransactionUpdateManyWithoutApproved_byInput
   TwoFactor: TwoFactorUpdateManyWithoutUserInput
   updatedAt: DateTimeFieldUpdateOperationsInput
@@ -7941,12 +7351,10 @@ input UserUpdateWithoutReplyInput {
   createdAt: DateTimeFieldUpdateOperationsInput
   Device: DeviceUpdateManyWithoutUserInput
   email: StringFieldUpdateOperationsInput
-  ExchangeWallet: ExchangeWalletUpdateManyWithoutUserInput
   id: StringFieldUpdateOperationsInput
   InternalTransaction: InternalTransactionUpdateManyWithoutUserInput
   ip: NullableStringFieldUpdateOperationsInput
   is_active: BoolFieldUpdateOperationsInput
-  LeaderBoard: LeaderBoardUpdateManyWithoutUserInput
   MainWallet: MainWalletUpdateManyWithoutUserInput
   MainWalletTransaction: MainWalletTransactionUpdateManyWithoutUserInput
   ManualTransaction: ManualTransactionUpdateManyWithoutUserInput
@@ -7964,7 +7372,6 @@ input UserUpdateWithoutReplyInput {
   role: EnumUserRoleFieldUpdateOperationsInput
   Sponsor: RefUpdateManyWithoutSponsorInput
   Ticket: TicketUpdateManyWithoutUserInput
-  TournamentTransaction: TournamentTransactionUpdateManyWithoutUserInput
   TransactionApprover: MainWalletTransactionUpdateManyWithoutApproved_byInput
   TwoFactor: TwoFactorUpdateManyWithoutUserInput
   updatedAt: DateTimeFieldUpdateOperationsInput
@@ -7979,12 +7386,10 @@ input UserUpdateWithoutSponsorInput {
   createdAt: DateTimeFieldUpdateOperationsInput
   Device: DeviceUpdateManyWithoutUserInput
   email: StringFieldUpdateOperationsInput
-  ExchangeWallet: ExchangeWalletUpdateManyWithoutUserInput
   id: StringFieldUpdateOperationsInput
   InternalTransaction: InternalTransactionUpdateManyWithoutUserInput
   ip: NullableStringFieldUpdateOperationsInput
   is_active: BoolFieldUpdateOperationsInput
-  LeaderBoard: LeaderBoardUpdateManyWithoutUserInput
   MainWallet: MainWalletUpdateManyWithoutUserInput
   MainWalletTransaction: MainWalletTransactionUpdateManyWithoutUserInput
   ManualTransaction: ManualTransactionUpdateManyWithoutUserInput
@@ -8002,7 +7407,6 @@ input UserUpdateWithoutSponsorInput {
   Reply: ReplyUpdateManyWithoutUserInput
   role: EnumUserRoleFieldUpdateOperationsInput
   Ticket: TicketUpdateManyWithoutUserInput
-  TournamentTransaction: TournamentTransactionUpdateManyWithoutUserInput
   TransactionApprover: MainWalletTransactionUpdateManyWithoutApproved_byInput
   TwoFactor: TwoFactorUpdateManyWithoutUserInput
   updatedAt: DateTimeFieldUpdateOperationsInput
@@ -8017,12 +7421,10 @@ input UserUpdateWithoutTicketInput {
   createdAt: DateTimeFieldUpdateOperationsInput
   Device: DeviceUpdateManyWithoutUserInput
   email: StringFieldUpdateOperationsInput
-  ExchangeWallet: ExchangeWalletUpdateManyWithoutUserInput
   id: StringFieldUpdateOperationsInput
   InternalTransaction: InternalTransactionUpdateManyWithoutUserInput
   ip: NullableStringFieldUpdateOperationsInput
   is_active: BoolFieldUpdateOperationsInput
-  LeaderBoard: LeaderBoardUpdateManyWithoutUserInput
   MainWallet: MainWalletUpdateManyWithoutUserInput
   MainWalletTransaction: MainWalletTransactionUpdateManyWithoutUserInput
   ManualTransaction: ManualTransactionUpdateManyWithoutUserInput
@@ -8040,7 +7442,6 @@ input UserUpdateWithoutTicketInput {
   Reply: ReplyUpdateManyWithoutUserInput
   role: EnumUserRoleFieldUpdateOperationsInput
   Sponsor: RefUpdateManyWithoutSponsorInput
-  TournamentTransaction: TournamentTransactionUpdateManyWithoutUserInput
   TransactionApprover: MainWalletTransactionUpdateManyWithoutApproved_byInput
   TwoFactor: TwoFactorUpdateManyWithoutUserInput
   updatedAt: DateTimeFieldUpdateOperationsInput
@@ -8055,12 +7456,10 @@ input UserUpdateWithoutTransactionApproverInput {
   createdAt: DateTimeFieldUpdateOperationsInput
   Device: DeviceUpdateManyWithoutUserInput
   email: StringFieldUpdateOperationsInput
-  ExchangeWallet: ExchangeWalletUpdateManyWithoutUserInput
   id: StringFieldUpdateOperationsInput
   InternalTransaction: InternalTransactionUpdateManyWithoutUserInput
   ip: NullableStringFieldUpdateOperationsInput
   is_active: BoolFieldUpdateOperationsInput
-  LeaderBoard: LeaderBoardUpdateManyWithoutUserInput
   MainWallet: MainWalletUpdateManyWithoutUserInput
   MainWalletTransaction: MainWalletTransactionUpdateManyWithoutUserInput
   ManualTransaction: ManualTransactionUpdateManyWithoutUserInput
@@ -8079,7 +7478,6 @@ input UserUpdateWithoutTransactionApproverInput {
   role: EnumUserRoleFieldUpdateOperationsInput
   Sponsor: RefUpdateManyWithoutSponsorInput
   Ticket: TicketUpdateManyWithoutUserInput
-  TournamentTransaction: TournamentTransactionUpdateManyWithoutUserInput
   TwoFactor: TwoFactorUpdateManyWithoutUserInput
   updatedAt: DateTimeFieldUpdateOperationsInput
   username: NullableStringFieldUpdateOperationsInput
@@ -8094,11 +7492,6 @@ input UserUpsertWithoutBuyPromotionCodeTransactionInput {
 input UserUpsertWithoutConvertionTransactionInput {
   create: UserCreateWithoutConvertionTransactionInput!
   update: UserUpdateWithoutConvertionTransactionInput!
-}
-
-input UserUpsertWithoutExchangeWalletInput {
-  create: UserCreateWithoutExchangeWalletInput!
-  update: UserUpdateWithoutExchangeWalletInput!
 }
 
 input UserUpsertWithoutMainWalletInput {
@@ -8159,8 +7552,10 @@ input UserWhereUniqueInput {
 
 enum WalletChangeEventType {
   CONVERT
+  DEPOSIT
   MANUAL
   TRANSACTION
+  WITHDRAW
 }
 
 type WalletGeneral {

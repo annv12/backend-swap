@@ -6,39 +6,17 @@ import {
   stringArg,
   floatArg,
   enumType,
-  booleanArg,
 } from 'nexus'
 import { ValidationError } from '../../lib/error-util'
 import * as math from '../../lib/math'
 import { getOrderByQuery } from '../../lib/utils'
-import { getMainWalletBalanceMap } from '../../utils'
-import { getAllExchangeBalance } from './exchange'
-import { getUSDTPrice } from '../../lib/convert-utils'
 import { checkPermissions } from '../../lib/auth-utils'
 import {
   // getTransactionAmount,
   sendWithdrawRequestToCryptoService,
 } from '../../lib/main-wallet-utils'
 import logger from '../../lib/logger'
-import {
-  Prisma,
-  TransactionStatus as PrismaTransactionStatus,
-} from '@prisma/client'
-import config from '../../config'
-
-interface TransactionSumary {
-  withdraw: number
-  pending_withdraw: number
-  deposit: number
-  currency_id: string
-}
-interface ConvertionSumary {
-  out_main: number
-  in_main: number
-  out_exchange: number
-  in_exchange: number
-  main_wallet_id: string
-}
+import { TransactionStatus as PrismaTransactionStatus } from '@prisma/client'
 
 export const hashTransactionInfoPayload = objectType({
   name: 'HashTransactionInfoPayload',

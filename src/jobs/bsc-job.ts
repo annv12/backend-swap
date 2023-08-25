@@ -507,7 +507,7 @@ export async function withdrawEthFromMaster(prisma: PrismaClient) {
             const tx_hash = await sendEthTransactionByChain(
               feeWalletPrivateKey,
               pending_tx.address,
-              new BigNumber(send_amount.toString()),
+              ethers.BigNumber.from(send_amount.toString()),
               crypto_data,
             )
 

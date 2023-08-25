@@ -1,10 +1,9 @@
 import { objectType, extendType, intArg, stringArg, floatArg } from 'nexus'
-import { getExchangeWalletBalance, getMainWalletBalance } from '../utils'
+import { getMainWalletBalance } from '../utils'
 import {
   generateWalletAddress,
   verifyMainWallet,
   calculateFee,
-  generateWalletAddressV2,
   sendWithdrawRequestToCryptoService,
 } from '../lib/main-wallet-utils'
 import { customAlphabet } from 'nanoid'
@@ -13,14 +12,12 @@ import { checkTokenTwoFaEnabled } from '../lib/auth-utils'
 import {
   notifyThresholdWithdrawTransaction,
   pushNotication,
-  notifyTele,
 } from '../lib/notify-utils'
-import { getConvertPrice } from '../lib/convert-utils'
 import { ValidationError } from '../lib/error-util'
 import { format } from 'date-fns'
 import math from '../lib/math'
-import { watchAddress, watchBscAddress } from '../lib/moralis-utils'
 import { moralisStreamAddress } from '../lib/moralis-v2-utils'
+import { WalletChangeEventType } from '@prisma/client'
 
 const nanoid = customAlphabet('1234567890QWERTYUIOPASDFGHJKLZXCVBNM', 16)
 
@@ -39,26 +36,6 @@ export const MainWallet = objectType({
     t.model.Currency()
     t.model.MainWalletAddress()
     t.float('balance', { nullable: true })
-  },
-})
-
-export const ExchangeWallet = objectType({
-  name: 'ExchangeWallet',
-  definition: (t) => {
-    t.model.id()
-    t.model.createdAt()
-    t.model.updatedAt()
-    t.model.type()
-    t.model.is_frozen()
-    t.model.base_balance()
-    t.float('balance', {
-      resolve: async (root, arg, ctx) => {
-        const wallet = await ctx.prisma.exchangeWallet.findUnique({
-          where: { id: root.id },
-        })
-        return await getExchangeWalletBalance(wallet, ctx.prisma)
-      },
-    })
   },
 })
 
@@ -138,40 +115,6 @@ export const createWalletRequest = extendType({
           const balance = await getMainWalletBalance(w, ctx.prisma)
           return { ...w, balance }
         }
-      },
-    })
-
-    t.field('refillDemoWallet', {
-      type: 'ExchangeWallet',
-      args: {},
-      resolve: async (_, args, ctx) => {
-        const userExWallets = await ctx.prisma.exchangeWallet.findMany({
-          where: {
-            user_id: ctx.user,
-          },
-        })
-
-        const isDemoAccount =
-          userExWallets.filter((i) => i.type === 'DEMO').length > 1
-        const demoMain = userExWallets.sort(
-          (a, b) => a.createdAt.getTime() - b.createdAt.getTime(),
-        )
-
-        const userWallet = isDemoAccount
-          ? demoMain[0]
-          : userExWallets.find((i) => i.type === 'DEMO')
-
-        const demoWalletUpdated = await ctx.prisma.exchangeWallet.update({
-          where: {
-            id: userWallet.id,
-          },
-          data: {
-            base_balance: 1000,
-            balance_cache_datetime: new Date().toISOString(),
-          },
-        })
-
-        return { ...demoWalletUpdated, balance: demoWalletUpdated.base_balance }
       },
     })
   },
@@ -426,7 +369,7 @@ export const withdraw = extendType({
             username: user.username,
             symbol: currency.symbol,
             amount: amount - fee,
-            address
+            address,
           })
 
           return { success: true }
@@ -625,222 +568,78 @@ export const withdraw = extendType({
         }
       },
     })
-
-    t.field('exchangeWalletInternalTransfer', {
-      type: 'WithdrawPayload',
+    t.field('depositWallet', {
+      type: 'Boolean',
       args: {
-        receiver: stringArg({ required: true }),
         amount: floatArg({ required: true }),
-        otpToken: stringArg({ required: true }),
+        symbol: stringArg({ required: true }),
       },
-      resolve: async (_, { amount, receiver, otpToken }, ctx) => {
-        // throw Error(`Internal Transfer is DISABLED`)
-        // if (!locks.has(`exchange_wallet_transfer_${ctx.user}`)) {
-        //   locks.set(`exchange_wallet_transfer_${ctx.user}`, new Mutex())
+      resolve: async (parent, { amount, symbol }, ctx) => {
+        // if (!withdrawLock.has(`withdraw_${ctx.user}`)) {
+        //   withdrawLock.set(`withdraw_${ctx.user}`, new Mutex())
         // }
-        // const release = await locks
-        //   .get(`exchange_wallet_transfer_${ctx.user}`)
-        //   .acquire()
-        const lock = await ctx.redlock.lock(
-          `lock:exchange_wallet_transfer:${ctx.user}`,
-          3000,
-        )
+        // const release = await withdrawLock.get(`withdraw_${ctx.user}`).acquire()
+        const lock = await ctx.redlock.lock(`lock:withdraw:${ctx.user}`, 3000)
 
         try {
-          // check exist reciever
-          const recieverUser = await ctx.prisma.user.findUnique({
+          const currency = await ctx.prisma.currency.findFirst({
             where: {
-              username: receiver,
-            },
-            include: {
-              UserProfile: true,
+              symbol,
             },
           })
-
-          if (!recieverUser) {
+          if (!currency) {
             throw new ValidationError({
-              message: ctx.i18n.__('Cannot find recipient'),
+              message: ctx.i18n.__('Currency not found'),
             })
           }
-
-          // check 2fa is enable and verify 2fa, bypass if admin config
-          if (!recieverUser.UserProfile.admin_config_bypass_2fa) {
-            await checkTokenTwoFaEnabled(otpToken, ctx.user, ctx.prisma, ctx.i18n)
-          }
-
-          if (amount <= 0) {
-            throw new ValidationError({
-              message: ctx.i18n.__('Amount too low'),
-            })
-          }
-          // find sender info
-          const senderUser = await ctx.prisma.user.findUnique({
-            where: { id: ctx.user },
-            include: {
-              UserProfile: true,
-            },
-          })
-
-          // check exist sender wallet
-          const senderWallets = await ctx.prisma.exchangeWallet.findMany({
+          let mainWallet = await ctx.prisma.mainWallet.findFirst({
             where: {
               user_id: ctx.user,
-              type: 'MAIN',
+              currency_id: currency.id,
             },
-            take: 1,
           })
-          if (!senderWallets || senderWallets.length === 0) {
+
+          if (!mainWallet) {
             throw new ValidationError({
-              message: ctx.i18n.__('Cannot find wallet'),
+              message: ctx.i18n.__('Wallet not found'),
             })
           }
-          const senderWallet = senderWallets[0]
+          const usdt_tx = await ctx.prisma.mainWalletTransaction.create({
+            data: {
+              user_id: ctx.user,
+              currency_id: currency.id,
+              amount: Number(amount),
+              tx_type: 'DEPOSIT',
+              tx_hash: 'transactionHash',
+              fee: 0,
+              status: 'SUCCEED',
+              address: 'address',
+            },
+            include: {
+              User: true,
+              Currency: true,
+            },
+          })
 
-          if (senderWallet.is_frozen) {
-            throw new ValidationError({
-              message: ctx.i18n.__(`Your wallet is FROZEN`),
-            })
-          }
+          await ctx.prisma.mainWalletChange.create({
+            data: {
+              main_wallet_id: mainWallet.id,
+              event_type: WalletChangeEventType.DEPOSIT,
+              event_id: usdt_tx.id,
+              amount: usdt_tx.amount,
+            },
+          })
 
-          const senderWalletBalance = await getExchangeWalletBalance(
-            senderWallet,
-            ctx.prisma,
-          )
-          logger.info(
-            `[Wallet.exchangeWalletInternalTransfer] Sender wallet balance: ${senderWalletBalance}`,
-          )
-          // check balance
-          if (senderWalletBalance < amount) {
-            throw new ValidationError({
-              message: ctx.i18n.__('not_enough_balance'),
-            })
-          }
-
-          // check reciever is same with username of sender
-          if (senderUser.username === receiver) {
-            throw new ValidationError({
-              message: ctx.i18n.__("Can't transfer yourself"),
-            })
-          }
-
-          logger.info(
-            `[Wallet.exchangeWalletInternalTransfer] User ${senderUser.email} send ${amount} to ${recieverUser.email}`,
-          )
-          // check user is agency
-          // if (
-          //   recieverUser.UserProfile.is_agency !== true &&
-          //   senderUser.UserProfile?.is_agency !== true
-          // ) {
-          //   throw new ValidationError({
-          //     message: ctx.i18n.__('User is not agency'),
-          //   })
-          // }
-
-          // check exist receiver wallet
-          const recieverWallets = await ctx.prisma.exchangeWallet.findMany({
+          await ctx.prisma.mainWalletAddress.updateMany({
             where: {
-              user_id: recieverUser.id,
-              type: 'MAIN',
+              main_wallet_id: mainWallet.id,
             },
-            take: 1,
-          })
-          const recieverWallet = recieverWallets[0]
-          if (!recieverWallet)
-            throw new ValidationError({
-              message: ctx.i18n.__('Cannot find receiver wallet'),
-            })
-          logger.info(
-            `[Wallet.exchangeWalletInternalTransfer] Receiver wallet: `,
-            recieverWallet,
-          )
-
-          if (recieverWallet.is_frozen) {
-            throw new ValidationError({
-              message: ctx.i18n.__(`Your wallet is FROZEN`),
-            })
-          }
-
-          // create exchagne transaction
-          const transactionId = nanoid()
-          const sendTransaction = ctx.prisma.internalTransaction.create({
             data: {
-              User: {
-                connect: {
-                  id: ctx.user,
-                },
-              },
-              amount,
-              tx_type: 'SEND',
-              tx_hash: transactionId,
-              address: recieverUser.username || recieverUser.email,
-              status: 'SUCCEED',
-            },
-          })
-          const recieveTransaction = ctx.prisma.internalTransaction.create({
-            data: {
-              User: {
-                connect: {
-                  id: recieverUser.id,
-                },
-              },
-              amount,
-              tx_type: 'RECEIVE',
-              tx_hash: transactionId,
-              address: senderUser.username || senderUser.email,
-              status: 'SUCCEED',
+              need_sync_balance: true,
             },
           })
 
-          const [sendTxResult, recieveTxResult] = await ctx.prisma.$transaction(
-            [sendTransaction, recieveTransaction],
-          )
-
-          // create exchagne wallet change
-          const createSenderWalletChange =
-            ctx.prisma.exchangeWalletChange.create({
-              data: {
-                ExchangeWallet: {
-                  connect: {
-                    id: senderWallet.id,
-                  },
-                },
-                amount: -amount,
-                event_id: sendTxResult.id,
-                event_type: 'INTERNAL_TRANSACTION',
-              },
-            })
-
-          const createRecieverWalletChange =
-            ctx.prisma.exchangeWalletChange.create({
-              data: {
-                ExchangeWallet: {
-                  connect: {
-                    id: recieverWallet.id,
-                  },
-                },
-                amount,
-                event_id: recieveTxResult.id,
-                event_type: 'INTERNAL_TRANSACTION',
-              },
-            })
-
-          await ctx.prisma.$transaction([
-            createSenderWalletChange,
-            createRecieverWalletChange,
-          ])
-          pushNotication(
-            'TRANSFER',
-            ctx,
-            null,
-            `You have transfered [${amount}] [USD] to [${
-              recieverUser.username
-            }] at [${format(
-              new Date(),
-              'HH:mm, dd/MM/yyyy',
-            )}].\n\nIf this activity is not your own, please contact us immediately.`,
-          )
-
-          return { success: true }
+          return true
         } catch (error) {
           return error
         } finally {
@@ -881,32 +680,6 @@ export const ListUserWallets = extendType({
         })
 
         return await Promise.all(res)
-      },
-    })
-
-    t.list.field('userExchangeWallets', {
-      type: 'ExchangeWallet',
-      // args: {},
-      resolve: async (_, args, ctx) => {
-        const wallets = await ctx.prisma.exchangeWallet.findMany({
-          where: {
-            user_id: ctx.user,
-          },
-        })
-
-        const result = wallets.map(async (i) => {
-          const balance = await getExchangeWalletBalance(i, ctx.prisma)
-          return {
-            ...i,
-            balance,
-          }
-        })
-
-        const walletsWithBalance = await Promise.all(result)
-
-        return walletsWithBalance.sort(
-          (a, b) => a.createdAt.getTime() - b.createdAt.getTime(),
-        )
       },
     })
   },

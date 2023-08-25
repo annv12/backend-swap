@@ -55,7 +55,7 @@ model User {
   permissions              Permission[]
   MainWalletTransaction    MainWalletTransaction[]
   TransactionApprover      MainWalletTransaction[]    @relation("approved_by_user")
-  ExchangeWallet           ExchangeWallet[]
+  // ExchangeWallet           ExchangeWallet[]
   MainWallet               MainWallet[]
   ConvertionTransaction    ConvertionTransaction[]
   Sponsor                  Ref[]                      @relation("sponsor")
@@ -142,19 +142,20 @@ model UserProfile {
 
 // For Main Wallet
 model MainWallet {
-  id                     String                  @id @default(uuid())
-  createdAt              DateTime                @default(now()) @map(name: "created_at")
-  updatedAt              DateTime                @updatedAt @map(name: "updated_at")
-  base_balance           Float                   @default(0)
-  balance_cache_datetime DateTime                @default(now())
-  is_frozen              Boolean                 @default(false)
-  currency_id            String
-  Currency               Currency                @relation(fields: [currency_id], references: [id])
-  User                   User                    @relation(fields: [user_id], references: [id])
-  user_id                String
-  ConvertionTransaction  ConvertionTransaction[]
-  MainWalletChange       MainWalletChange[]
-  MainWalletAddress      MainWalletAddress?
+  id                        String                  @id @default(uuid())
+  createdAt                 DateTime                @default(now()) @map(name: "created_at")
+  updatedAt                 DateTime                @updatedAt @map(name: "updated_at")
+  base_balance              Float                   @default(0)
+  balance_cache_datetime    DateTime                @default(now())
+  is_frozen                 Boolean                 @default(false)
+  currency_id               String
+  Currency                  Currency                @relation(fields: [currency_id], references: [id])
+  User                      User                    @relation(fields: [user_id], references: [id])
+  user_id                   String
+  MainWalletChange          MainWalletChange[]
+  MainWalletAddress         MainWalletAddress?
+  ConvertionTransactionFrom ConvertionTransaction[] @relation("wallet_from")
+  ConvertionTransactionTo   ConvertionTransaction[] @relation("wallet_to")
 
   @@map(name: "main_wallet")
 }
@@ -205,10 +206,11 @@ model Currency {
   admin_config_total_volume      Float?                  @default(0)
   admin_config_volume_cache_time DateTime?               @default(now())
   MainWalletTransaction          MainWalletTransaction[]
-  ConvertionPair                 ConvertionPair[]
+  ConvertionPairFrom             ConvertionPair[]        @relation("currency_from")
   MainWallet                     MainWallet[]
   MasterWallet                   MasterWallet[]
   TransactionMaster              TransactionMaster[]
+  ConvertionPairTo               ConvertionPair[]        @relation("currency_to")
 
   @@map(name: "currency")
 }
@@ -232,6 +234,8 @@ enum WalletChangeEventType {
   TRANSACTION
   CONVERT
   MANUAL
+  DEPOSIT
+  WITHDRAW
 
   @@map(name: "wallet_change_event_type")
 }
@@ -308,8 +312,10 @@ model ConvertionPair {
   updatedAt             DateTime                @updatedAt @map(name: "updated_at")
   is_enable             Boolean                 @default(true)
   name                  String
-  currency_id           String
-  Currency              Currency                @relation(fields: [currency_id], references: [id])
+  currency_from         String
+  CurrencyFrom          Currency                @relation("currency_from", fields: [currency_from], references: [id])
+  currency_to           String
+  CurrencyTo            Currency                @relation("currency_to", fields: [currency_to], references: [id])
   buy_min_amount        Float?
   buy_max_amount        Float?
   buy_fee_flat          Float?
@@ -318,10 +324,10 @@ model ConvertionPair {
   sell_max_amount       Float?
   sell_fee_flat         Float?
   sell_fee_pct          Float?
-  max_convert_in        Float?
-  max_convert_out       Float?
-  total_convert_in      Float?                  @default(0)
-  total_convert_out     Float?                  @default(0)
+  // max_convert_in        Float?
+  // max_convert_out       Float?
+  // total_convert_in      Float?                  @default(0)
+  // total_convert_out     Float?                  @default(0)
   ConvertionTransaction ConvertionTransaction[]
 
   @@map(name: "convertion_pair")
@@ -330,27 +336,28 @@ model ConvertionPair {
 enum ConvertionDirection {
   MAIN_TO_EXCHANGE
   EXCHANGE_TO_MAIN
+  MAIN_TO_MAIN
 
   @@map(name: "convertion_direction")
 }
 
 model ConvertionTransaction {
-  id                 String              @id @default(uuid())
-  createdAt          DateTime            @default(now()) @map(name: "created_at")
-  updatedAt          DateTime            @updatedAt @map(name: "updated_at")
-  main_wallet_id     String
-  MainWallet         MainWallet          @relation(fields: [main_wallet_id], references: [id])
-  exchange_wallet_id String
-  ExchangeWallet     ExchangeWallet      @relation(fields: [exchange_wallet_id], references: [id])
-  price              Float
-  amount             Float
-  fee                Float?              @default(0)
-  converted_amount   Float?
-  convertion_pair_id String
-  ConvertionPair     ConvertionPair      @relation(fields: [convertion_pair_id], references: [id])
-  user_id            String
-  User               User                @relation(fields: [user_id], references: [id])
-  direction          ConvertionDirection
+  id                  String              @id @default(uuid())
+  createdAt           DateTime            @default(now()) @map(name: "created_at")
+  updatedAt           DateTime            @updatedAt @map(name: "updated_at")
+  main_wallet_id_from String
+  MainWalletFrom      MainWallet          @relation("wallet_from", fields: [main_wallet_id_from], references: [id])
+  main_wallet_id_to   String
+  MainWalletTo        MainWallet          @relation("wallet_to", fields: [main_wallet_id_to], references: [id])
+  price               Float
+  amount              Float
+  fee                 Float?              @default(0)
+  converted_amount    Float?
+  convertion_pair_id  String
+  ConvertionPair      ConvertionPair      @relation(fields: [convertion_pair_id], references: [id])
+  user_id             String
+  User                User                @relation(fields: [user_id], references: [id])
+  direction           ConvertionDirection
 
   @@map(name: "convertion_transaction")
 }
@@ -395,59 +402,58 @@ model TransactionMaster {
 }
 
 // For Exchange
-model ExchangeWallet {
-  id                     String                  @id @default(uuid())
-  createdAt              DateTime                @default(now()) @map(name: "created_at")
-  updatedAt              DateTime                @updatedAt @map(name: "updated_at")
-  user_id                String
-  User                   User                    @relation(fields: [user_id], references: [id])
-  type                   AccountType
-  base_balance           Float                   @default(0)
-  balance_cache_datetime DateTime                @default(now())
-  is_frozen              Boolean                 @default(false)
-  ExchangeWalletChange   ExchangeWalletChange[]
-  ConvertionTransaction  ConvertionTransaction[]
+// model ExchangeWallet {
+//   id                     String                 @id @default(uuid())
+//   createdAt              DateTime               @default(now()) @map(name: "created_at")
+//   updatedAt              DateTime               @updatedAt @map(name: "updated_at")
+//   user_id                String
+//   User                   User                   @relation(fields: [user_id], references: [id])
+//   type                   AccountType
+//   base_balance           Float                  @default(0)
+//   balance_cache_datetime DateTime               @default(now())
+//   is_frozen              Boolean                @default(false)
+//   ExchangeWalletChange   ExchangeWalletChange[]
 
-  @@map(name: "exchange_wallet")
-}
+//   @@map(name: "exchange_wallet")
+// }
 
-enum ExchangeWalletEventType {
-  ORDER
-  ORDER_RESULT
-  CONVERT
-  AGENCY_LICENCE
-  REF
-  INTERNAL_TRANSACTION
-  PROMOTION_CODE
-  BUY_PROMOTION_CODE
-  PROMOTION_CODE_REFUND
-  PROMOTION
-  REFUND
-  MANUAL
-  COPY_TRADE_COMISSION
-  COPY_TRADE_COMISSION_BACK
-  SERVICE_SUBSCRIPTION
-  RING_ORDER
-  RING_ORDER_RESULT
-  INSURANCE_WIN
-  INSURANCE_REFUND
-  INVESTING_REFUND
+// enum ExchangeWalletEventType {
+//   ORDER
+//   ORDER_RESULT
+//   CONVERT
+//   AGENCY_LICENCE
+//   REF
+//   INTERNAL_TRANSACTION
+//   PROMOTION_CODE
+//   BUY_PROMOTION_CODE
+//   PROMOTION_CODE_REFUND
+//   PROMOTION
+//   REFUND
+//   MANUAL
+//   COPY_TRADE_COMISSION
+//   COPY_TRADE_COMISSION_BACK
+//   SERVICE_SUBSCRIPTION
+//   RING_ORDER
+//   RING_ORDER_RESULT
+//   INSURANCE_WIN
+//   INSURANCE_REFUND
+//   INVESTING_REFUND
 
-  @@map(name: "exchange_wallet_event_type")
-}
+//   @@map(name: "exchange_wallet_event_type")
+// }
 
-model ExchangeWalletChange {
-  id                 String                  @id @default(uuid())
-  createdAt          DateTime                @default(now()) @map(name: "created_at")
-  updatedAt          DateTime                @updatedAt @map(name: "updated_at")
-  exchange_wallet_id String
-  ExchangeWallet     ExchangeWallet          @relation(fields: [exchange_wallet_id], references: [id])
-  event_type         ExchangeWalletEventType
-  event_id           String
-  amount             Float
+// model ExchangeWalletChange {
+//   id                 String                  @id @default(uuid())
+//   createdAt          DateTime                @default(now()) @map(name: "created_at")
+//   updatedAt          DateTime                @updatedAt @map(name: "updated_at")
+//   exchange_wallet_id String
+//   ExchangeWallet     ExchangeWallet          @relation(fields: [exchange_wallet_id], references: [id])
+//   event_type         ExchangeWalletEventType
+//   event_id           String
+//   amount             Float
 
-  @@map(name: "exchange_wallet_change")
-}
+//   @@map(name: "exchange_wallet_change")
+// }
 
 model ExchangeConfig {
   id       String @id @default(uuid())
