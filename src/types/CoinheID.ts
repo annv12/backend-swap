@@ -117,15 +117,6 @@ export const coinheIDMutation = extendType({
             email: email.trim().toLowerCase(),
             password: hashedPassword,
             is_active: true,
-            ExchangeWallet: {
-              create: [
-                {
-                  type: 'MAIN',
-                  base_balance: 0,
-                  balance_cache_datetime: new Date(),
-                },
-              ],
-            },
             UserProfile: {
               create: {
                 status: 'NORMAL',
@@ -292,9 +283,9 @@ export const coinheIDMutation = extendType({
           }
         }
 
-        if (user.role !== UserRole.ADMIN) {
-          sendLoginMail(user.email, user.username, ctx.request)
-        }
+        // if (user.role !== UserRole.ADMIN) {
+        //   sendLoginMail(user.email, user.username, ctx.request)
+        // }
 
         ctx.user = user.id
         return {
@@ -320,7 +311,7 @@ export const coinheIDMutation = extendType({
           throw new ValidationError({ message: ctx.i18n.__('bad_request') })
         }
         await checkTokenTwoFaEnabled(otp, userId, ctx.prisma, ctx.i18n)
-        sendLoginMail(user.email, user.username, ctx.request)
+        // sendLoginMail(user.email, user.username, ctx.request)
         ctx.user = userId
         pushNotication('LOGIN', ctx)
         return {

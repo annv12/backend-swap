@@ -61,7 +61,7 @@ export async function getConvertPrice(
   prisma: PrismaClient,
 ) {
   const pair_name = symbolFrom + '/' + symbolTo
-  const pair_name2 = symbolFrom + '/' + symbolTo
+  const pair_name2 = symbolTo + '/' + symbolFrom
 
   const convertion_pair = await prisma.convertionPair.findFirst({
     where: {

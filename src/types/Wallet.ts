@@ -144,10 +144,6 @@ export const withdraw = extendType({
         { address, amount, currency_id, otpToken },
         ctx,
       ) => {
-        // if (!withdrawLock.has(`withdraw_${ctx.user}`)) {
-        //   withdrawLock.set(`withdraw_${ctx.user}`, new Mutex())
-        // }
-        // const release = await withdrawLock.get(`withdraw_${ctx.user}`).acquire()
         const lock = await ctx.redlock.lock(`lock:withdraw:${ctx.user}`, 3000)
 
         try {
@@ -171,19 +167,7 @@ export const withdraw = extendType({
               message: ctx.i18n.__('Withdraw not enable'),
             })
           }
-          // check address valid
-          // if (currency.regex) {
-          //   const currencySymbol = currency.symbol.toLocaleLowerCase()
-          //   const addressValid = walletAddressValidatorMinJs.validate(
-          //     address,
-          //     'trx',
-          //   )
-          //   if (!addressValid) {
-          //     throw new ValidationError({
-          //       message: ctx.i18n.__('Address not valid'),
-          //     })
-          //   }
-          // }
+
           // get fee
           if (
             currency.withdraw_fee_pct === null ||
@@ -210,7 +194,7 @@ export const withdraw = extendType({
             user.UserProfile.admin_config_withdraw_fee,
           )
 
-          const mainWallets = await ctx.prisma.mainWallet.findMany({
+          const mainWallet = await ctx.prisma.mainWallet.findFirst({
             where: {
               user_id: ctx.user,
               currency_id: currency_id,
@@ -219,12 +203,11 @@ export const withdraw = extendType({
               MainWalletAddress: true,
             },
           })
-          if (!mainWallets || mainWallets.length === 0) {
+          if (!mainWallet) {
             throw new ValidationError({
               message: ctx.i18n.__('Wallet not found'),
             })
           }
-          const mainWallet = mainWallets[0]
 
           if (mainWallet.is_frozen) {
             throw new ValidationError({
@@ -311,26 +294,6 @@ export const withdraw = extendType({
               User: true,
             },
           })
-
-          if (!is_notify_admin && currency.crypto_service === 'TRON') {
-            try {
-              await sendWithdrawRequestToCryptoService(
-                address,
-                math.sub(amount, fee).toNumber(),
-                transaction.id,
-              )
-            } catch (err) {
-              logger.error(`Send withdraw request to crypto-serice error`, err)
-              await ctx.prisma.mainWalletTransaction.delete({
-                where: { id: transaction.id },
-              })
-              throw new ValidationError({
-                message: ctx.i18n.__(
-                  'Send withdraw request to crypto service failed',
-                ),
-              })
-            }
-          }
 
           await ctx.prisma.mainWalletChange.create({
             data: {
@@ -575,10 +538,6 @@ export const withdraw = extendType({
         symbol: stringArg({ required: true }),
       },
       resolve: async (parent, { amount, symbol }, ctx) => {
-        // if (!withdrawLock.has(`withdraw_${ctx.user}`)) {
-        //   withdrawLock.set(`withdraw_${ctx.user}`, new Mutex())
-        // }
-        // const release = await withdrawLock.get(`withdraw_${ctx.user}`).acquire()
         const lock = await ctx.redlock.lock(`lock:withdraw:${ctx.user}`, 3000)
 
         try {
