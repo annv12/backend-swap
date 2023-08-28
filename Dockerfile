@@ -1,4 +1,15 @@
 FROM mhart/alpine-node:16.4.2
+RUN apk add --update --no-cache \
+  make \
+  g++ \
+  jpeg-dev \
+  cairo-dev \
+  giflib-dev \
+  pango-dev \
+  libtool \
+  autoconf \
+  automake \
+  fontconfig
 WORKDIR /app
 COPY package.json yarn.lock ./
 RUN yarn install
