@@ -16,7 +16,7 @@ import { ETHCryptoData, ETHEncryptData } from '../../jobs/ethereum-job'
 import { ethers } from 'ethers'
 import { getNativeBalance } from '../../lib/moralis-v2-utils'
 import { getTokenBalance, sendEthTransactionByChain } from '../../eth-service'
-import { pushNotication } from 'src/lib/notify-utils'
+import { pushNotication } from '../../lib/notify-utils'
 import { format } from 'date-fns'
 
 export const hashTransactionInfoPayload = objectType({
