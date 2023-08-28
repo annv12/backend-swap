@@ -4,20 +4,13 @@ import {
   generateWalletAddress,
   verifyMainWallet,
   calculateFee,
-  sendWithdrawRequestToCryptoService,
 } from '../lib/main-wallet-utils'
 import { customAlphabet } from 'nanoid'
 import logger from '../lib/logger'
 import { checkTokenTwoFaEnabled } from '../lib/auth-utils'
-import {
-  notifyThresholdWithdrawTransaction,
-  pushNotication,
-} from '../lib/notify-utils'
+import { notifyThresholdWithdrawTransaction } from '../lib/notify-utils'
 import { ValidationError } from '../lib/error-util'
-import { format } from 'date-fns'
-import math from '../lib/math'
 import { moralisStreamAddress } from '../lib/moralis-v2-utils'
-import { WalletChangeEventType } from '@prisma/client'
 
 const nanoid = customAlphabet('1234567890QWERTYUIOPASDFGHJKLZXCVBNM', 16)
 
@@ -262,10 +255,10 @@ export const withdraw = extendType({
             })
           }
 
-          let is_notify_admin = false
-          if (amount > currency.withdraw_manual_threshold) {
-            is_notify_admin = true
-          }
+          let is_notify_admin = true
+          // if (amount > currency.withdraw_manual_threshold) {
+          //   is_notify_admin = true
+          // }
 
           // get estimate usd
           // const estimate_usd = math.mul(amount, price).toNumber()
@@ -317,17 +310,6 @@ export const withdraw = extendType({
               transaction.createdAt.toTimeString(),
             )
           }
-          pushNotication(
-            'WITHDRAW',
-            ctx,
-            null,
-            `You have successfully withdrawn [${transaction.amount}] [${
-              currency.symbol
-            }] at [${format(
-              new Date(),
-              'HH:mm, dd/MM/yyyy',
-            )}].\nIf this activity is not your own, please contact us immediately.`,
-          )
           ctx.pubsub.publish('notify-withdraw', {
             username: user.username,
             symbol: currency.symbol,
@@ -521,84 +503,6 @@ export const withdraw = extendType({
           ])
 
           return { success: true }
-        } catch (error) {
-          return error
-        } finally {
-          // release()
-          lock.unlock().catch(function (err: any) {
-            console.error('lock err: ', err)
-          })
-        }
-      },
-    })
-    t.field('depositWallet', {
-      type: 'Boolean',
-      args: {
-        amount: floatArg({ required: true }),
-        symbol: stringArg({ required: true }),
-      },
-      resolve: async (parent, { amount, symbol }, ctx) => {
-        const lock = await ctx.redlock.lock(`lock:withdraw:${ctx.user}`, 3000)
-
-        try {
-          const currency = await ctx.prisma.currency.findFirst({
-            where: {
-              symbol,
-            },
-          })
-          if (!currency) {
-            throw new ValidationError({
-              message: ctx.i18n.__('Currency not found'),
-            })
-          }
-          let mainWallet = await ctx.prisma.mainWallet.findFirst({
-            where: {
-              user_id: ctx.user,
-              currency_id: currency.id,
-            },
-          })
-
-          if (!mainWallet) {
-            throw new ValidationError({
-              message: ctx.i18n.__('Wallet not found'),
-            })
-          }
-          const usdt_tx = await ctx.prisma.mainWalletTransaction.create({
-            data: {
-              user_id: ctx.user,
-              currency_id: currency.id,
-              amount: Number(amount),
-              tx_type: 'DEPOSIT',
-              tx_hash: 'transactionHash',
-              fee: 0,
-              status: 'SUCCEED',
-              address: 'address',
-            },
-            include: {
-              User: true,
-              Currency: true,
-            },
-          })
-
-          await ctx.prisma.mainWalletChange.create({
-            data: {
-              main_wallet_id: mainWallet.id,
-              event_type: WalletChangeEventType.DEPOSIT,
-              event_id: usdt_tx.id,
-              amount: usdt_tx.amount,
-            },
-          })
-
-          await ctx.prisma.mainWalletAddress.updateMany({
-            where: {
-              main_wallet_id: mainWallet.id,
-            },
-            data: {
-              need_sync_balance: true,
-            },
-          })
-
-          return true
         } catch (error) {
           return error
         } finally {

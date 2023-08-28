@@ -3582,7 +3582,6 @@ type Mutation {
   createCurrency(icon: String, name: String!, symbol: String!): Currency
   createRef(refCode: String!, usernameUser: String!): Ref!
   createWalletRequest(currency_id: String!): MainWallet
-  depositWallet(amount: Float!, symbol: String!): Boolean
   disableTwoFactor(captchaToken: String, password: String!, token: String!): DisableTwoFactor
   disableTwoFactorMobile(temporaryToken: String!, token: String!): DisableTwoFactor
   enableTwoFactor(captchaToken: String, password: String!, token: String!): TwoFactor

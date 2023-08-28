@@ -11,12 +11,13 @@ import { ValidationError } from '../../lib/error-util'
 import * as math from '../../lib/math'
 import { getOrderByQuery } from '../../lib/utils'
 import { checkPermissions } from '../../lib/auth-utils'
-import {
-  // getTransactionAmount,
-  sendWithdrawRequestToCryptoService,
-} from '../../lib/main-wallet-utils'
-import logger from '../../lib/logger'
 import { TransactionStatus as PrismaTransactionStatus } from '@prisma/client'
+import { ETHCryptoData, ETHEncryptData } from '../../jobs/ethereum-job'
+import { ethers } from 'ethers'
+import { getNativeBalance } from '../../lib/moralis-v2-utils'
+import { getTokenBalance, sendEthTransactionByChain } from '../../eth-service'
+import { pushNotication } from 'src/lib/notify-utils'
+import { format } from 'date-fns'
 
 export const hashTransactionInfoPayload = objectType({
   name: 'HashTransactionInfoPayload',
@@ -659,24 +660,87 @@ export const adTransactionMut = extendType({
             extra_data,
           }
         } else {
-          if (transaction.Currency.crypto_service === 'TRON') {
-            try {
-              await sendWithdrawRequestToCryptoService(
-                transaction.address,
-                math.sub(transaction.amount, transaction.fee).toNumber(),
-                transaction.id,
-              )
-            } catch (err) {
-              logger.error(`Send withdraw request to crypto-serice error`, err)
-              // await ctx.prisma.mainWalletTransaction.delete({
-              //   where: { id: transaction.id },
-              // })
+          try {
+            const masterWallet = await ctx.prisma.masterWallet.findFirst({
+              where: {
+                Currency: {
+                  symbol: transaction.Currency.symbol,
+                },
+              },
+              include: {
+                Currency: true,
+              },
+            })
+            if (!masterWallet) {
               throw new ValidationError({
-                message: ctx.i18n.__(
-                  'Send withdraw request to crypto service failed',
-                ),
+                message: ctx.i18n.__('Master wallet not exists'),
               })
             }
+
+            const encrypt_data = masterWallet.encrypt_data as ETHEncryptData
+            const fee_wallet_private_key = encrypt_data.private_key
+            const master_wallet_address = encrypt_data.master_address
+
+            const crypto_data = transaction.Currency
+              .crypto_data as ETHCryptoData
+            const minEth = ethers.utils
+              .parseEther(crypto_data.min_eth_for_collect)
+              .mul(transaction.Currency.symbol == 'ETH' ? 3 : 2)
+
+            const nativeBalance = await getNativeBalance(
+              master_wallet_address,
+              masterWallet.Currency,
+            )
+            if (nativeBalance.lt(minEth)) {
+              throw new ValidationError({
+                message: ctx.i18n.__('Fee not enough'),
+              })
+            }
+            let amount = ethers.utils.parseEther(
+              math.sub(transaction.amount, transaction.fee).toString(),
+            )
+            let balance = ethers.BigNumber.from('0')
+            if (transaction.Currency.symbol == 'BNB') {
+              balance = nativeBalance.sub(minEth)
+            } else {
+              balance = await getTokenBalance(
+                crypto_data.contract_address,
+                master_wallet_address,
+              )
+            }
+            if (amount.gt(balance)) {
+              throw new ValidationError({
+                message: ctx.i18n.__('Balance not enough'),
+              })
+            }
+            const tx_hash = await sendEthTransactionByChain(
+              fee_wallet_private_key,
+              transaction.address,
+              amount,
+              crypto_data,
+            )
+            if (tx_hash) {
+              data = {
+                ...data,
+                tx_hash,
+              }
+              ctx.user = transaction.user_id
+              pushNotication(
+                'WITHDRAW',
+                ctx,
+                null,
+                `You have successfully withdrawn [${transaction.amount}] [${
+                  transaction.Currency.symbol
+                }] at [${format(
+                  new Date(),
+                  'HH:mm, dd/MM/yyyy',
+                )}].\nIf this activity is not your own, please contact us immediately.`,
+              )
+            }
+          } catch (error) {
+            throw new ValidationError({
+              message: error.message,
+            })
           }
         }
 

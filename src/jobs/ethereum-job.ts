@@ -26,7 +26,7 @@ type ETHScanData = {
   max_checking_block: number
 }
 
-type ETHEncryptData = {
+export type ETHEncryptData = {
   master_address: string
   private_key: string
 }

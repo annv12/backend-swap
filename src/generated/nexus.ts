@@ -6912,7 +6912,6 @@ export interface NexusGenFieldTypes {
     createCurrency: NexusGenRootTypes['Currency'] | null; // Currency
     createRef: NexusGenRootTypes['Ref']; // Ref!
     createWalletRequest: NexusGenRootTypes['MainWallet'] | null; // MainWallet
-    depositWallet: boolean | null; // Boolean
     disableTwoFactor: NexusGenRootTypes['DisableTwoFactor'] | null; // DisableTwoFactor
     disableTwoFactorMobile: NexusGenRootTypes['DisableTwoFactor'] | null; // DisableTwoFactor
     enableTwoFactor: NexusGenRootTypes['TwoFactor'] | null; // TwoFactor
@@ -7579,7 +7578,6 @@ export interface NexusGenFieldTypeNames {
     createCurrency: 'Currency'
     createRef: 'Ref'
     createWalletRequest: 'MainWallet'
-    depositWallet: 'Boolean'
     disableTwoFactor: 'DisableTwoFactor'
     disableTwoFactorMobile: 'DisableTwoFactor'
     enableTwoFactor: 'TwoFactor'
@@ -7946,10 +7944,6 @@ export interface NexusGenArgTypes {
     }
     createWalletRequest: { // args
       currency_id: string; // String!
-    }
-    depositWallet: { // args
-      amount: number; // Float!
-      symbol: string; // String!
     }
     disableTwoFactor: { // args
       captchaToken?: string | null; // String

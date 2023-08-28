@@ -166,7 +166,6 @@ export const permissions = shield(
       internalTransfer: isAllowSpendMoneyMutation,
       convertCurrency: isAllowSpendMoneyMutation,
       withdrawVND: isAllowSpendMoneyMutation,
-      depositWallet: and(rules.isAuthenticatedUser, rules.isAdmin),
     },
     Subscription: {
       adminPoolInfo: and(rules.isAuthenticatedUser, rules.isAdmin),

@@ -281,30 +281,29 @@ export async function sendEthTransactionByChain(
   amount: ethers.BigNumber,
   crypto_data: ETHCryptoData,
 ) {
-
   const wallet = new Wallet(
     private_key,
     getProviderByChain(crypto_data.rpc_urls),
   )
   //@ts-ignore
   const managedSigner = new NonceManager(wallet)
-  let baseNonce = managedSigner.getTransactionCount()
-  let nonceOffset = 0
-  async function getNonce() {
-    const c = await managedSigner.getTransactionCount()
-    // managedSigner.incrementTransactionCount(c+1)
+  // let baseNonce = managedSigner.getTransactionCount()
+  // let nonceOffset = 0
+  // async function getNonce() {
+  //   const c = await managedSigner.getTransactionCount()
+  //   // managedSigner.incrementTransactionCount(c+1)
 
-    return c + 1
-  }
+  //   return c + 1
+  // }
 
-  const gas_price = await estimate_gas_price(
-    crypto_data.gas_limit,
-    crypto_data.max_fee,
-    crypto_data.rpc_urls,
-  )
+  // const gas_price = await estimate_gas_price(
+  //   crypto_data.gas_limit,
+  //   crypto_data.max_fee,
+  //   crypto_data.rpc_urls,
+  // )
 
-  const gasPrice = BN.from(gas_price.toString())
-  const gasLimit = BN.from(crypto_data.gas_limit)
+  const gasPrice = await wallet.provider.getGasPrice()
+  // const gasLimit = BN.from(crypto_data.gas_limit)
 
   if (crypto_data.contract_address.length > 0) {
     console.log('send erc20 token on chain', crypto_data.chain)
@@ -313,17 +312,15 @@ export async function sendEthTransactionByChain(
       crypto_data.rpc_urls,
       wallet,
     )
-    const tx = await contract.transfer(to_address, amount.toString()
-    // , {
-    //   gasLimit: gasLimit.toString(),
-    //   // gasPrice: gasPrice.toString(),
-    //   nonce:  getNonce(),
-    // }
-    )
+    const tx = await contract.transfer(to_address, amount.toString(), {
+      // gasLimit: gasLimit.toString(),
+      // gasPrice: gasPrice.mul(11).div(10),
+      // nonce:  getNonce(),
+    })
     await tx.wait()
     return tx.hash
   } else {
-    if (["ETH", "GOERLI", "POLYGON"].includes(crypto_data.chain)) return null
+    if (['ETH', 'GOERLI', 'POLYGON'].includes(crypto_data.chain)) return null
     const tx = await managedSigner.sendTransaction({
       to: to_address,
       value: amount,
