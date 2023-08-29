@@ -38,6 +38,7 @@ export const CoinPayload = objectType({
     t.float('price')
     t.float('priceChange')
     t.float('volume')
+    t.string('icon')
   },
 })
 
@@ -76,6 +77,7 @@ export const allAvailableCurrency = extendType({
               price,
               priceChange: stats.priceChange,
               volume: stats.volume,
+              icon: currency.icon,
             }
           }),
         )
