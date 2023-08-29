@@ -56,7 +56,7 @@ export const allAvailableCurrency = extendType({
       },
     })
 
-    t.list.field('CoinList', {
+    t.list.field('coinList', {
       type: 'CoinPayload',
       resolve: async (_, args, ctx) => {
         const currencies = await ctx.prisma.currency.findMany({

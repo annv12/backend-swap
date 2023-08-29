@@ -1,0 +1,23 @@
+{
+  "symbol": "BNBUSDT",
+  "priceChange": "0.20000000",
+  "priceChangePercent": "0.092",
+  "weightedAvgPrice": "217.59980497",
+  "prevClosePrice": "218.00000000",
+  "lastPrice": "218.20000000",
+  "lastQty": "0.06300000",
+  "bidPrice": "218.20000000",
+  "bidQty": "344.01800000",
+  "askPrice": "218.30000000",
+  "askQty": "357.79000000",
+  "openPrice": "218.00000000",
+  "highPrice": "219.50000000",
+  "lowPrice": "215.10000000",
+  "volume": "295484.79400000",
+  "quoteVolume": "64297433.54740000",
+  "openTime": 1693195242265,
+  "closeTime": 1693281642265,
+  "firstId": 669241421,
+  "lastId": 669344218,
+  "count": 102798
+}

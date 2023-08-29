@@ -1,0 +1,29 @@
+services:
+  redis:
+    image: redis
+    environment:
+      # ALLOW_EMPTY_PASSWORD is recommended only for development.
+      - ALLOW_EMPTY_PASSWORD=yes
+      # - REDIS_DISABLE_COMMANDS=FLUSHDB,FLUSHALL
+    ports:
+      - 6379:6379
+    volumes:
+      - redis-data:/data
+    restart: always
+    entrypoint: redis-server --appendonly yes
+
+  postgres:
+    image: postgres:14.1-alpine
+    restart: always
+    environment:
+      - POSTGRES_USER=user_swap
+      - POSTGRES_PASSWORD=b147420fcd0adfadsfadsfkdkadi9f71649f0d98c9e9c8165
+      - POSTGRES_DB=swap-dev
+    ports:
+      - 5432:5432
+    volumes:
+      - postgres-db:/var/lib/postgresql/data
+
+volumes:
+  postgres-db:
+  redis-data:
