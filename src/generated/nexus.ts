@@ -6101,6 +6101,13 @@ export interface NexusGenObjects {
     countDown?: number | null; // Int
     enable?: boolean | null; // Boolean
   }
+  CoinPayload: { // root type
+    name?: string | null; // String
+    price?: number | null; // Float
+    priceChange?: number | null; // Float
+    symbol?: string | null; // String
+    volume?: number | null; // Float
+  }
   CoinheAuthPayload: { // root type
     ctoken?: string | null; // String
     hasTwoFactor?: boolean | null; // Boolean
@@ -6668,6 +6675,13 @@ export interface NexusGenFieldTypes {
     countDown: number | null; // Int
     enable: boolean | null; // Boolean
   }
+  CoinPayload: { // field return type
+    name: string | null; // String
+    price: number | null; // Float
+    priceChange: number | null; // Float
+    symbol: string | null; // String
+    volume: number | null; // Float
+  }
   CoinheAuthPayload: { // field return type
     ctoken: string | null; // String
     hasTwoFactor: boolean | null; // Boolean
@@ -6989,6 +7003,7 @@ export interface NexusGenFieldTypes {
     adminUsersAggregate: NexusGenRootTypes['AdminUsersAggregate'] | null; // AdminUsersAggregate
     adNotifications: NexusGenRootTypes['NotificationPagination'] | null; // NotificationPagination
     allAvailableCurrency: Array<NexusGenRootTypes['Currency'] | null> | null; // [Currency]
+    CoinList: Array<NexusGenRootTypes['CoinPayload'] | null> | null; // [CoinPayload]
     convertionAggregate: NexusGenRootTypes['ConvertionAggregate'] | null; // ConvertionAggregate
     convertionSumary: NexusGenRootTypes['ConvertionSumaries'] | null; // ConvertionSumaries
     countries: Array<NexusGenRootTypes['Country'] | null> | null; // [Country]
@@ -7334,6 +7349,13 @@ export interface NexusGenFieldTypeNames {
     countDown: 'Int'
     enable: 'Boolean'
   }
+  CoinPayload: { // field return type name
+    name: 'String'
+    price: 'Float'
+    priceChange: 'Float'
+    symbol: 'String'
+    volume: 'Float'
+  }
   CoinheAuthPayload: { // field return type name
     ctoken: 'String'
     hasTwoFactor: 'Boolean'
@@ -7655,6 +7677,7 @@ export interface NexusGenFieldTypeNames {
     adminUsersAggregate: 'AdminUsersAggregate'
     adNotifications: 'NotificationPagination'
     allAvailableCurrency: 'Currency'
+    CoinList: 'CoinPayload'
     convertionAggregate: 'ConvertionAggregate'
     convertionSumary: 'ConvertionSumaries'
     countries: 'Country'

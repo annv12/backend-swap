@@ -285,6 +285,14 @@ type CoinheIDAuthMessagePayload {
   redirectUrl: String
 }
 
+type CoinPayload {
+  name: String
+  price: Float
+  priceChange: Float
+  symbol: String
+  volume: Float
+}
+
 type ConvertCurrencyPayload {
   success: Boolean
 }
@@ -4529,6 +4537,7 @@ type Query {
   adminUsersAggregate(username: String): AdminUsersAggregate
   adNotifications(limit: Int = 10, orderBy: String, search: String, skip: Int = 0): NotificationPagination
   allAvailableCurrency: [Currency]
+  CoinList: [CoinPayload]
   convertionAggregate: ConvertionAggregate
   convertionSumary(user_id: String): ConvertionSumaries
   countries: [Country]

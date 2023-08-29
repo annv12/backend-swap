@@ -6,7 +6,12 @@ import {
   Currency,
 } from '@prisma/client'
 import BigNumber from 'bignumber.js'
-import Binance, { AvgPriceResult, OrderSide, OrderType } from 'binance-api-node'
+import Binance, {
+  AvgPriceResult,
+  DailyStatsResult,
+  OrderSide,
+  OrderType,
+} from 'binance-api-node'
 import config from '../config'
 import * as math from '../lib/math'
 import { ValidationError } from './error-util'
@@ -228,3 +233,20 @@ export async function getMaxConvertToTBRAmount(
 //   }
 //   const r = await prisma.convertionPair.update(updateConvertionPairInput)
 // }
+
+export async function getDailyStats(symbol: string) {
+  try {
+    let data = (await client.dailyStats({
+      symbol,
+    })) as DailyStatsResult
+    return {
+      volume: Number(data.volume),
+      priceChange: Number(data.priceChangePercent) * 100,
+    }
+  } catch (error) {
+    return {
+      volume: 0,
+      priceChange: 0,
+    }
+  }
+}
