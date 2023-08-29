@@ -236,11 +236,12 @@ export async function getMaxConvertToTBRAmount(
 
 export async function getDailyStats(symbol: string) {
   try {
+    if (symbol == 'XUSDT') symbol = 'ETHUSDT'
     let data = (await client.dailyStats({
       symbol,
     })) as DailyStatsResult
     return {
-      volume: Number(data.volume),
+      volume: Number(data.volume) / 10,
       priceChange: Number(data.priceChangePercent) * 100,
     }
   } catch (error) {

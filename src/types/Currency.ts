@@ -75,7 +75,7 @@ export const allAvailableCurrency = extendType({
               name: currency.name,
               symbol: currency.symbol,
               price,
-              priceChange: stats.priceChange,
+              priceChange: currency.symbol == 'X' ? 0 : stats.priceChange,
               volume: stats.volume,
               icon: currency.icon,
             }

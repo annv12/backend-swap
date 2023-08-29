@@ -6102,6 +6102,7 @@ export interface NexusGenObjects {
     enable?: boolean | null; // Boolean
   }
   CoinPayload: { // root type
+    icon?: string | null; // String
     name?: string | null; // String
     price?: number | null; // Float
     priceChange?: number | null; // Float
@@ -6676,6 +6677,7 @@ export interface NexusGenFieldTypes {
     enable: boolean | null; // Boolean
   }
   CoinPayload: { // field return type
+    icon: string | null; // String
     name: string | null; // String
     price: number | null; // Float
     priceChange: number | null; // Float
@@ -7003,7 +7005,7 @@ export interface NexusGenFieldTypes {
     adminUsersAggregate: NexusGenRootTypes['AdminUsersAggregate'] | null; // AdminUsersAggregate
     adNotifications: NexusGenRootTypes['NotificationPagination'] | null; // NotificationPagination
     allAvailableCurrency: Array<NexusGenRootTypes['Currency'] | null> | null; // [Currency]
-    CoinList: Array<NexusGenRootTypes['CoinPayload'] | null> | null; // [CoinPayload]
+    coinList: Array<NexusGenRootTypes['CoinPayload'] | null> | null; // [CoinPayload]
     convertionAggregate: NexusGenRootTypes['ConvertionAggregate'] | null; // ConvertionAggregate
     convertionSumary: NexusGenRootTypes['ConvertionSumaries'] | null; // ConvertionSumaries
     countries: Array<NexusGenRootTypes['Country'] | null> | null; // [Country]
@@ -7350,6 +7352,7 @@ export interface NexusGenFieldTypeNames {
     enable: 'Boolean'
   }
   CoinPayload: { // field return type name
+    icon: 'String'
     name: 'String'
     price: 'Float'
     priceChange: 'Float'
@@ -7677,7 +7680,7 @@ export interface NexusGenFieldTypeNames {
     adminUsersAggregate: 'AdminUsersAggregate'
     adNotifications: 'NotificationPagination'
     allAvailableCurrency: 'Currency'
-    CoinList: 'CoinPayload'
+    coinList: 'CoinPayload'
     convertionAggregate: 'ConvertionAggregate'
     convertionSumary: 'ConvertionSumaries'
     countries: 'Country'
